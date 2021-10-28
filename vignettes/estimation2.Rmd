@@ -1,0 +1,118 @@
+---
+title: "Estimation - Note 2"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+```
+
+Load the data.
+```{r}
+load("~/gremes/data/SeineData.rda")
+head(resid)
+
+```
+
+Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+```{r}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) # 
+
+```
+
+Extract the nodes for which we do not observe realizations.
+```{r}
+tobj<- Tree(seg, resid)
+Uc<- getNoDataNodes(tobj)
+
+```
+
+Create the subsets
+```{r}
+subs<- Neighborhood()
+subs<- subset(subs, 3, seg, Uc) # neighborhood of level three
+
+```
+
+Estimate MLE Version 1
+```{r}
+mle1<- MLE1(seg)
+mle1<- estimate(mle1, resid, subs, k_ratio=0.2)
+
+```
+
+Estimate MLE Version 2 
+```{r}
+mle2<- MLE2(seg)
+mle2<- estimate(mle2, resid, subs, k_ratio=0.2)
+
+```
+
+The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+
+```{r}
+mle1$depParams
+mle2$depParams
+
+```
+
+
+## The Covariance selection method 
+The Covariance Selection Method in @grim is not applicable when there are latent variables.
+To use the Covariance Selection method compose a graph without nodes with latent variables.
+```{r}
+seg_short<- graph(c(1,2,
+              2,3,
+              2,4,
+              2,5), directed = FALSE)
+name_stat<- c("Paris", "Melun", "Meaux", "Nemours", "Sens")
+seg_short<- set.vertex.attribute(seg_short, "name", V(seg_short), name_stat) # 
+
+```
+
+Extract the nodes for which we do not observe realizations.
+```{r}
+tobj<- Tree(seg_short, resid)
+Uc<- getNoDataNodes(tobj)
+
+```
+
+Create the subsets
+```{r}
+subs_short<- Neighborhood()
+subs_short<- subset(subs, 3, seg_short, Uc) # neighborhood of level three
+
+```
+
+Estimate using Covariance Selection Model. 
+```{r}
+mle<- MLE(seg_short)
+mle<- estimate(mle, resid, subs_short,  k_ratio=0.2)
+mle$depParams
+
+```
+The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+
+The estimates are squares of the parameters, hence take the square root.
+```{r}
+sqrt(mle$depParams)
+
+```

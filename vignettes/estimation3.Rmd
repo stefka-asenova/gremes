@@ -1,0 +1,92 @@
+---
+title: "Estimation - Note 3"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 3}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+```
+
+Load the data.
+```{r}
+load("~/gremes/data/SeineData.rda")
+head(resid)
+
+```
+
+Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+```{r}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) # 
+
+```
+
+Extract the nodes for which we do not observe realizations.
+```{r}
+tobj<- Tree(seg, resid)
+Uc<- getNoDataNodes(tobj)
+
+```
+
+Alternatively just do it manually.
+```{r}
+Uc<- c("2", "5")
+
+```
+
+Create the set of coordinates, in this case only vectors with two non-zero entries. 
+```{r}
+tup<- Tuples()
+x<- rep(1,5)
+names(x)<- getNodesWithData(tobj)
+tup<- evalPoints(tup, tobj, x)
+
+```
+
+Estimate EKS Version 1
+```{r}
+eks<- EKS(seg)
+eks<-estimate(eks, resid, tup, k_ratio=0.2)
+
+```
+
+To apply EKS Version 2 we need to create subsets for local estimation.
+Create the subsets.
+```{r}
+subs<- Neighborhood()
+subs<- subset(subs, 2, seg, Uc) # neighborhood of level three
+
+```
+
+Estimate EKS Version 2
+```{r}
+eks_part<- EKS_part(seg)
+eks_part<- estimate(eks_part, resid, subs, k_ratio=0.2, xx=x)
+
+```
+The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+
+
+Compare estimates
+```{r}
+eks$depParams
+eks_part$depParams
+
+```

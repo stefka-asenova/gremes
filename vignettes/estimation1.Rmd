@@ -1,0 +1,62 @@
+---
+title: "Estimation - Note 1"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 1}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+```
+
+Load the data.
+```{r}
+load("~/gremes/data/SeineData.rda")
+head(resid)
+
+```
+
+Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+```{r}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) # 
+
+```
+
+Create the subsets.
+```{r}
+subs<- Neighborhood()
+subs<- subset(subs, 2, seg, U_bar=c("2", "5"))
+
+```
+
+Estimate using method of moment estimator. 
+```{r}
+mme<- MME(seg)
+mme<- estimate(mme, resid, subs,  k_ratio=0.2)
+
+```
+
+The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+
+The estimates are squares of the parameters, hence take the square root.
+```{r}
+sqrt(mme$depParams)
+
+```
+

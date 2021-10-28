@@ -1,0 +1,27 @@
+Package: gremes
+Title: Provides tools for analysis of extremes in graphical models
+Version: 0.1.0
+Author: Stefka Asenova [aut, cre]
+Maintainer: Stefka Asenova <stefkakirilova@yahoo.com>
+Description: The package provides tools for statistical analysis of graphical models from extreme value perspective.
+License: GPL-2
+Encoding: UTF-8
+RoxygenNote: 7.0.2
+Imports:
+   gRbase (>= 1.8-6.4),
+   gRim (>= 0.2.1),
+   abind (>= 1.4.5),
+   copula (>= 0.999.19),
+   quadprog (>= 1.5.5),
+   mvtnorm (>= 1.0.8),
+   Rcpp (>= 0.11.1),
+   methods,
+   mev (>= 1.13.1)
+Depends:
+   R (>= 3.5.0),
+   igraph
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
