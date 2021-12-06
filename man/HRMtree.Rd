@@ -2,7 +2,7 @@
 % Please edit documentation in R/gr_HRMnetwork.R
 \name{HRMtree}
 \alias{HRMtree}
-\title{\code{HRMtree} class}
+\title{Object of class \code{HRMtree}}
 \usage{
 HRMtree(g)
 }
@@ -14,7 +14,7 @@ Object of class \code{HRMtree} with two slots: one containing the graph and the 
 corresponding to the dependence parameters.
 }
 \description{
-\code{HRMtree} class
+Object of class \code{HRMtree}
 }
 \examples{
 g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)

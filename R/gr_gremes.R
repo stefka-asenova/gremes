@@ -1,21 +1,97 @@
-#' gremes: Package for estimation of extremal dependence on graphical models
+#' gremes: Estimation of extremal dependence parameters on graphical models related to trees and block graphs
 #'
-#' The package provides three estimators of the dependence parameters of a
+#' The package \code{gremes} provides tools for estimation of the tail dependence parameters in graphical models
+#' parameterized by family of Huesler-Reiss distributions.
 #'
-#' These are details
+#' The only supported parameterization is through \strong{Huesler-Reiss} distributions.
 #'
-#' @section Most important functions :
-#'kjmuhmoihùo
+#' The only supported graphs are \strong{trees} and \strong{block graphs}.
 #'
-#' @section La-la a :
+#' The estimation methods are variations of method of moments, maximum likelihood and a method based on
+#' extremal coefficients.
 #'
-#' lkuliumiuhmikn,
+#' Based mainly on
 #'
-#' @author Stefka Asenova
+#' Asenova, Stefka, Gildas Mazo, and Johan Segers. 2021. "Inference on Extremal Dependence in the Domain of
+#'  Attraction of a Structured Huesler-Reiss Distribution
+#' Motivated by a Markov Tree with Latent Variables." Extremes. https://doi.org/10.1007/s10687-021-00407-5.
 #'
-#' @references Asenova, S., Mazo, G., Segers, J. Extremal dependence in Hüsler-Reiss Markov tree.
+#' Einmahl, J., A. Kiriliouk, and J. Segers. 2017. "A Continuous Updating Weighted Least Squares Estimator
+#' of Tail Dependence in High Dimensions." Extremes.
 #'
-#' @references Segers, J. Regularly varying Markov trees
+#'  Engelke S. and Hitz A.S. 2020. "Graphical models for extremes" (with discussion).
+#' Journal of the Royal Statistical Society: Series B, 82: 871-932.
+#'
+#'
+#' @section Vignette "Introduction":
+#'
+#'  Describes the model, the edge weights that represent
+#'  the scope of the estimation and how they characterise the tail dependence structure of the model.
+#'
+#' @section Vignette "Detailed contents":
+#'
+#'  A detailed guide into the documentation of the package and a
+#'  summary of the main functionalities of the package.
+#'
+#' @section Vignette "Huesler-Reiss distributions":
+#'
+#'  Parameterizations used of the Huesler-Reiss distributions.
+#'
+#' @section Vignette "Estimation - Note" 1-6:
+#'
+#'  Detailed description of the estimation methods.
+#'
+#' @section Vignettes "Code - Note" 1-6:
+#'
+#'  Use of the estimation tools (the methods, classes and functions) of the package.
+#'
+#' @section Vignettes "Application Danube" and "Application Seine":
+#'
+#'   Two case studies - one without unibserved variables and one with unobserved variables respectively.
+#'
+#' @section Vignette "Additional functionalities":
+#'
+#'  Explanation and illustrates the functions related to additional functionalities such as generating
+#'  random sample from a model, computing extremal coefficients, tail dependence coefficients,
+#'  confidence intervals for one of the estimators.
+#'
+#' @section Object oriented style:
+#'
+#'  The package is developped in an object-oriented style. There are two main types of objects.
+#'
+#'  An object containing the graph and the dataset is created using classes \code{Network}, \code{Tree} and
+#'  possibly other subclasses of these.
+#'
+#'  An object containing the graph and the edge weights is created with classes \code{HRMnetwork, HRMtree,
+#'  HRMBG} and possibly subclasses of these.
+#'
+#'  We can look at the first type of objects as one representing the non-parametric view on the problem -
+#'   all we know is the graph and the data.
+#'
+#'   We can look at the second type of objects as representing the Huesler-Reiss parametric model: every
+#'    clique is parametrized by a Huesler-Reiss distribution with parameters - the edge weigths
+#'    within this clique. Hence all that characterizes the parametric model is the graph and the edge weigths.
+#'
+#'    Consider for instance a method \code{extrCoeff} which is written both for classes \code{Tree} and \code{HRMtree}.
+#'     If we pass an object of class \code{Tree} to the method \code{extrCoeff} the command will return
+#'     non-parametric estimates of the extremal coefficients. If the object passed is of class \code{HRMtree}
+#'     the command will return parametric extremal coefficients.
+#'
+#'
+#' @section The method \code{estimate}:
+#'
+#'  The main goal of the package is estimation, therefore the method \code{estimate} is the key functionality
+#'   of the tools provided in the package. Estimation in \code{gremes} happens by using the method
+#'   \code{estimate} on an object from one of the following classes:
+#'
+#'
+#'   \code{MME, MLE, MLE1, MLE2, EKS, EKS_part, EngHitz, MMEave, MLEave} in which case it estimates the
+#'   edge weights of a graphical model on a tree. See Vignettes "Code - Node" 1-4 and 6.
+#'
+#'   \code{HRMBG} in which case it estimates the edge weights of a graphical model on a tree.
+#'   See Vignettes "Code - Node 5".
+#'
+#' @author Stefka Asenova, contact: stefkakirilova at yahoo.com
 #'
 #' @docType package
 "_PACKAGE"

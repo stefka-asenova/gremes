@@ -17,6 +17,8 @@ getGraph(obj, ...)
 }
 \arguments{
 \item{obj}{Object of appropriate class ('Network', 'HRMnetwork')}
+
+\item{...}{additional arguments}
 }
 \description{
 The function is applied on objects of appropriate class with slot 'graph'. It is used instead of the command 'obj_name$graph'.

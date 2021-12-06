@@ -14,6 +14,8 @@ getValue(obj, ...)
 }
 \arguments{
 \item{obj}{An object of class 'RootDepSet'}
+
+\item{...}{additional arguments}
 }
 \description{
 It retrieves the slot 'value' of an object of class 'RootDepSet'.

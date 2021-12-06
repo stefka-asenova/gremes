@@ -1,13 +1,39 @@
-
-
+#' Tail dependence coefficients
+#'
+#' It computes parametric (Huesler-Reiss) or non-parametric Tail dependence coefficients -
+#' See Vignette "Application - Danube" for usage of TDCs.
+#' @param obj should be of class \code{Network} or \code{HRMtree} or a subclass of these, such as
+#' \code{Tree, BlochGraph} as subclasses of \code{Network} or subclasses \code{MME, MLE, MLE1, MLE2, EKS, EKS_part,
+#' EngHitz, MLEave, MMEave} of class \code{HRMtree}.
+#' @export
+#' @rdname taildepCoeff
 taildepCoeff<- function(obj, ...)
 {
-  UseMethod("taildepCoeff", obj)
+  UseMethod("taildepCoeff")
 }
 
-
-
-
+#' @title
+#' @name TDC
+#' @export
+#' @rdname taildepCoeff
+#' @param k_ratio the number of upper order statistics divided by the total number of observations
+#' @param v a named vector of coordinates, the names should correspond to the names of the nodes
+#' in the graph in \code{obj}
+#' @param correction adds a correction of one half to n-k in computing the event {x > n - k + 1/2}.
+#' Default is FALSE, hence n-k.
+#' @param ... additional arguments
+#' @return If the \code{obj} is of class \code{Network} the TDC are non-parametric. If the \code{obj} is of class
+#' \code{HRMtree} or its subclasses repectively the TDC are parametric.
+#' @examples
+#' # non-parametric tdc
+#' g<- graph(c(1,2,2,3), directed=FALSE)
+#' g<- set.vertex.attribute(g, "name", V(g), c("a", "b", "c")) # name the nodes
+#' data<- matrix(rnorm(1000*3), 1000,3)
+#' colnames(data)<- c("a", "b", "c")  # name the columns
+#' net<- Network(x = g, data = data)
+#' v<- c(1,0,1)
+#' names(v)<- c("a", "b", "c")
+#' taildepCoeff(net, 0.2, v = v, correction = TRUE)
 taildepCoeff.Network<- function(obj, k_ratio, v, correction = FALSE, ...)
 {
   # v shoud be a named vector of coordinates
@@ -46,18 +72,32 @@ taildepCoeff.Network<- function(obj, k_ratio, v, correction = FALSE, ...)
 }
 
 
+
+
+
+#' @export
 #' @importFrom utils combn
-taildepCoeff.HRMtree<- function(obj, v, Ubar=NULL, ... )
+#' @rdname taildepCoeff
+#' @examples
+#' # parametric tdc
+#' g<- graph(c(1,2,2,3), directed=FALSE)
+#' g<- set.vertex.attribute(g, "name", V(g), c("a", "b", "c")) # name the nodes
+#' obj<- HRMtree(g)
+#' obj<- setParams(obj, c(0.5,0.6))
+#' taildepCoeff(obj, v)
+taildepCoeff.HRMtree<- function(obj, v, ... )
 {
 
   # debug
 
-  #obj<- hrmobj
-  #Ubar<- Uc
-
+#  obj<- hrm
+#  Ubar<- Uc
+#  x<- rep(1,8)
+#  names(x)<- letters[1:8]
+#  v<- x
   #-------
 
-
+  Ubar=NULL
   g<- getGraph(obj)
   nv<- get.vertex.attribute(g, "name", V(g))
   namesx<- names(which(v>0))

@@ -1,24 +1,38 @@
-#' Stable tail dependence function
+#' Stable tail dependence function (stdf)
 #'
-#' Computes the stable tail dependence function for a given matrix of evaluation points
+#' Computes the stable tail dependence function for given coordinates. If object of class \code{Network} or
+#'  its subclasses is passed
+#' non-parametric estimates of the stdf are computed. If an object of class \code{HRMtree} or \code{HRMBG} is passed
+#' parametric estimates are computed with parameters that constitute the slot \code{$depParams} in the object.
 #' @export stdf
 #' @rdname stdf
+#' @param obj Object of class \code{Network}, or \code{HRMtree} or \code{HRMBG}
+#' @param ... additional arguments
+#' @param Y A matrix of evaluation points with columns named according to the names of the nodes with
+#' observed variables,
+#' and of dimensions qx|U| where U is the set of observed variables, and q is the number of vectors at which the
+#' stdf is evaluated.
+#' @param k_ratio the ration of the upper order statistics as a share of the size of the sample
+#' @param x Vector of evaluation points with named elements according to the nodes of the graph.
+#' @param Ubar The set of nodes for which data are missing. It should stay at its default value NULL.
+#' @examples
+#' #See Vignette "Additional functionalities".
 stdf<- function(obj,...)
 {
-  UseMethod("stdf", obj)
+  UseMethod("stdf")
 }
 
 
 #' @rdname stdf
-#' @param obj An object of the corresponding class
-#' @param evalPoints A matrix of evaluation points with named columns, dimensions qx|U| where
-#' U is the set of nodes with available data
-#' @param k_ratio The share of the largest order statistics
 #' @importFrom copula F.n
-stdf.Network<- function(obj, evalPoints, k_ratio)
+#' @export
+stdf.Network<- function(obj, Y, k_ratio, ...)
 {
 
+#  Y<- x
+ # obj<- tobj
 
+ evalPoints<- Y
   if (is.null(dim(evalPoints)))
   {
     evalPoints<- t(as.matrix(evalPoints))
@@ -42,22 +56,19 @@ stdf.Network<- function(obj, evalPoints, k_ratio)
 
 
 
-
+#' @export
 stdf.default<- stdf.Network
 
 
-
-#' @rdname stdf
-#' @param x A named vector of evaluation points
-#' @param Ubar The set of nodes for which data are missing
+#' @export
 #' @importFrom mvtnorm pmvnorm
-stdf.EKS<- function(obj, x, Ubar=NULL)
+stdf.EKS<- function(obj, x, Ubar = NULL, ...)
 {
 
   # # debug
-  # library(mvtnorm)
- # obj<- hrmobj_eks
-#   Ubar=NULL
+ # library(mvtnorm)
+#  obj<- hrm
+ #  Ubar=c("a", "b")
  #  par<- c(1:30)
  #   x<- tri[4,]
  #  # obj<- setParams(obj, depParams)
@@ -95,6 +106,7 @@ stdf.EKS<- function(obj, x, Ubar=NULL)
 
   mu<- -diag(sig)/2
 
+
   # initialize the tail function  with the first term in the summation
   l<- x[root]*pmvnorm(lower = -Inf,
                       upper = -log(x[Ju]/x[root]),
@@ -125,16 +137,16 @@ stdf.EKS<- function(obj, x, Ubar=NULL)
 }
 
 
-
-
+#' @rdname stdf
+#' @export
 stdf.HRMtree<- stdf.EKS
 
 
 
 
-
-
-stdf.HRMBG<- function(obj, x, Ubar=NULL)
+#' @rdname stdf
+#' @export
+stdf.HRMBG<- function(obj, x, Ubar=NULL, ...)
 {
 
   # debug

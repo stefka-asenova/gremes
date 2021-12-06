@@ -1,0 +1,318 @@
+---
+title: "Application Seine"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Application Seine}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+
+The graph of the network is given by 
+
+```{r fig.height=5, fig.width=5}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) 
+plot(seg)
+
+```
+
+
+We load the dataset. Note that there are five observed variables and the columns of the dataset are named with the same names as the nodes of the graph. This is a major princple of the package.
+
+```{r}
+load("~/gremes/data/SeineData.RData")
+head(Seine)
+
+```
+
+We use three estimators: the MME, the MLE Version 2, the estimator of @engelke2020, explained in Vignettes "Estimation - Note 4" and "Code - Note 4" and the EC estimator. Therefore we need to create an object of classes `MME`, `MLE2`, `EngHitz` and `EKS`.
+
+```{r}
+mmeobj<- MME(seg)
+mle2obj<- MLE2(seg)
+ehobj<- EngHitz(seg)
+eceobj<- EKS(seg)
+
+```
+
+
+For the MME we need to create the subsets. Because this is a case with unobserved variables some care must be taken when forming the subsets. A safe principle to follow is
+
+**In every subgraph induced by the nodes in a given subset, the parameters within that subgraph must be identifiable. This means that for every nde with latent variable the degree of this node with respect to the subgraph should be greater than or equal to three.** 
+
+This criterion has been established in @asenova2021. 
+
+```{r}
+rdsobj<- Neighborhood()
+rdsobj<- subset(rdsobj, eta = 2, g = seg, U_bar = c("2", "5"))
+rdsobj
+
+```
+
+Another way to obtain the nodes with latent variables is to create an object of class `Tree`.
+
+```{r}
+tobj<- Tree(seg, Seine)
+tobj$noDataNodes
+getNoDataNodes(tobj)
+
+```
+
+## The MM estimates
+
+```{r}
+k<- c(15, 20, 50, 75, 100, 150, 200)
+kk<- k/nrow(Seine)
+mm<- matrix(0, gsize(seg), length(kk))
+for (i in 1:length(kk))
+{
+  mm[,i]<- suppressMessages(estimate(mmeobj, Seine, rdsobj, kk[i])$depParams)
+  
+}
+# the estimates are squared, take square root 
+round(head(sqrt(mm)), 3)
+
+```
+
+## The MLE Version 2 estimates
+
+```{r}
+ml<- matrix(0, gsize(seg), length(kk))
+for (i in 1:length(kk))
+{
+  ml[,i]<- suppressMessages(estimate(mle2obj, Seine, rdsobj, kk[i])$depParams)
+  
+}
+# the estimates 
+round(head(ml), 3)
+
+```
+
+## The EC estimates
+
+First we create the evaluation points.
+
+```{r}
+tup<- Tuples()
+x<- c(1, 1, 1, 1, 1)
+names(x)<- getNodesWithData(tobj)
+tup<- evalPoints(tup, tobj, x)
+tri<- Triples()
+tri<- evalPoints(tri, tobj, x)
+ep<- rbind(tup, tri)
+
+```
+
+
+```{r}
+ec<- matrix(0, gsize(seg), length(kk))
+for (i in 1:length(kk))
+{
+  ec[,i]<- suppressMessages(estimate(eceobj, Seine, ep, kk[i])$depParams)
+  
+}
+# the estimates 
+round(head(ec), 3)
+
+```
+
+## The cliquewise estimator in @engelke2020
+
+```{r}
+eh<- matrix(0, gsize(seg), length(kk))
+subs<- list(c("Paris", "2", "Meaux", "Melun"), c("Melun", "5", "Nemours", "Sens"))
+for (i in 1:length(kk))
+{
+  eh[,i]<- suppressMessages(estimate(ehobj, Seine, subs, kk[i])$depParams)
+  
+}
+# the estimates 
+round(head(eh), 3)
+
+```
+
+## Confidence intervals for the EC estimates
+
+The asymptotic distribution of the extremal coefficient estimator is derived in @eks16. Thanks to this we are able to compute confidence intervals for the estimates computed using the extremal coefficient estimator.
+
+The confidence intervals are available only when pairs are used as evaluation points. Therefore we reestimate the edge weights using only coordinates of non-zero pairs.
+
+```{r}
+ece2<- matrix(0, gsize(seg), length(kk))
+for (i in 1:length(kk))
+{
+  ece2[,i]<- suppressMessages(estimate(eceobj, Seine, tup, kk[i])$depParams)
+  
+}
+# the estimates 
+round(head(ece2), 3)
+
+```
+
+Consider the estimates for $k=150$. The 5\% confidence intervals are given by
+
+```{r}
+eceobj<- setParams(eceobj, ece2[,6])
+suppressMessages(
+                 confInt(eceobj, tup, k = 150, U_bar = getNoDataNodes(tobj)) 
+                 )
+
+```
+
+## Post-estimation analysis - Tail dependence coefficients
+
+We compute pairwise tail dependence coefficients using the estimates obtained by the cliquewise estimator proposed in @engelke2020. Therefore we need to create vectors of ones and zeros, for instance \eqn{(1,0,0,0,1,0,0)} if we want the tail dependence coefficient between the pair "Paris" and location 5. To create these coordinates we can again use the method \code{evalPoints.Tuples} but for this method to create vectors of coordinates for all possible pairs, we need to pass an object of class \code{Tree} where there is no unobserved data. So we create a fictive dataset.
+
+```{r}
+dataFic<- matrix(1, 2, 7) # the fictive dataset
+colnames(dataFic)<- name_stat
+tobjFic<- Tree(seg, dataFic) # the object which will be passed to evalPoints.Tuples
+
+tupAll<- Tuples()
+x<- rep(1,vcount(seg))
+names(x)<- name_stat
+tupAll<- evalPoints(tupAll, tobjFic, x) # the matrix of coordinates with all possible pairs
+head(tupAll)
+
+```
+
+Compute tail dependence coefficients using the cliquewise estimates.
+
+```{r}
+ehFin<- c(mean(eh[1,4:5]), apply(eh[2:6,], 1, mean))
+ehobj<- setParams(ehobj, ehFin)
+ehTDC<- suppressMessages(
+                         apply(tupAll, 1, function(x) {taildepCoeff(ehobj, x, U_bar = Uc) })
+)
+head(ehTDC)
+
+```
+
+Compute tail dependence coefficients using the extremal coefficients estimates.
+
+```{r}
+ecFin<- c(mean(ec[1,4:5]), apply(ec[2:6,], 1, mean))
+eceobj<- setParams(eceobj, ecFin)
+ecTDC<- suppressMessages(
+                         apply(tupAll, 1, function(x) {taildepCoeff(eceobj, x, U_bar = Uc) })
+)
+head(ecTDC)
+
+```
+We would like to make a heatmap of the tail dependence coefficients. 
+
+Create the colour palette with the help of the package `corrplot`. 
+
+```{r}
+library(corrplot)
+
+jc<- colorRampPalette(c("black" , "blue", "blue", "white", "red"))
+
+```
+
+To make a heat map of the tail dependence coefficients we need to transform the vectors into matrices. The heatmap suggests that there is rather high tail dependence in Seine because most of the colours are in red.
+
+```{r fig.height=5.3, fig.width=5.3}
+ecMat<- matrix(0,7,7)
+ecMat[upper.tri(ecMat)]<- ecTDC
+diag(ecMat)<- 1
+colnames(ecMat)<- rownames(ecMat)<- name_stat
+corrplot(ecMat,
+         type = "upper",
+         method = "color",
+         is.corr = FALSE,
+         cl.lim = c(0,1),
+         col = jc(20),
+         tl.pos = "d", tl.col = "black", tl.cex = 1)
+ehMat<- matrix(0,7,7)
+colnames(ehMat)<- rownames(ehMat)<- name_stat
+ehMat[lower.tri(ehMat)]<- ehTDC
+diag(ehMat)<- 1
+corrplot(ehMat,
+         add = TRUE, 
+         type = "lower",
+         method = "color", 
+         is.corr = FALSE,
+         cl.lim = c(0,1),
+         col = jc(20), diag = FALSE, tl.pos = "n", cl.pos = "n",
+         mar = c(0, 0, 0.8, 0))
+
+```
+
+Adding the information on the flow connected locations.
+
+We first need to obtain a matrix containing the flow connection between all stations. We can create one from the directed version of the graph.
+
+```{r fig.height=5, fig.width=5}
+segD<- graph(c(2,1,
+              3,2,
+              4,2,
+              5,4,
+              6,5,
+              7,5), directed = TRUE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+segD<- set.vertex.attribute(segD, "name", V(segD), name_stat) 
+plot(segD)
+flowg<- FlowConnectionGraph(segD)
+flowMat<- flowConnection(flowg)
+
+```
+
+
+```{r fig.height=5.3, fig.width=5.3}
+corrplot(ecMat,
+         p.mat = flowMat,
+         type = "upper",
+         method = "color",
+         is.corr = FALSE,
+         cl.lim = c(0,1),
+         pch = "+", pch.col = "black", pch.cex = 1.3,
+         col = jc(20),
+         tl.pos = "d", tl.col = "black", tl.cex = 1)
+corrplot(ehMat,
+         p.mat = flowMat, 
+         add = TRUE, 
+         type = "lower",
+         method = "color", 
+         is.corr = FALSE,
+         cl.lim = c(0,1),
+         pch = "+", pch.col = "black", pch.cex = 1.3,
+         col = jc(20), diag = FALSE, tl.pos = "n", cl.pos = "n",
+         mar = c(0, 0, 0.8, 0))
+
+```
+
+
+
+## References

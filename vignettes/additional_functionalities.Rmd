@@ -1,0 +1,390 @@
+---
+title: "Additional functionalities"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Additional functionalities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+header-includes:
+   - \usepackage{bbm}
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+#devtools::load_all("~/gremes", export_all=FALSE)
+library(gremes)
+
+```
+
+The main scope of the package is the estimation of the parameters of tail dependence in the framework of a particular parametric model, namely using a family of Huesler-Reiss distributions. The package provides some few other functionalities which may be useful for post-estimation analysis or for simulations. Here we explain these functionalities.
+
+## Generate random sample from a Markov tree parameterized cliquewise by Huesler-Reiss distributions
+
+Estimation in this package is based on different limit results of a random vector $X=(X_v, v\in V)$ which satisfies the global Markov property with respect to a tree $T=(V,E)$, and every two adjacent nodes have Huesler-Reiss distribution with some parameter $\theta_e, e\in E$. The univariate margins of $X$ are unit Frechet, $F(x)=\exp(-1/x)$. For simulation purposes it is useful to be able to generate from the model for $X$. The method that does this is `rHRM.HRMtree`.  
+
+```{r fig.height=4.5, fig.width=4.5}
+seg<- make_tree(8,3, mode = "undirected") # create the tree
+seg<- set.vertex.attribute(seg, "name", V(seg), letters[1:8]) # name the nodes
+hrm<- HRMtree(seg) # initialize the object of of class HRMtree 
+hrm<- setParams(hrm, seq(0.1, 0.7, 0.1)) # set its parameters
+X<- rHRM(hrm, 1000) # generate a random sample 
+round(head(X), 4)
+XX<- rHRM(hrm, 1000, noise = TRUE) # generate a random samle with independent normal noise
+round(head(XX), 4)
+plot(seg)
+
+```
+
+For any $u\in V$ the joint density function of $X$ is 
+\begin{equation} \label{eq:jdf}
+f(x)=
+f_{u}(x_u)\prod_{(v,j)\in E_u}f_{j\mid v}(x_j\mid x_v),
+\end{equation}
+with $E_u \subseteq E$ the set of edges directed away from $u$, i.e., $(v,j) \in E_u$ if and only if $v = u$ or $v$ separates $u$ and $j$. The joint density $f$ is determined by $d-1$ bivariate densities $f_{vj}$. The univariate margins $f_u$ are unit Fréchet densities,  $f_j(x_j)=\exp(-1/x_j)/x_j^2$ for $x_j \in (0, \infty)$, and the bivariate margins for each pair of variables on adjacent vertices $j,v$ are Hüsler--Reiss distributions with parameter $\theta_{jv}$. 
+
+To generate an observation from the left hand-side of the equation above we use the right hand-side of that equation, proceeding iteratively, walking along paths starting from $u$ using the conditional densities.
+An observation of $X_j$ given $X_v = x_v$ is generated via the inverse function of the cdf $x_j \mapsto F_{j|v}(x_j \mid x_v)$, the conditional cdf of $x_j$ given $x_v$. To do so, the equation $F_{j|v}(x_j \mid x_v)-p=0$ is solved numerically as a function in $x_j$ for fixed $p\in(0,1)$. The choice of the Hüsler--Reiss bivariate distribution gives the following expression for $F_{j\mid v}(x_j\mid x_v)$:
+\begin{equation*}
+\begin{split}
+%   F_{l|k}(x_l|x_k)&=
+&\Phi\left(
+\frac{\theta_{jv}}{2}+\frac{1}{\theta_{jv}}\ln\frac{x_j}{x_v}
+\right)
+\cdot
+\exp\left[
+-\frac{1}{x_v}\left\{\Phi\left(\frac{\theta_{jv}}{2}+\frac{1}{\theta_{jv}}\ln\frac{x_j}{x_v}\right)-1\right\}
+-
+\frac{1}{x_j}\Phi\left(\frac{\theta_{jv}}{2}+\frac{1}{\theta_{jv}}\ln\frac{x_v}{x_j}\right)
+\right].
+\end{split}
+\end{equation*}
+
+
+
+## Diagnostic for the random samlpe generated as above
+
+As a diagnostic tool we provide comparison between the bivariate true copula and the bivariate empirical copula. We fix a node, say $a$ and if $b$ and $c$ are adjacent to $a$ we compute the true bivariate copulas and the empirical copulas of pairs $(X_a, X_b)$ and $(X_a, X_c)$ and compare them. We also provide plot of the true and the empirical cumulative distribution function of the selected variable, e.g., of $a$ in the preceding example. 
+
+```{r fig.height = 4.5, fig.width = 4.5}
+diagnost(hrm, X, "b", y=c(0.3,0.5))
+
+```
+
+When we add some noise to the model the univariate empirical curve is a bit below the true one, but in the tail the difference diminishes.
+
+Similarly for the tail of the bivariate copulas: for higher coordinates, (0.8, 0.9), the bivariate true and empirical copulas become closer to each other than for smaller values of the coordinates (0.3, 0.5):
+
+```{r fig.height = 4.5, fig.width = 4.5}
+diagnost(hrm, XX, "b", y = c(0.3, 0.5))
+
+```
+
+```{r fig.height = 4.5, fig.width = 4.5}
+diagnost(hrm, XX, "b", y = c(0.8, 0.9))
+
+```
+
+
+## Generate a random sample from max-stable Huesler-Reiss distribution with structured matrix 
+
+When $X$ is Markov with respect to a block graph and parameterized cliquewise by a family with Huesler-Reiss distributions we do not dispose of a method to generate from the exact distribution of such a model as we do when the graph is a tree. We can generate from the max-stable attractor of this model. To do this we use the package `mev` @mev.
+
+```{r fig.height=4.5, fig.width=4.5}
+bg<- graph(c(1,2,2,3,1,3,
+             3,4,3,5,4,5,
+             3,7,3,6,6,7), directed = FALSE) # create the graph
+bg<- set.vertex.attribute(bg, "name", V(bg), letters[1:7]) # name the nodes
+hrbg<- HRMBG(bg) # initialize an object with zero dependence parameters
+hrbg<- setParams(hrbg, seq(0.1, 0.9, 0.1)) # set the parameters
+lam<- HRLambda(hrbg) # compute the structured matrix Lambda, see Vignette "Huesler-Reiss distributions"
+XB<- rHRM(hrbg, lam, 1000, noise = TRUE) 
+round(head(XB), 4)
+plot(bg)
+
+```
+
+This code samples from a max-stable Huesler-Reiss copula with unit Frechet univariate margins and with parameter matrix 
+\[
+\lambda_{ij}^2=\sum_{e\in p(i,j)}\delta_e^2, 
+\]
+where $p(i,j)$ is the unique shortest path between two nodes $i,j$. See Vignette "Huesler-Reiss distributions" also.
+
+Of course the matrix Lambda can be one corresponding to a tree, given that tree is a special case of a block graph.  
+
+## The stable tail dependence function (stdf)
+
+The stdf is a key quantity in the topics of multivariate extremal dependence. It is defined as the following limit
+\[
+l(x_v, v\in V)=\lim_{t\rightarrow\infty}t P\Big(\bigcup_{v\in V} \{X_v>t/x_v\}\Big), x\in (0,\infty)^{|V|}
+\]
+where $X$ has unit Pareto univariate margins. The relation between the stdf and a max-stable (extreme value) distribution is given by
+\[
+G(x_v, v\in V)=\exp\big\{-l(1/x_v, v\in V)\big\},
+\]
+if $G$ is an extreme value distribution with unit Frechet margins. More about the stdf can be read in @drees1998, @beirlant2004statistics, @de2007extreme. The distribution $G$ can have a parametric model such as the Huesler-Reiss model used throughout this package (see Vignette "Huesler-Reiss distributions" for their particular parameterizations). 
+
+The package provides tools for computing parametric and non-parametric stdf for models on trees and block graphs. 
+
+The parametric estimate of $l$ when $l$ is parameterized using the Huesler-Reiss distribution is $l(x_v, v\in V; \hat{\theta}_{n,k})$ in case of tree models and  $l(x_v, v\in V; \hat{\delta}_{n,k})$ in case of models on block graphs. The vector $\hat{\theta}_{n,k}=(\hat{\theta}_{e; n,k}, e\in E)$ is any estimate of the edge weights on a tree, and $\hat{\delta}_{n,k}=(\hat{\delta}_{e; n,k}, e\in E)$ is any estimate of the edge weights on a block graph.
+
+The non-parametric estimate of the stdf is given in @drees1998
+\begin{equation} 
+  \hat{l}_{n,k}(x_v, v\in V)
+  =
+  \frac{1}{k}\sum_{i=1}^n
+  1\left( \bigcup_{v \in V}\Big\{ n\hat{F}_{v,n}(X_{v,i}) >n+1/2-kx_v\Big\} \right),
+\end{equation}
+where $\hat{F}_{v,n}(x)=(1/n)\sum_{i=1}^n1(X_{v,i}\leq x)$, i.e., the non-parametric estimate of the cumulative distribution function.   
+
+The methods which compute stdf are 
+
+- `stdf.Network` for non-parametric estimates of the stdf disregarding of the graph, tree of block graph.
+
+- `stdf.HRMtree` for parametric estimates for models on trees.
+
+- `stdf.HRMBG` for parametric estimates for models on block graphs.
+
+Here we have some examples for these.
+
+```{r}
+# non-parametric estimates on an object containing a tree 
+x<- runif(8)
+names(x)<- letters[1:8]
+tobj<- Tree(seg, XX) # an object of containing block graph and the data associated to it
+stdf(tobj, x, 0.2)
+x<- x[3:8] # with latent variables on nodes "a" and "b"
+names(x)<- letters[3:8] 
+XU<- X[,3:8] 
+tobjU<- Tree(seg, XU) # an object containing a tree an the data associated to it
+stdf(tobjU, x, 0.25) 
+x<- matrix(runif(40), 5,8)
+colnames(x)<- letters[1:8]
+stdf(tobj, x, 0.25)
+
+# non-parametric estimates on an object containing a block graph
+x<- runif(7)
+names(x)<- letters[1:7]
+bgobj<- BlockGraph(bg, XB) # an object containing a tree an the data associated to it
+stdf(bgobj, x, 0.15)
+
+# parametric estimates on model with respect to a tree
+x<- c(0, 0.1, 0, 2.5, 0, 1.3, 2.3, 1.5)
+names(x)<- letters[1:8]
+stdf(hrm, x )
+
+# parametric estimates on a model with respect to a block graph
+x<- runif(7)
+names(x)<- letters[1:7]
+stdf(hrbg, x)
+
+```
+
+## Extremal coefficients
+
+We look at extremal coefficients as some tools for post-estimation analysis. A typical analysis includes a comparison between estimates of extremal coefficients using the estimates of the edge weights and non-parametric extremal coefficients.
+
+The extremal coefficient of variables in the set $J\subseteq V$ is given by 
+\[
+l_J=l(1_J),
+\]
+where $l$ is the stable tail dependence function and $1_J=(1_{i\in J}, i\in V)$, i.e., a vector of length $|V|$ whose elements are zero or one. An element $i$ will be one if it belongs to $J$ and zero otherwise. The range of a $J$-variate extremal coefficient is between 1 and $|J|$ with dependence decreasing for large value of the coefficient. 
+
+There are three methods for computing extremal coefficients: 
+
+- `extrCoeff.Network` can be used to compute non-parametric extremal coefficients for data related to tree or to block graphs. Here the graph it doesn't matter, as the only input in the computation is the data. 
+
+- `extrCoeff.HRMtree` for parametric extremal coefficients of models on trees
+
+- `extrCoeff.HRMBG` for parametric extremal coefficients of models on block graphs
+
+#### Non-parametric extremal coefficients - trees and block graphs
+
+Given two objects of classes `BlockGraph` or `Tree` respectively we can compute the bivariate extremal coefficients as follows (k-ratio = 0.2).
+
+```{r}
+extrCoeff(bgobj, 0.2) 
+extrCoeff(tobj, 0.2)  
+
+```
+
+For an arbitrary dimension of the extremal coefficient, we need to create the vector of coordinates and name it according to the names of the nodes. If we want a four variate extremal coefficient of the variables $(X_a, X_c, X_d, X_e)$ we need to do
+
+```{r}
+y<- c(1, 0, 1, 1, 1, 0, 0) 
+names(y)<- letters[1:7]
+extrCoeff(bgobj, 0.25, y) 
+extrCoeff(tobj, 0.25, y)
+
+```
+
+If there are latent variables the bivariate extremal coefficients are computed between only observable variables. 
+
+```{r}
+# on the tree 
+extrCoeff(tobjU, 0.2)
+
+# on the block graph
+XBU<- XB[, -3] 
+bgobjU<- BlockGraph(bg, XBU)
+extrCoeff(bgobjU, 0.3)
+
+```
+
+Note that for the parameters to be all identifiable on the tree, only variables on nodes $a,b$ can be latent. On the block graph only variable $c$ can be latent. This respects the requirement that all latent variables should be connected to at leat three cliques @asenova2021.
+
+If we want an extremal coefficient of other dimension we need to pass a vector with non-zero coordinates only for observed variables. 
+
+```{r}
+v<- c(0,0,1,1,0,1,0,1)
+names(v)<- letters[1:8]
+extrCoeff(tobjU, 0.2, v)
+
+v<- c(1, 1, 0, 1, 0, 0, 1)
+names(v)<- letters[1:7]
+extrCoeff(bgobjU, 0.15, v)
+
+```
+
+#### Parametric extremal coefficients
+
+The method `extrCoeff.HRMtree` is used for models on trees.
+ 
+```{r}
+extrCoeff(hrm) # bivariate
+v<- c(0,0,1,1,0,1,0,1)
+names(v)<- letters[1:8]
+extrCoeff(hrm, v) # for a particular set of variables 
+
+```
+
+The method `extrCoeff.HRMBG` is used for models on block graphs.
+
+```{r}
+extrCoeff(hrbg) # bivariate
+v<- c(0,0,1,1,0,1,0)
+names(v)<- letters[1:7]
+extrCoeff(hrbg, v) # for a particular set of variables 
+
+```
+
+
+
+## Tail dependence coefficients for models on trees
+
+The tail dependence coefficient (tdc) of a subset $W\subseteq V$ and a node $u\notin W$ is defined as 
+\[
+		\lim_{t\rightarrow\infty}\chi_{W|u}(t) :=
+		\lim_{t\rightarrow\infty}\Pr(X_W > t \mid X_u > t) \qquad u \not\in W, t>1.
+\]
+The event $\{X_W > t\}$ is to be read as the intersection $\bigcap_{w \in W}\{X_w > t\}$. When $X$ has unit Pareto univariate margins $\Pr(X_u > t) = 1/t$ for $t > 1$, so that
+	\[
+		\Pr(X_W > t \mid X_u > t)= t \, \Pr(X_{W \cup u} > t)
+	\]
+ If we set $\overline{W}:=W\cup u$ we have
+	\begin{equation}
+	\label{eq:chiW}
+		\chi_{\overline{W}} = \lim_{t \to \infty} \chi_{\overline{W}}(t)
+	\end{equation}
+	as a bivariate or multivariate tail dependence coefficient (tdc).
+	In terms of the stable tail dependence function $l$ of $X_U$, the inclusion--exclusion formula yields
+	\[
+		\chi_{\overline{W}}
+		=
+		\sum_{i=1}^{|\overline{W}|}
+		(-1)^{i-1}
+		\sum_{J \subseteq \overline{W}, |J|=i} 
+		l(1_J),
+	\]
+where $1_J = (1_{j \in J}, j \in U)$ is a vector of zeroes and ones. Note that $l(1_J)$ is the extremal coefficient as considered above. 
+
+The parametric estimate of $\chi_{\overline{W}}$ involves the parametric expressions of the stdf evaluated at a particular estimate of the parameter vector $\theta=(\theta_e, e\in E)$.
+
+Non-parametrically we estimate $\chi_{\overline{W}}(t)$ at $t = n/k$  via
+	\[
+	\hat{\chi}_{\overline{W}} 
+	=
+	\frac{n}{k} \frac{1}{n} \sum_{i=1}^n
+	1 \left\{ 
+	n\hat{F}_{v,n}(X_{v,i})>n-k, \, \forall v \in \overline{W} 
+	\right\}.
+	\]
+	
+For the set $\overline{W}=(a,c,d,e)$ we should do
+	
+```{r}
+v<- c(1,0,1,1,1,0,0,0)
+names(v)<- letters[1:8]
+suppressMessages(taildepCoeff(hrm, v)) # parametric tdc
+taildepCoeff(tobj, 0.2, v) # non-parametric tdc
+
+```
+
+
+
+## Confidence intervals for pairwise ECE - models on trees
+
+Confidence intervals can be computed for the edge weights for models on trees if the **pairwise** extremal coefficients estimator is used. This is thanks to the distribution available of this estimator in @eks16. The method that computes the confidence intervals is `confInt.EKS`.
+
+Let $\hat{\theta}_{n,k} = \hat{\theta}_{n,k}^{\mathrm{ECE}}$ denote the pairwise (bivariate) extremal coefficient estimator and let $\theta_0$ denote the true vector of parameters. By Theorem 2 in @eks16 with $\Omega$ equal to the identity matrix, the ECE is asymptotically normal,
+\[
+ \sqrt{k}(\hat{\theta}_{n,k}-\theta_0)\sim \mathcal{N}_{|E|}\bigl(0, M(\theta_0)\bigr), \qquad n \to \infty,
+\]
+The asymptotic covariance matrix takes the form
+\[
+    M(\theta_0)
+    = (\dot{L}^\top\dot{L})^{-1}
+    \dot{L}^\top\Sigma_L\dot{L}
+    (\dot{L}^\top\dot{L})^{-1}\, .
+\]
+The matrices $\dot{L}$ and $\Sigma_L$ depend on $\theta_0$ and are based on partial derivatives of the stable tail dependence function. 
+
+For every $k$ and every $e \in E$, an asymptotic 95\% confidence interval for the edge parameter $\theta_{0,e}$ is given by
+\[
+	\theta_{0,e} \in \left[\hat{\theta}_{k,n;e}\pm 1.96\sqrt{\{M(\hat{\theta}_{k,n})\}_{ee}/k}\right] .
+\]
+
+For more details on this interval we refer to section A.5 in @asenova2021. 
+
+In the example below we suppose that the estimates obtained from the pairwise estremal coefficient estimator are given by the sequence $(0.1, 0.2, \ldots, 0.8)$ and the matrix of evaluation points based on pairs is the one based on all pairs. We suppose also that the estimates are based on $k=150$.
+
+```{r}
+# create the matrix of evaluation points 
+tup<- Tuples()
+x<- rep(1, 8)
+names(x)<- letters[1:8]
+pair<- evalPoints(tup, tobj, x)
+# create an object of class EKS with the supposed estimates of the parameters
+eks<- EKS(seg)
+eks<- setParams(eks, seq(0.1, 0.8, 0.1))
+suppressMessages(confInt(eks, pair, 150))
+
+```
+
+When there are latent variables we should use a matrix of evaluation points where all pairs are between observed variables only. Hence we should use this matrix that should have been used in estimation for computing the confidence intervals too. 
+
+```{r}
+x<- rep(1, 6)
+names(x)<- letters[3:8]
+pairU<- evalPoints(tup, tobjU, x )
+suppressMessages(confInt(eks, pairU, 150))
+
+```
+
+## References

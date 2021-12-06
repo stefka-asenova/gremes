@@ -3,24 +3,31 @@
 \name{diagnost}
 \alias{diagnost}
 \alias{diagnost.HRMnetwork}
-\title{Performs diagnosis on the generated data of object \code{HRMtree}}
+\title{Diagnostic tool for generated sample}
 \usage{
 diagnost(obj, ...)
 
-\method{diagnost}{HRMnetwork}(obj, X, id, ...)
+\method{diagnost}{HRMnetwork}(obj, X, id, y = c(0.5, 0.5), ...)
 }
 \arguments{
 \item{obj}{Object of class \code{HRMtree}}
 
+\item{...}{additional arguments}
+
 \item{X}{A matrix of data to be diagnosted}
 
 \item{id}{The name of the variable for which the diagnostics is done.}
+
+\item{y}{bivariate vector with elements between 0 and 1. The coordiantes of the bivariate copula. The default is
+(0.5, 0.5).}
 }
 \description{
-As one diagnostic tool, the function produces a graph comparing the real marginal distribution
+Performs diagnosis on the generated data according to a graphical model on a tree
+with cliquewise Huesler-Reiss distributions. As one diagnostic tool, the function produces a graph comparing
+the real marginal distribution
 with the empirical distribution of the variable in \code{id}. As a second diagnostic tool
-for every adjacent node to \code{id} it computes the real and the empirical copulas at coordinates
-(0.5,0.5).
+for every adjacent node to \code{id} it computes the real and the empirical copulas at the coordinates
+passed to \code{y}.
 }
 \examples{
 # create a graph with named vertices
@@ -30,10 +37,10 @@ myobj<- HRMtree(g)
 x<- c(0.1,0.2,0.3)
 myobj<- setParams(myobj, x)
 # create a dataset
-mydata<- rHRMtree(myobj, 1000)
+mydata<- rHRM(myobj, 1000)
 # do diagnostic on the node "b"
 diagnost(myobj, mydata, "b")
 # include noise in the data
-mydata<- rHRMtree(myobj, 1000, noise = TRUE)
+mydata<- rHRM(myobj, 1000, noise = TRUE)
 diagnost(myobj, mydata, "c")
 }

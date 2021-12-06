@@ -2,10 +2,13 @@
 % Please edit documentation in R/gr_intersect.R
 \name{intersect}
 \alias{intersect}
-\title{generic for method 'intersect'}
+\title{Intersects elements in a list}
 \usage{
 intersect(x)
 }
+\arguments{
+\item{x}{a list}
+}
 \description{
-generic for method 'intersect'
+It finds the intersection of all objects in a list.
 }

@@ -4,7 +4,6 @@
 #' @rdname Argument
 #' @description Definition of the class. \code{Argument} is an abstract class. The objects of this class
 #' are used usually in the final estimation steps.
-# OK
 Argument<- function(dims)
 {
   args<- array(0, dim=dims)
@@ -20,7 +19,7 @@ Argument<- function(dims)
 #' It should be used when vectors or matrices are to be substacked
 #' @param dims Dimensions of the argument
 #' @param x Vector of names that can be used to be assigned to the columns/rows
-#ok
+#' @rdname Argument
 ArgumentSS<- function(dims, x)
 {
   #suppose dims is a scalar or two-el vector
@@ -33,7 +32,12 @@ ArgumentSS<- function(dims, x)
   return(obj)
 }
 
-#OK
+
+
+
+
+
+#' @rdname Argument
 ArgumentMLE1<- function(dims, x)
 {
   #suppose dims is a scalar or two-el vector
@@ -53,7 +57,6 @@ ArgumentMLE1<- function(dims, x)
 #' Class definition
 #' It should be used when two dimensional matrices are to be halfvectorized
 #' @rdname Argument
-#?
 ArgumentHvec<- function(dims)
 {
   hvec<- Argument(dims)
@@ -66,7 +69,6 @@ ArgumentHvec<- function(dims)
 
 
 #' @rdname Argument
-#?
 ArgumentD<- function(dims)
 {
   if (length(dims)!=2)
@@ -85,7 +87,6 @@ ArgumentD<- function(dims)
 
 
 #' @rdname Argument
-#OK
 ArgumentCC<- function(dims)
 {
   if (length(dims)!=2)
@@ -100,8 +101,7 @@ ArgumentCC<- function(dims)
 
 
 
-
-# ?
+#' @rdname Argument
 ArgumentSSvec<- function(dims)
 {
   x<- Argument(dims)
@@ -114,8 +114,7 @@ ArgumentSSvec<- function(dims)
 
 
 
-
-# ?
+#' @rdname Argument
 ArgumentEKS_part<- function(dims)
 {
   x<- Argument(dims)

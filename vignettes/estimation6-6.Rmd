@@ -1,0 +1,155 @@
+---
+title: "Estimation - Note 6"
+subtitle: "Estimation based on large average for models on trees"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 6}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+header-includes:
+   - \usepackage{bbm}
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+```
+
+This estimator differs from the others because the conditioning event does not depend on a particular node $u$ but it depends on the event that the **geometric mean** exceeds a high threshold.
+
+<br>
+
+For application of this estimator, see Vignette "Code - Note 6".
+
+<br>
+
+In an unpublished note of Johan Segers (@segers2019mean) it is shown that if $X= (X_1, \ldots, X_d)$ with unit Pareto margins and in the domain of attraction of a Huesler-Reiss distribution with parameter matrix $\Lambda=(\lambda^2)_{ij}$, then it holds  
+\begin{equation}
+ \mathcal{L}\Big((Y_v-\bar{Y})_{v=1}^d|\bar{Y}>y\Big)
+ \rightarrow
+ \mathcal{N}_d(\bar{\mu}, \bar{\Sigma}),
+\end{equation}
+with $Y=(Y_1,\ldots, Y_d)=(\ln X_1,\ldots, \ln X_d )$ and 
+$$\bar{\Sigma} =-M_d\Lambda M_d,\qquad 
+\bar{\mu}=-(1/d)\Lambda 1_d + (1/d)1_d^T \Lambda 1_d 1_d$$
+where $M_d=I_d-(1/d)1_d1_d^T$, $I_d$ is an identity matrix of size $d$ and $1_d$ is a a vector of ones of length $d$. 
+
+Consider a tree $T=(V,E)$ and edge weights $\theta=(\theta_e, e\in E)$. Under the assumption that $X=(X_v, v\in V)$ is in the domain of attraction of a Huesler-Reiss copula with unit Frechet margins and structured parameter matrix $\Lambda(\theta)$ 
+\begin{equation} 
+	\big(\Lambda(\theta)\big)_{ij}
+	= \lambda^2_{ij}(\theta)
+	= \frac{1}{4}\sum_{e \in p(i,j)} \theta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+we can employ the method of moments or the composite likelihood method to estimate $\theta=(\theta_e, e\in E)$ from $\bar{\Sigma}(\theta)$.
+
+## The method of moments estimator
+
+The method of moments estimator is given by 
+
+\[
+\hat{\theta}^{\mathrm{MMave}}_{k,n}=\arg\min_{\theta\in (0,\infty)^{|E|}}
+ \|\hat{\Sigma}-\bar{\Sigma}(\theta)\|^2_F
+\]
+
+- $n$ is the number of all observations in the sample
+
+- $k$ is the number of the upper order statistics used in the estimation
+
+- $\| \cdot \|_F$ is the Frobenius norm
+
+- $U\subseteq V$ is the set of observable variables
+
+- $\hat{\Sigma}$ is the non-parametric covariance matrix
+
+- $\bar{\Sigma}(\theta)$ is the parametric covariance matrix
+
+- The parametric matrix $\bar{\Sigma}(\theta)$ is given by
+\begin{equation} 
+   \big(\bar{\Sigma}(\theta)\big)_{ij}
+    =
+    -M\big(\Lambda(\theta)\big)_{i,j\in U}M
+\end{equation}
+with 
+\begin{equation} 
+	\big(\Lambda(\theta)\big)_{ij}
+	= \lambda^2_{ij}(\theta)
+	= \frac{1}{4}\sum_{e \in p(i,j)} \theta_e^2\, ,  i \ne j, e\in E.
+\end{equation}
+(See also the parameterization used for trees in Vignette "Introduction".)
+
+- If the sample of the original variables is $\xi_{v,i}, v\in U, i=1,\ldots, n$ consider the transformation using the empirical cumulative distribution function $\hat{F}_{v,n}(x)=\big[\sum_{i=1}^n\mathbb{1}(\xi_{v,i}\leq x)\big]/(n+1)$.
+\begin{equation*} 
+	\hat{X}_{v,i} = \frac{1}{1-\hat{F}_{v,n}(\xi_{v,i})}, \qquad 
+	v \in U, \quad i = 1, \ldots, n.
+\end{equation*}
+Then consider their loharithm
+\[
+\hat{Y}_{v,i}=\ln \hat{X}_{v,i}
+\]
+
+- For given $k\in \{1,\ldots n\}$ consider the set of indices 
+\[
+I = \Big\{i = 1,\ldots,n: \overline{\hat{Y}}_{i}=(1/|U|)\sum_{v\in U} \hat{Y}_{v,i}> n/k \Big\}
+\]
+
+- For every $v\in U$ and $i\in I$ compose the differences
+\begin{equation}
+	\Delta_{v,i} =
+ \hat{Y}_{v,i}-\overline{\hat{Y}}_{i}.
+\end{equation}
+
+
+
+
+- The vector of means of these differences is given by
+\begin{equation*} 
+\hat{\mu}
+    =
+    \frac{1}{|I|}\sum_{i\in I}(\Delta_{v,i}, v\in U ).
+\end{equation*}
+
+-  The non-parametric covariance matrix $\hat{\Sigma}$ is given by
+
+\begin{equation*}
+    \hat{\Sigma}
+    =
+    \frac{1}{|I|}\sum_{i\in I}(\Delta_{v,i}-\hat{\mu}, v\in U)
+    (\Delta_{v,i}-\hat{\mu}, v\in U)^\top\, .
+%\end{split}
+\end{equation*}
+
+
+A non-parametric estimator of this type $\hat{\mu}$ and $\hat{\Sigma}$ has been suggested in @engelke.
+
+
+## The composite likelihood estimator
+
+The composite likelihood estimator is given by 
+\[
+\hat{\theta}^{\mathrm{MLEave}}_{k,n}=\arg\max_{\theta\in(0,\infty)^{|E|}}
+L\Big(\bar{\mu}(\theta), \bar{\Sigma}(\theta); \{\Delta_{v,i}, i\in I, v\in U\}\Big).
+\]
+The likelihood function $L$ above is the one of $|U|$-variate Gaussian probability density function with mean $\bar{\mu}$ and covariance matrix $\bar{\Sigma}$.
+
+
+
+
+## References

@@ -7,13 +7,19 @@
 \method{plot}{Simulation}(x, ind_params, path_to_file = NULL, name_file = "plot", ...)
 }
 \arguments{
+\item{x}{an object of class Simulation}
+
 \item{ind_params}{a numeric vector of indices which indicates for which parameters the plots
 are to be produced. For instance: the object that contains the estimates has four dimensions,
 the first one equal to the number of parameters in the model. If ind_params=c(1,3) then plots
 will be produced for the parameters in the first and third places of the first dimension
 of the object with estimates.}
 
-\item{obj}{an object of class Simulation}
+\item{path_to_file}{the path to the place where the file will be stored}
+
+\item{name_file}{the name of the file}
+
+\item{...}{additional arguments}
 }
 \description{
 Plot method for Simulation results.

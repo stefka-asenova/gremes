@@ -2,19 +2,22 @@
 % Please edit documentation in R/gr_Network.R
 \name{Network}
 \alias{Network}
-\title{\code{Network} class}
+\title{Creates objects of calss \code{Network}}
 \usage{
 Network(x, data)
 }
 \arguments{
-\item{x}{An object of class \code{igraph}}
+\item{x}{The graph with named nodes, an object of class \code{igraph}}
 
-\item{data}{Data set associated to the graph}
-}
-\value{
-An object of class \code{Network}
+\item{data}{Data set, with named columns}
 }
 \description{
-Class definition
-\code{Network} is a superclass
+Creates objects of calss \code{Network}
+}
+\examples{
+g<- graph(c(1,2,2,3), directed=FALSE)
+g<- set.vertex.attribute(g, "name", V(g), c("a", "b" ,"c")) # name the nodes
+data<- matrix(rnorm(10*3), 10,3)
+colnames(data)<- c("a", "b", "c")  # name the columns
+net<- Network(x = g, data = data)
 }

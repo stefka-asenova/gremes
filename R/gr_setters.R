@@ -1,7 +1,8 @@
-#' Generic for \code{setGraph}
+
+
 setGraph<- function(obj, ...)
 {
-  UseMethod("setGraph", obj)
+  UseMethod("setGraph")
 }
 
 
@@ -9,11 +10,7 @@ setGraph<- function(obj, ...)
 
 
 
-
-#' Default method for \code{setGraph}
-#'
-#' @return Returns warning if an unrecognised object is passed as an argument
-#' @return It returns the argument that was called on
+#' @export
 setGraph.default<- function(obj,...)
 {
   warning("Default method is called on unrecognised object")
@@ -26,12 +23,7 @@ setGraph.default<- function(obj,...)
 
 
 
-
-#' Setter for class \code{Network}
-#'
-#' @param obj Object of class \code{Network}
-#' @return The object
-#'
+#' @export
 setGraph.Network<- function(obj, x, ...)
 {
   obj$graph<- x
@@ -42,19 +34,26 @@ setGraph.Network<- function(obj, x, ...)
 
 
 
-#' @export
+#' Setter for objects of class \code{RootDepSet}
+#'
+#' It is used to set the slots \code{$value} and \code{$root} of an object of class \code{RootDepSet} and
+#' its subclasses, such as \code{Neighborhood} and \code{FlowConnect}. Every node in the graph with observable
+#' variable
+#' must be taken as a root. For a fixed root, a subset of nodes must be chosen.
 #' @param obj Object of class \code{RootDepSet}
-#' @param subset One dimensional array or list with subsets on the set of vertices, referred by their names.
-#' @param root One dimensional array or a scalar of the root(s), corresponding to the subset(s) above
+#' @param subset list containing the subsets on the set of vertices, referred by their names.
+#' An element of the list should
+#' be named with the name of the corresponding root to that subset.
+#' @param root One dimensional array of the roots, corresponding to the subsets above
 #' referred by name.
+#' @param ... additional arguments
 #' @rdname setRootDepSet
-#' @title Setter for \code{RootDepSet}
-#' @description It sets the values of the two slots in the object.
+#' @export
 #' @examples
 #' rds<- RootDepSet()
-#' rds_values<- list(a=c("a", "b"), b=c("b", "c", "d"), c=c("c", "d"), d=c("c", "d", "e"), e=c("d", "e"))
-#' rds_roots<- c("a", "b","c","d","e")
-#' rds<- setRootDepSet(rds,rds_values, rds_roots )
+#' rds_values<- list(a = c("a", "b"), b = c("b", "c", "d"))
+#' rds_roots<- c("a", "b")
+#' rds<- setRootDepSet(rds, rds_values, rds_roots)
 setRootDepSet<- function(obj, subset, root, ...)
 {
   UseMethod("setRootDepSet", obj)
@@ -72,7 +71,7 @@ setRootDepSet.default<- function(obj, subset, root, ...)
 
 
 
-
+#' @rdname setRootDepSet
 #' @export
 setRootDepSet.RootDepSet<- function(obj, subset, root, ...)
 {
@@ -98,8 +97,10 @@ setRootDepSet.RootDepSet<- function(obj, subset, root, ...)
   } else stop("'subset' must be either one dimensional array or a list")
 
   obj$value<- subset
+  names(obj$value)<- root
   obj$root<- root
-  message("From setRootDepSet.RootDepSet: The order of the subset must correspond to the order of its corresponding root")
+  message("From setRootDepSet.RootDepSet: The order of the subset must correspond to the
+            order of its corresponding root")
   return(obj)
 }
 
@@ -107,15 +108,30 @@ setRootDepSet.RootDepSet<- function(obj, subset, root, ...)
 
 
 
-#' Sets the parameters attached to the edges of the tree
+#' Sets edge parameters
 #'
-#' @param value A named vector with names corresponding to the names of the edges
+#'
+#' It assignes values to the vector of edge weights in the slot \code{$depParams} of object of class
+#' \code{HRMnetwork} and its subclasses.
+#' @param obj An object of class \code{HRMnetwork} or its subclasses \code{HRMtree, MME, MLE, MLE1, MLE2, EKS,
+#' EKS_part, EngHitz, HRMBG, MMEave, MLEave}
+#' @param value A named vector with names corresponding to the names of the edges.
+#' The vector repesents the edge weights: thetas in case of models on trees and deltas in case of
+#' models on block graphs. See Vignette "Introduction" also. If an unnamed vector is passed the first element in
+#' the vector is assigned to the first edge, the second element to the second edge and so on.
+#' @param ... additional arguments
 #' @export
+#' @rdname setParams
 #' @import igraph
 setParams<- function(obj, value, ...)
 {
-  UseMethod("setParams", obj)
+  UseMethod("setParams")
 }
+
+
+
+
+
 
 #' @export
 setParams.default<- function(obj, value, ...)
@@ -125,9 +141,19 @@ setParams.default<- function(obj, value, ...)
 
 
 
+
+#' @rdname setParams
 #' @export
+#' @examples
+#' # model on a block graph with three edge parameters
+#' g<- graph(c(1,2,2,3, 3,1), directed=FALSE)
+#' g<- set.vertex.attribute(g, "name", V(g), c("a", "b", "c")) # name the nodes
+#' obj<- HRMBG(g)
+#' obj<- setParams(obj, c(0.2,0.3, 0.1))
+#' obj
 setParams.HRMnetwork<- function(obj, value,...)
 {
+
   g<- obj$graph
   ne<- get.edge.attribute(g, "name", E(g))
   if (length(value)<length(E(g)))
@@ -149,7 +175,20 @@ setParams.HRMnetwork<- function(obj, value,...)
 
 
 
+
+#' @rdname setParams
 #' @export
+#' @examples
+#' # model on a tree with two edge parameters
+#' g<- graph(c(1,2,2,3), directed=FALSE)
+#' g<- set.vertex.attribute(g, "name", V(g), c("a" ,"b" ,"c")) # name the nodes
+#' obj<- HRMtree(g)
+#' obj<- setParams(obj, c(0.2,0.3))
+#' obj
+#' x<- c(0.2, 0.3)
+#' names(x)<- names(obj$depParams)
+#' obj<- setParams(obj, x)
+#' obj
 setParams.HRMtree<- function(obj, value,...)
 {
   g<- obj$graph
@@ -173,13 +212,16 @@ setParams.HRMtree<- function(obj, value,...)
 
 
 
-
+# don't export
 resetParams<- function(obj, ...)
 {
-  UseMethod("resetParams", obj)
+  UseMethod("resetParams")
 }
 
 
+
+# don't document
+#' @export
 resetParams.MLE1params<- function(obj, cnames)
 {
   x<- rep(1,length(cnames))

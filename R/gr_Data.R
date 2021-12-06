@@ -1,3 +1,5 @@
+# con't export any of these class definitions
+
 
 
 GData<- function(x)

@@ -7,12 +7,30 @@
 FlowConnectionMatrix(x, g)
 }
 \arguments{
-\item{x}{should be a matrix of ones and zeros, 1 representing flow connected ness between node i and node j.
-Note that x can not be symmetric.}
+\item{x}{should be a matrix of ones and zeros, 1 representing flow connectedness between node i and node j.
+The matrix should have named rows and columns.
+Note that x is symmetric.}
 
-\item{g}{is an igraph object representing a directed graph corresponding to the flow connectedness.}
+\item{g}{is an igraph object representing the graph. It should have named vertices.}
 }
 \description{
-It is used as an input to create subsets based on the criterion of flow connectedness.
+It creates an object of class \code{FlowConnectionMatrix}. Such an object is used as an input to
+create subsets based on the criterion of flow connectedness. See Vignette "Subsets and Coordiantes".
 Within a subset all nodes will be flow connected.
+}
+\examples{
+# create a graph and name the vertices
+g<- graph(c(1,2,3,2, 2,4,4,5), directed=TRUE)
+g<- set.vertex.attribute(g, "name", V(g), letters[1:5])
+
+# create the flow connection matrix if not available
+x<- matrix(rep(1,25), 5, 5)
+x[1,3]<- x[3,1]<- 0
+colnames(x)<- rownames(x)<- letters[1:5] # note that the columns and rows should be named according to the nodes
+
+# create the object of class 'FlowConnectionMatrix'
+fcmat<- FlowConnectionMatrix(x,g)
+fcmat
+rds<- FlowConnect()
+sets<- subset(rds, from = fcmat, g)
 }

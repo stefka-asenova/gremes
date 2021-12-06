@@ -2,21 +2,25 @@
 % Please edit documentation in R/gr_HRMnetwork.R
 \name{MME}
 \alias{MME}
-\title{\code{MME} class}
+\title{Object of class \code{MME}}
 \usage{
 MME(g)
 }
 \arguments{
-\item{g}{must be an \code{igraph} object}
+\item{g}{must be an \code{igraph} object, a tree.}
 }
 \value{
-Object of class \code{MME} with two slots: one containing the graph and the other the edge weights
-corresponding to the dependence parameters.
+Object of class \code{MME} with two slots: \code{$graph} containing the graph and \code{$depParams}
+containing the edge weights corresponding to the dependence parameters.
+The edge weights are initialized with zero values.
 }
 \description{
-\code{MME} class
+It creates an object with two slots: \code{$graph} which contains the graph and \code{$depParams}
+which contains the edge weights, initialized with zero values. It is a subclass of \code{HRMtree}.
+It is intended to be used for models on trees to estimate edge weights using method of moment estimator.
+Please consult Vignettes "Code - Note 1" and "Estimation - Note 1".
 }
 \examples{
 g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
-mme<- MME(g)
+MME(g)
 }

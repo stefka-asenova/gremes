@@ -2,13 +2,46 @@
 % Please edit documentation in R/gr_setters.R
 \name{setParams}
 \alias{setParams}
-\title{Sets the parameters attached to the edges of the tree}
+\alias{setParams.HRMnetwork}
+\alias{setParams.HRMtree}
+\title{Sets edge parameters}
 \usage{
 setParams(obj, value, ...)
+
+\method{setParams}{HRMnetwork}(obj, value, ...)
+
+\method{setParams}{HRMtree}(obj, value, ...)
 }
 \arguments{
-\item{value}{A named vector with names corresponding to the names of the edges}
+\item{obj}{An object of class \code{HRMnetwork} or its subclasses \code{HRMtree, MME, MLE, MLE1, MLE2, EKS,
+EKS_part, EngHitz, HRMBG, MMEave, MLEave}}
+
+\item{value}{A named vector with names corresponding to the names of the edges.
+The vector repesents the edge weights: thetas in case of models on trees and deltas in case of
+models on block graphs. See Vignette "Introduction" also. If an unnamed vector is passed the first element in
+the vector is assigned to the first edge, the second element to the second edge and so on.}
+
+\item{...}{additional arguments}
 }
 \description{
-Sets the parameters attached to the edges of the tree
+It assignes values to the vector of edge weights in the slot \code{$depParams} of object of class
+\code{HRMnetwork} and its subclasses.
+}
+\examples{
+# model on a block graph with three edge parameters
+g<- graph(c(1,2,2,3, 3,1), directed=FALSE)
+g<- set.vertex.attribute(g, "name", V(g), c("a", "b", "c")) # name the nodes
+obj<- HRMBG(g)
+obj<- setParams(obj, c(0.2,0.3, 0.1))
+obj
+# model on a tree with two edge parameters
+g<- graph(c(1,2,2,3), directed=FALSE)
+g<- set.vertex.attribute(g, "name", V(g), c("a" ,"b" ,"c")) # name the nodes
+obj<- HRMtree(g)
+obj<- setParams(obj, c(0.2,0.3))
+obj
+x<- c(0.2, 0.3)
+names(x)<- names(obj$depParams)
+obj<- setParams(obj, x)
+obj
 }

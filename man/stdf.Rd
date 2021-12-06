@@ -3,27 +3,40 @@
 \name{stdf}
 \alias{stdf}
 \alias{stdf.Network}
-\alias{stdf.EKS}
-\title{Stable tail dependence function}
+\alias{stdf.HRMtree}
+\alias{stdf.HRMBG}
+\title{Stable tail dependence function (stdf)}
 \usage{
 stdf(obj, ...)
 
-\method{stdf}{Network}(obj, evalPoints, k_ratio)
+\method{stdf}{Network}(obj, Y, k_ratio, ...)
 
-\method{stdf}{EKS}(obj, x, Ubar = NULL)
+\method{stdf}{HRMtree}(obj, x, Ubar = NULL, ...)
+
+\method{stdf}{HRMBG}(obj, x, Ubar = NULL, ...)
 }
 \arguments{
-\item{obj}{An object of the corresponding class}
+\item{obj}{Object of class \code{Network}, or \code{HRMtree} or \code{HRMBG}}
 
-\item{evalPoints}{A matrix of evaluation points with named columns, dimensions qx|U| where
-U is the set of nodes with available data}
+\item{...}{additional arguments}
 
-\item{k_ratio}{The share of the largest order statistics}
+\item{Y}{A matrix of evaluation points with columns named according to the names of the nodes with
+observed variables,
+and of dimensions qx|U| where U is the set of observed variables, and q is the number of vectors at which the
+stdf is evaluated.}
 
-\item{x}{A named vector of evaluation points}
+\item{k_ratio}{the ration of the upper order statistics as a share of the size of the sample}
 
-\item{Ubar}{The set of nodes for which data are missing}
+\item{x}{Vector of evaluation points with named elements according to the nodes of the graph.}
+
+\item{Ubar}{The set of nodes for which data are missing. It should stay at its default value NULL.}
 }
 \description{
-Computes the stable tail dependence function for a given matrix of evaluation points
+Computes the stable tail dependence function for given coordinates. If object of class \code{Network} or
+ its subclasses is passed
+non-parametric estimates of the stdf are computed. If an object of class \code{HRMtree} or \code{HRMBG} is passed
+parametric estimates are computed with parameters that constitute the slot \code{$depParams} in the object.
+}
+\examples{
+#See Vignette "Additional functionalities".
 }

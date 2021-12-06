@@ -2,18 +2,35 @@
 % Please edit documentation in R/gr_Argument.R
 \name{Argument}
 \alias{Argument}
+\alias{ArgumentSS}
+\alias{ArgumentMLE1}
 \alias{ArgumentHvec}
 \alias{ArgumentD}
 \alias{ArgumentCC}
+\alias{ArgumentSSvec}
+\alias{ArgumentEKS_part}
 \title{Object with zero entries and of fixed dimensions}
 \usage{
 Argument(dims)
+
+ArgumentSS(dims, x)
+
+ArgumentMLE1(dims, x)
 
 ArgumentHvec(dims)
 
 ArgumentD(dims)
 
 ArgumentCC(dims)
+
+ArgumentSSvec(dims)
+
+ArgumentEKS_part(dims)
+}
+\arguments{
+\item{dims}{Dimensions of the argument}
+
+\item{x}{Vector of names that can be used to be assigned to the columns/rows}
 }
 \description{
 Definition of the class. \code{Argument} is an abstract class. The objects of this class

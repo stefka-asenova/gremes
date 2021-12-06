@@ -2,12 +2,22 @@
 % Please edit documentation in R/gr_Network.R
 \name{GTree}
 \alias{GTree}
-\title{\code{GTree} class}
+\title{Creates object of class \code{GTree}}
 \usage{
 GTree(g, Data)
 }
+\arguments{
+\item{g}{should be the graph, an object of class \code{igraph} with named nodes}
+
+\item{Data}{is the dataset with named columns}
+}
 \description{
-Class definition
-It is used to differentiate from the CovSelectionTree class ???
-Add more comment
+Creates object of class \code{GTree}
+}
+\examples{
+g<- graph(c(1,2,2,3), directed=FALSE)
+g<- set.vertex.attribute(g, "name", V(g), c("a", "b", "c")) # name the nodes of the graph
+data<- matrix(rnorm(10*3), 10,3)
+colnames(data)<- c("a", "b", "c") # name the columns of the data
+gt<- GTree(g = g, Data = data)
 }

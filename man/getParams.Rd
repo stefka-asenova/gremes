@@ -14,6 +14,8 @@ getParams(obj, ...)
 }
 \arguments{
 \item{obj}{An object of class 'HRMnetwork'}
+
+\item{...}{additional arguments}
 }
 \description{
 It retrieves the value of the slot 'depParams' of a HRMnetwork.

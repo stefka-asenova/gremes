@@ -10,13 +10,16 @@ edge_names_along_path(obj, ...)
 \method{edge_names_along_path}{HRMnetwork}(obj, rt, id, edge_names = TRUE, ...)
 }
 \arguments{
-\item{obj}{object of class \code{HRMtree} or \code{Tree}}
+\item{obj}{object of class \code{HRMnetwork}}
+
+\item{...}{additional arguments}
 
 \item{rt}{the name of the node from which the path is requested}
 
-\item{id}{The name of the path to which the path is requested}
+\item{id}{The name of the node to which the path is requested}
 
-\item{edge_names=TRUE}{Returns a vector with the names of the edges, if FALSE it returns a named vector of ones and zeros with ones if the corresponding edge is part of the path}
+\item{edge_names}{Returns a vector with the names of the edges. Default is TRUE. If FALSE, it returns
+a named vector of ones and zeros with ones if the corresponding edge is part of the path}
 }
 \value{
 The names of the edges along the path between \code{rt} and \code{id}

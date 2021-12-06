@@ -1,0 +1,175 @@
+---
+title: "Detailed Contents"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Detailed Contents}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+
+## Vignette "Introduction"
+serves as general introduction into the scope and available methods in the package. We recommend to read it first. 
+
+## Vignettes "Estimation - Note 1" and "Code - Note 1" 
+provide the theoretical description and the code used to compute estimates based on the method of moments. The model is a Markov **tree** parameterized cliquewise by Huesler-Reiss distributions. 
+
+The estimator applies to the data 
+\[
+(\ln X_{i,v}- \ln X_{i,u})_{v\in V\setminus u}\mid X_{i,u}>n/k, \qquad i\in \{1, \ldots, n\},
+\]
+for every $u\in V$.
+
+Theoretical background on the model can be found in @asenova2021. 
+
+The method is applicable both in the case of no latent variables in the data and in the case of latent variables.
+
+## Vignettes "Estimation - Note 2" and "Code - Note 2"
+provide the theoretical description and the code used to compute estimates based on the method of maximum composite likelihood function. The model is a Markov **tree** parameterized cliquewise by Huesler-Reiss distributions.    
+
+The estimator applies to the data 
+\[
+(\ln X_{i,v}- \ln X_{i,u})_{v\in V\setminus u}\mid X_{i,u}>n/k, \qquad i\in \{1, \ldots, n\},
+\]
+for every $u\in V$.
+
+
+Theoretical background on the model can be found in @asenova2021. 
+
+There are two versions of the MLE. The two versions give similar estimates, but the first version is faster for bigger graphs. The second version may be quite slow on big problems. See Vignettes "Application - Danube" and "Application - Seine".
+
+The two versions are applicable both in the case of no latent variables in the data and in the case of latent variables.
+
+There is a version called "Covariance Selection Model" and it represents a maximum likelihood estimate too but it is based on a different method. The method is applicable only when all variables are observed. 
+
+## Vignettes "Estimation - Note 3" and "Code - Note 3"
+provide the theoretical description and the code used to compute estimates based on extremal coefficients. The model is a Markov **tree** parameterized cliquewise by Huesler-Reiss distributions.    
+
+Theoretical background on the model can be found in @asenova2021. 
+
+Similarly to the maximum likelihood estimator there are two versions. The first version is faster for bigger graphs. The second version may be quite slow on big problems. See Vignettes "Application - Danube" and "Application - Seine".
+
+Both methods are applicable in the case of no latent variables in the data and in the case of latent variables.
+
+## Vignettes "Estimation - Note 4" and "Code - Note 4"
+provide the theoretical description and the code used to compute estimates based on a method introduced in @engelke2020. The model is a Markov **tree** parameterized cliquewise by Huesler-Reiss distributions.  
+
+The estimator applies to the data 
+\[
+\Big(X_{i,v}/(n/k), v\in V\Big)\mid \max_{v \in V} X_{i,v}>n/k, \qquad i\in \{1, \ldots, n\}.
+\]
+
+It is applicable for both cases of no latent variables in the data and in the case of latent variables. See Vignettes "Application - Danube" and "Application Seine" for examples.
+
+## Vignettes "Estimation - Note 5" and "Code - Note 5"
+provide the theoretical description and the code used to compute estimates based on the method of moments. The model is a Markov **block graph** parameterized cliquewise by Huesler-Reiss distributions.
+
+The estimator applies to the data 
+\[
+(\ln X_{i,v}- \ln X_{i,u})_{v\in V\setminus u}\mid X_{i,u}>n/k, \qquad i\in \{1, \ldots, n\},
+\]
+for every $u\in V$.
+
+Theoretical background on the model can be found in @asejoh2. 
+
+The method is applicable both in the case of no latent variables in the data and in the case of latent variables.
+
+## Vignettes "Estimation - Note 6" and "Code - Note 6"
+provide the theoretical description and the code used to compute estimates based on the method of moments and on the method of maximum likelihood for a Markov **tree** parameterized cliquewise by Huesler-Reiss distributions. 
+
+The estimator applies to the data 
+\[
+(\ln X_{i,v}- \overline{\ln X}_{i})_{v\in V}\Big| \overline{\ln X}_i>n/k, 
+\qquad i\in \{1, \ldots, n\}.
+\]
+where $\overline{\ln X}_i=\frac{1}{d}\sum_{v\in V}\ln X_{i,u}$. Note the difference with respect to the data used in MME and MLE in "Estimation - Note" 1 and 2. 
+
+The methods are applicable both in the case of no latent variables in the data and in the case of latent variables. Its theoretical motivation originates from unpublished note @segers2019mean.
+
+## Vignette "Subsets and coordinates"
+contains more explanation on how to create the subsets used by many of the estimation methods and how to create the evaluation points (or coordinates) for the extremal coefficients estimator. There are several ways to construct these subsets, but there are two principles - on the neighborhood or between flow-connected points. The last notion comes from applications on river networks. 
+
+Also, the choice of subsets can impact the identifiability of the parameters in case of latent variables. We recommend to follow the principle:
+
+**The subgraph induced by the node in the subset must be such that all edge parameters that belong to the subgraph are identifiable. This means that every node within the subgraph with latent variable must be connected to at least three nodes which are also part of the subgraph.**  
+
+
+Another principle to form subsets is 
+
+**The graph induced by the nodes in the subset should form a connected graph too.**
+
+## Vignette "Huesler-Reiss distributions" 
+presents the particular parameterization used in the package. We recommend the user to consult this to understand the relation between the magnitude of the edge parameters and the tail dependence.
+
+## Vignette "Application Danube"
+presents some estimation methods on real data, water levels of Danube. The dataset was originally used in @asadi and later on in @engelke2020. For more description on the data please consult these two papers.
+
+We illustrate some post-estimation analysis, such as computing extremal coefficients or tail dependence coefficients. 
+
+## Vignette "Application Seine"
+presents some estimation methods on real data, water levels of Seine, France. The dataset is described in detail in @asenova2021. 
+
+We show how to compute confidence intervals for the extremal coefficients estimator.
+
+
+## Vignette "Additional functionalities"
+
+
+
+## Functionalities - summary
+The main functionalities of the package are summarized here.
+
+Regarding a model for $X$ as being Markov with respect to a **tree** and being parameterized cliquewise by Huesler-Reiss copulas with unit Fréchet margins: 
+
+- computes MME of edge weights based on asymptotic result about $\ln (X/X_u)\mid X_u>t$ - use method `estimate.MME`; applicable when there are latent variables too. 
+
+- computes MLEs based on asymptotic result about $\ln (X/X_u)\mid X_u>t$ - use method `estimate.MLE`, `estimate.MLE1`, `estimate.MLE2`; `estimate.MLE`is not applicable when there are latent variables, `estimate.MLE1`, `estimate.MLE2` are applicable when there are latent variables.
+
+- computes ECE based on the result that such a model is in the domain of attraction of a Huesler-Reiss distribution with some parameter matrix derived from edge weights - use method `estimate.EKS`, `estimate.EKS_part`; both are applicable when there are latent variables. ???
+
+- computes cliquewise estimator by @engelke2020 based on an asypmtotic result about $(X/t)\mid \max_{v\in V}X_v>t$ - use method `estimate.MME`; applicable when there are latent variables.
+
+- computes MME and MLE based on an asymptotic result about $(\ln X_v- \overline{\ln X})\mid \overline{\ln X}>t$ - use method `estimate.MME_ave` or `estimate.MLE_ave`; applicable when there are latent variables???
+
+- computes confidence intervals for the ECE - use method `confInt.EKS`;
+
+- generator of random observations from $X$ - see method `rHRM.HRMtree`;
+
+- for post-estimation analysis methods for computing parametric and non-parametric extremal coefficients and tail dependence coefficients - use methods `taildepCoeff` and `extrCoeff`;
+
+
+Regarding a model for $X$ as being Markov with respect to a **block graph** and being parameterized cliquewise by Huesler-Reiss copulas with unit Fréchet margins: 
+
+- computes MME based on asymptotic result about $\ln (X/X_u)\mid X_u>t$ - use method `estimate.HRMBG`;
+
+- generator of random observations - see method `rHRM.HRMBG`;
+
+- for post-estimation analysis methods for computing parametric and non-parametric extremal coefficients `extrCoeff`;
+
+
+
+## References
+
+

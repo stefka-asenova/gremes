@@ -6,17 +6,17 @@
 \usage{
 RootDepSet()
 }
-\arguments{
-\item{value}{Matrix or list containing subsets of the vertex set}
-
-\item{root}{A list of vertices.}
-}
 \description{
-An empty object of class \code{RootDepSet}
+Creates an object of class \code{RootDepSet} with two empty slots \code{$value} and \code{$root}.
+The slots are supposed to be assigned values. The simplest way is using method \code{setRootDepSet}.
+Every node with observable variable should be taken as a root.
+A subset of nodes is created for every root.
+For every root a subset of nodes must be created.
+For other examples see Vignette "Subsets and Coordinates".
 }
 \examples{
 rdsobj<- RootDepSet()
-rds_values<- list(a=c("a", "b"), b=c("b", "c", "d"), c=c("c", "d"), d=c("c", "d", "e"), e=c("d", "e"))
-rds_roots<- c("a", "b","c","d","e")
+rds_values<- list(a=c("a", "b"), b=c("b", "c", "d"))
+rds_roots<- c("a", "b")
 rdsobj<- setRootDepSet(rdsobj, rds_values, rds_roots)
 }

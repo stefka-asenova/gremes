@@ -1,31 +1,51 @@
 ---
-title: "Estimation - Note 4"
+title: "Code - Note 4"
+subtitle: "Cliquewise likelihood estimation for models on trees"
 author: "Stefka Asenova"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimation - Note 4}
+  %\VignetteIndexEntry{Code - Note 4}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: mypr1_rev1.bib
 ---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+```
+
+
+```{r}
+# devtools::load_all("~/gremes", export_all=FALSE)
 library(gremes)
+
 ```
 
 Load the data.
+
 ```{r}
-load("~/gremes/data/SeineData.rda")
-head(resid)
+load("~/gremes/data/SeineData.RData")
+head(Seine)
 
 ```
 
 Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+
 ```{r}
 seg<- graph(c(1,2,
               2,3,
@@ -34,22 +54,39 @@ seg<- graph(c(1,2,
               5,6,
               5,7), directed = FALSE)
 name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
-seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) # 
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat)
 
 ```
 
-Create the subsets.
+Create a list of subsets on the node set. These sets should cover all the vertex set, but every two subsets are allowed to have at most one node in common. 
+
 ```{r}
 subs<- list(c("Paris", "2", "Meaux", "Melun"), c("Melun", "5", "Nemours", "Sens"))
 
 ```
 
-Estimate using the method of @engelke2020
+In addition to this we require that within the induced subgraph of a given subset all edge parameters are identifiable. This is key in this estimator. We can check this requirement with the function `is_identifiable`.
+To use this function we need however to create an object of class `RootDepSet` and an object of class `Tree`. If it is clear that the criterion is satidfied there is no need from this step and the two additional objects created below. 
+
+```{r}
+rdsobj<- RootDepSet()
+rdsobj<- setRootDepSet(rdsobj, subs, c("Paris", "Melun"))
+tobj<- Tree(seg, Seine)
+is_identifiable(rdsobj, tobj)
+
+```
+
+Since we get no messages from the function `is_identifiable` the identifiability criterion is satisfied.
+
+Estimate using the cliquewise likelihood method of @engelke2020.
+
 ```{r}
 ehobj<- EngHitz(seg)
-ehobj<- suppressMessages(estimate(ehobj, resid, subs, k_ratio=0.2))
+ehobj<- suppressMessages(estimate(ehobj, Seine, subs, k_ratio=0.2))
 ehobj$depParams
 
 ```
 
-Note that messages are suppressed.
+Messages are suppressed.
+
+## References

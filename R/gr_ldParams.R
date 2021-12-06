@@ -13,6 +13,7 @@ ldParams<- function(obj, ...)
 #' @rdname ldParams
 #' @param obj Object of a suitable class
 #' @param x vector of coordinates, the function is made when x contains only two positive coordinates.
+#' @param ... additional arguments
 #' @return A vector of length |E|. Each element of it represents the derivative of \eqn{l(e_J; \theta)} with respect
 #' to the parameter \eqn{\theta} associated to a particular edge.
 #' @export

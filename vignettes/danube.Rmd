@@ -1,0 +1,253 @@
+---
+title: "Application Danube"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Application Danube}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+```
+
+We load the dataset, the graph and the matrix with the information on flow connection.
+
+```{r, fig.height = 10, fig.width = 10}
+load("~/gremes/data/DanubeGraph.RData")
+plot(DanubeTree, layout = layout_as_tree(DanubeTree, root = c(1)))
+load("~/gremes/data/DanubeFlowConnectedNodes.RData")
+load("~/gremes/data/DanubeData.RData")
+
+```
+
+Note that the dataset has named columns, and the graph has named nodes. This is a main principle of the package `gremes`: 
+
+**The nodes of the graph should be named. The edges of the graph should be named. Vectors and dataframes referring to quantities attributed to the nodes should be named according to the names of the nodes. Vectors and dataframes referring to quantities attributed to the edges of the graph should be named according to the edges of the graph.**  
+
+We don't have unobservable variables, so there is no need care to be taken when considering the subsets we use for our estimators. However the graph is relatively big, so some of the estimators are slow, namely the MLE - Version 2 and the classical ECE. We use instead approach MLE - Version 1 and ECE Version 2. 
+
+
+We will apply three estimators: MME, MLE1, ECE, see vignettes "Estimation - Note" 1-3 and "Code - Note" 1-3 respectively.   
+
+## Create the estimator objects. 
+
+```{r}
+mme<- MME(DanubeTree)
+mle1<- MLE1(DanubeTree)
+ece<- EKS_part(DanubeTree)
+
+```
+
+## Create the subsets for local estimation with the MME and MLE2. 
+
+As we have a matrix with the flow connection information we are going to illustrate how we can use it for estilation and later for post-estimation plots. 
+
+The subsets used in the estimation will be composed in the following way:
+
+- Fix a node, called *root*. First determine the neighborhood nodes of level 2. Second, determine the node which are flow connected with the root.
+
+- Take the nodes that are in the intersection of these two sets, i.e., the nodes that are neighbors and those that are flow connected to the root.
+
+We create an object of class `FlowConnectionMatrix`. We do this by passing the graph and the matrix to the constructor. The constructor exxecutes some checks between the matrix and the graph. However it does not check whether the matrix is correct with respect to the graph. 
+
+```{r}
+fcmat<- FlowConnectionMatrix(DanubeFlow, DanubeTree)
+fcobj<- FlowConnect()
+flo<- subset(fcobj, from = fcmat, DanubeTree)
+
+```
+
+Now we construct the neighbors sets.
+
+```{r}
+subs<- Neighborhood()
+nei<- subset(subs, 2, DanubeTree)
+
+```
+
+Now we can intersect every subset in `flo` with every subset in `nei`. 
+
+```{r}
+comb_set<- Set()
+comb_set<- combine(comb_set, flo, nei)
+
+```
+
+Let's look at the first subset:
+
+```{r}
+nei$value$X1
+flo$value$X1
+comb_set$value$X1
+
+```
+
+Such a collection of subsets may have bies reduction effect on the estimates.
+
+## MME 
+
+```{r}
+kk<- c(0.1, 0.2, 0.3, 0.4, 0.5)
+mm<- matrix(0, gsize(DanubeTree), length(kk))
+for (i in 1:length(kk))
+{
+  mm[,i]<- suppressMessages(estimate(mme, Danube, comb_set, kk[i])$depParams)
+  
+}
+# the estimates for the first six parameters
+round(head(sqrt(mm)), 3)
+
+```
+
+## MLE Version 2
+
+```{r}
+ml<- matrix(0, gsize(DanubeTree), length(kk))
+for (i in 1:length(kk))
+{
+  ml[,i]<- suppressMessages(estimate(mle1, Danube, comb_set, kk[i])$depParams)
+}
+head(ml)
+
+```
+
+## ECE Version 2
+
+Instead of using the classical EC estimator we use the one based on subsets (see Vignette "Estimation - Note 3" section "ECE Version 2") as optimization over all parameters at ones takes more time.
+
+```{r}
+x<- rep(1,vcount(DanubeTree))
+names(x)<- get.vertex.attribute(DanubeTree, "name", V(DanubeTree))
+
+```
+
+Obtain the estimates.
+
+```{r}
+ec<- matrix(0, gsize(DanubeTree), length(kk))
+for (i in 1:length(kk))
+{
+  ec[,i]<- suppressMessages(estimate(ece, Danube, comb_set, kk[i], x)$depParams)
+}
+head(ec)
+
+```
+
+
+<br>
+
+Next we do post-estimation analysis.
+
+## Computing bivariate extremal coefficients
+
+We compare the estimates from the method of moments with the nonparametric estimates of the extremal coefficients.
+
+First we compute the non-parametric estimates as an average for the given $k$-ratio.
+
+```{r}
+# we need to create an object of class Tree which contains the graph and the dataset
+tobj<- Tree(DanubeTree, Danube)
+
+ecNP2<- extrCoeff(tobj, 0.2)
+ecNP3<- extrCoeff(tobj, 0.3)
+ecNP4<- extrCoeff(tobj, 0.4)
+ecNP<- (ecNP2 + ecNP3 + ecNP4)/3
+
+```
+
+Next we compute the MM estimates of extremal coefficients and scatterplot them versus the non-parametric counterparts.
+
+```{r fig.height = 4.5, fig.width = 5.7}
+mm_mean<- apply(mm[,2:4], 1, mean)
+mme<- setParams(mme, mm_mean)
+ecMM<- extrCoeff(mme)
+plotEC(ecMM, ecNP, DanubeFlow, xlab = "MME", main = "Extremal coefficients")
+
+```
+
+Next we compare the estimates from the maximum likelihood method with the non-parametric estimates of the bivariate extremal coefficients.
+
+```{r fig.height = 4.5, fig.width = 5.7}
+ml_mean<- apply(ml[,2:4], 1, mean)
+mle<- setParams(mle1, ml_mean)
+ecML<- extrCoeff(mle)
+plotEC(ecML, ecNP, DanubeFlow, xlab = "MLE", main = "Extremal coefficients")
+
+```
+
+Next we compare the estimates from the EC method with the non-parametric estimates of the bivariate extremal coefficients.
+
+```{r fig.height = 4.5, fig.width = 5.7, fig.pos="center"}
+ec_mean<- apply(ec, 1, mean)
+ece<- setParams(ece, ec_mean)
+ecE<- extrCoeff(ece)
+plotEC(ecE, ecNP, DanubeFlow, xlab = "ECE", main = "Extremal coefficients")
+
+```
+
+The best fit is in the last graph, between the EC estimates and the non parametric estimates, but this is normal as the estimator is built in this way - See Vignette "Estimation - Note 3". 
+
+The ML estimates overestimate the EC which means that they predict larger values with respect to the non-parametric estimates, but this means that they underestimate the tail dependence as larger values of extremal coefficients means weaker tail dependence.
+
+## Heatmap of extremal coefficients
+
+Using the library `corrplot` we can create a palette of colours: from red (strong extremal dependence) to greeen (weak extremal dependence).
+
+```{r}
+library(corrplot)
+
+jc<- colorRampPalette(c("#404040", "#000099", "#7F0000", "red",  "#FF7F00", "yellow", "#7FFF7F"))
+
+```
+
+The upper tringular part presents the method of moment estimates and the lower triangular part the extremal coefficients estimates. The white plusses indicate if two nodes are flow connected. 
+
+```{r, fig.width = 7, fig.height = 7}
+mec<- ecMM
+mec[lower.tri(mec, diag = TRUE)]<- t(mec)[lower.tri(mec,diag = TRUE)]
+diag(mec)<- 1
+corrplot(mec,
+         p.mat = DanubeFlow,
+         type = "upper",
+         method = "color",
+         is.corr = FALSE,
+         cl.lim = c(1,2),
+         pch = "+", pch.col = "white", pch.cex = 1,
+         col = jc(20),
+         tl.pos = "d", tl.col = "black", tl.cex = 0.6)
+
+mec<- ecE
+mec[lower.tri(mec, diag = TRUE)]<- t(mec)[lower.tri(mec,diag = TRUE)]
+diag(mec)<- 1
+corrplot(mec,
+         p.mat = DanubeFlow, 
+         add = TRUE, 
+         type = "lower",
+         method = "color", 
+         is.corr = FALSE,
+         cl.lim = c(1,2),
+         pch = "+", pch.col = "white", pch.cex = 1,
+         col = jc(20), diag = FALSE, tl.pos = "n", cl.pos = "n",
+         mar = c(0, 0, 0.8, 0))
+
+```
+

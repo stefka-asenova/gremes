@@ -7,10 +7,12 @@
 \usage{
 h(obj, ...)
 
-\method{h}{RootDepSet}(obj, U_bar = NULL)
+\method{h}{RootDepSet}(obj, U_bar = NULL, ...)
 }
 \arguments{
 \item{obj}{Object of class \code{RootDepSet}}
+
+\item{...}{additional arguments}
 
 \item{U_bar}{The set of nodes for which data are missing, as character vector}
 }

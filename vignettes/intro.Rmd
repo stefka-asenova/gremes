@@ -1,0 +1,269 @@
+---
+title: "gremes - Introduction"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{gremes - Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+The package `gremes` provides tools for estimation of the tail dependence parameters in graphical models parameterized by family of Huesler-Reiss distributions.
+
+The only supported parameterization is through **Huesler-Reiss** distributions. 
+
+The only supported graphs are **trees** and **block graphs**.
+
+The estimation methods are variations of method of moments, maximum likelihood and a method based on extremal coefficients.
+
+<br>
+
+Based mainly on @asenova2021, @segers2019versus, @engelke2020, @eks16 and references therein.
+
+<br>
+
+Consult section **Setting** hereunder to understand what is the model, what are the parameters that represent the scope of the estimation and how they characterise the tail dependence structure of the model.
+
+Consult Vignette **Detailed contents** for a detailed guide into the documentation of the package and a summary of the main functionalities of the package. We recommend to have a look at this document next.
+
+Consult Vignette **Huesler-Reiss distributions** to for the particular parameterizations used of the Huesler-Reiss distributions.
+
+The main scope of the package is **estimation**. These vignettes provide the theory and the functionalities related to estimation:
+
+- Vignettes **Estimation - Note** 1-6 for detailed description of the estimation methods.
+
+- Vignettes **Code - Note** 1-6 for use of the estimation tools (the methods, classes and functions) of the package.
+
+Consult Vignettes **Application Danube** and **Application Seine** for two case studies - one without unibserved variables and one with unobserved variables respectively.
+
+Vignette **Additional functionalities** provides explanation and illustrates the functions related to additional functionalities such as generating random sample from a model, computing extremal coefficients, tail dependence coefficients, confidence intervals for one of the estimators.
+
+
+<br>
+
+Some of the information may be repeating across these documents, but this can do no harm for understanding better the purpose of the package.
+
+
+
+## Setting 
+
+### Trees
+
+Let $T=(V,E)$ be a tree with node set $V$ and edge set $E$.  Consider a $|V|$-variate random vector $X=(X_v, v\in V)$ for which it holds:
+
+- $X$ satisfies the global Markov property with respect to the tree $T$
+
+- every bivariate distribution between two adjacent variables is a bivariate Huesler-Reiss distribution with parameter $\theta_e$ for some $e\in E$. For the particular parameterization please refer to Vignette "Distributions".
+
+- standardized to unit-Pareto marginal distributions.
+
+Based on different asymptotic results on $X$ we can have different estimators of the parameters $\theta_e, e\in E$ which we collect in a vector $\theta\in (0,\infty)^{|E|}$. 
+
+1. Consider the limiting distribution of 
+\[
+\ln (X/X_u)\mid X_u>t, \qquad t\rightarrow\infty.
+\]
+It can be shown that the limiting distribution is multivariate Gaussian distribution with mean vector $\mu_u(\theta)$ and covariance matrix $\Sigma_{u}(\theta)$. One can consult @asenova2021 and references therein. 
+Based on this asymptotic result we come up with method of moments type estimator and a maximum likelihood (rather composite likelihood function) estimator which both aim at estimating $\Sigma_{u}$ and accordingly $\theta$.
+
+2. Consider the limiting distribution of the componentwise maxima if we dispose of a random sample of size $n$ of $X$
+\[
+\Big(\frac{1}{n}\max_{i=1, \ldots, n}X_{v,i}, v\in V\Big), \qquad n\rightarrow \infty.
+\]
+The limit is a max-stable Huesler-Reiss copula with unit Frechet margins and with parameter matrix $\Lambda$ given by 
+\begin{equation} 
+	\big(\Lambda(\theta)\big)_{ij}
+	= \lambda^2_{ij}(\theta)
+	= \frac{1}{4}\sum_{e \in p(i,j)} \theta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+he notation $p(i,j)$ means the unique shortest path between $i,j$. On the basis of this result we come up with an estimator using the stable tail dependence function associated to the max-stable Huesler-Reiss distribution. This estimator is introduced in @eks16 and it is named extremal coefficients estimator by the fact that it uses extremal coefficients, which are basically stable tail dependence functions.
+
+3. Consider the limiting distribution of 
+\[
+(X/t)\mid \max_{v\in V}X_v>t, \qquad t\rightarrow \infty. 
+\]
+The limit is a so called Huesler-Reiss Pareto distribution with the same matrix $\Lambda$ as above. For such distributions @engelke2020 have a cliquewise estimator which here it is implemented and called simply Engelke and Hitz estimator. More theoretical background behind the stated limit can be found in @asejoh2 and @engelke2020. 
+
+4. Consider the limiting distribution of 
+\[
+(\ln X_v-\overline{\ln X}, v\in V)\mid \overline{\ln X}>t, \qquad t\rightarrow \infty. 
+\]
+where $\overline{\ln X}=(1/|V|)\sum_{v\in V}\ln X_v$. The limit of this vector is also a multivariate Gaussian distribution with mean and covariance matrix, say $\bar{\Sigma}$, that contain the matrix $\Lambda(\theta)$ above. We use again sort of MME and MLE to estimate the covariance matrix $\bar{\Sigma}$, and accordingly $\theta$, because $\bar{\Sigma}$ depends on $\theta$ through $\Lambda$. This asymptotic result is shown in an unpublished note @segers2019mean. 
+
+
+<!--Let $T=(V,E)$ be a tree with node set $V$ and edge set $E$. Consider a $|V|$-variate Huesler-Reiss distribution with parameter matrix $\Lambda$ with 
+\begin{equation} 
+\label{eqn:lambda}
+	\big(\Lambda(\theta)\big)_{ij}
+	= \lambda^2_{ij}(\theta)
+	= \frac{1}{4}\sum_{e \in p(i,j)} \theta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+
+The notation $p(i,j)$ means the unique shortest path between $i,j$. Since in trees there are only unique paths between two nodes then the $p(i,j)$ in the only path. Because the elements $\lambda_{ij}$ depend on the paths between $i$ and $j$ we may say that there is structure in $\Lambda$ or that $\Lambda$ is a structured parameter matrix, or that the Huesler-Reiss distribution is structured. 
+
+It can be shown that such a distribution is an extreme value attractor of a parametric model $X=(X_v, v\in V)$ with the following characteristics:
+
+- $X$ satisfies the global Markov property with respect to the tree $T=(V,E)$
+
+- every bivariate distribution between two adjacent variables is a bivariate Huesler-Reiss distribution with parameter $\theta$ as stated below.
+
+- unit-Pareto marginal distributions.
+-->
+
+To illustrate the idea: suppose we have the tree with nodes $V=\{Paris, 2, Meaux, Melun, 5, Nemours, Sens\}$ and edge weights $(t1, \ldots, t6)$ which are aliases for $(\theta_1, \ldots, \theta_6)$.
+
+```{r fig1, fig.height = 5, fig.width = 5}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) 
+plot(seg, edge.label=c("t1", "t2", "t3", "t4", "t5", "t6"))
+
+```
+
+We suppose that $(X_{Paris}, X_2)$ have bivariate Huesler-Reiss distribution with parameter $t1$ or $\theta_1$. We make the analogous assumptions for all adjacent pair of variables. Then for $X$ the four asymptotic results above hold and they all depend on the edge weights $(\theta_1, \ldots, \theta_6)$. 
+
+To estimate tail dependence in $X$ we need to estimate $(t1, \ldots, t6)$ (aliases for $\theta_1, \ldots, \theta_6$).
+
+For estimation we need to choose between one of the following methods - `estimate.MME`, `estimate.MLE`, `estimate.MLE1`, `estimate.MLE2`, `estimate.EKS`, `estimate.EKS_part`, `estimate.EngHitz`, `estimate.MMEave`, `estimate.MLEave`. 
+
+
+### Block graphs
+
+Let $G=(V,E)$ be a block graph with node set $V$ and edge set $E$. Let $X$ be a random vector on $V$ with the following characteristics:
+
+- $X$ satisfies the global Markov property with respect to the block graph $G=(V,E)$
+
+- every distribution of variables belonging to the same maximal clique (or block), say $C\subset V$, is a multivariate Huesler-Reiss distribution with parameter matrix $\{\delta^2_{ij}\}, i,j\in C$.
+
+- unit-Pareto marginal distributions.
+
+1. Consider the limiting distribution of 
+\[
+\ln (X/X_u)\mid X_u>t, \qquad t\rightarrow\infty.
+\]
+It can be shown that the limiting distribution is multivariate Gaussian distribution with mean vector $\mu_u(\delta)$ and covariance matrix $\Sigma_{u}(\delta)$ where $\delta=(\delta_e^2, e\in E)$. One can consult @asenova2021 and references therein. Based on this asymptotic result we come up with method of moments type estimator for $\Sigma_{u}$ and subsequently of $\delta$.
+
+Similar results as in 2-4 for trees exist for block graphs however we do not implement an estimator based on these results. 
+<!--
+2. Consider the limiting distribution of the componentwise maxima if we dispose of a random sample of size $n$ of $X$
+\[
+\Big(\frac{1}{n}\max_{i=1, \ldots, n}X_{v,i}, v\in V\Big), \qquad n\rightarrow \infty.
+\]
+The limit is a max-stable Huesler-Reiss copula with unit Frechet margins and with parameter matrix $\Lambda$ given by 
+\begin{equation} 
+	\big(\Lambda(\delta)\big)_{ij}
+	= \lambda^2_{ij}(\delta)
+	= \sum_{e \in p(i,j)} \delta_e^2, \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+The notation $p(i,j)$ means the unique shortest path between $i,j$. On the basis of this result it is possible to use an estimator based on extremal coefficients, however we do not implement such a procedure. 
+The notation $p(i,j)$ means the **unique shortest path** between $i,j$. The vector $\delta$ collects all edge weights $\big(\delta^2_{ab}, (a,b)\in E\big)$. Note that the parameterization is different up to a constant with respect to the parameterization used in case of trees. This is just a matter of choice as in the paper @asejoh2 we have used a different parameterization.
+
+Consider a $|V|$-variate Huesler-Reiss distribution with parameter matrix $\Lambda$ with 
+\begin{equation} 
+	\big(\Lambda(\delta)\big)_{ij}
+	= \lambda^2_{ij}(\delta)
+	= \sum_{e \in p(i,j)} \delta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+-->
+
+To illustrate the idea. Consider the following block graph with three cliques (or blocks) and nine edge parameters: three per each clique.
+```{r, fig.height = 5, fig.width = 5}
+rm(list=ls())
+g<- graph(c(1,3,1,2,2,3,
+            3,4,4,5,5,3,
+            3,7,3,6,6,7), directed=FALSE)
+g<- set.vertex.attribute(g, "name", V(g), letters[1:7])
+plot(g, edge.label=c("d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9"))
+
+```
+
+We suppose that the subvector $(X_a, X_b, X_c)$ has a Huesler-Reiss distribution with parameter matrix $\Delta_1$ which is symmetric, with zero diagonal and non-zero parameters $(d2, d1, d3)$ which is alias for $(\delta_{ab}, \delta_{ac}, \delta_{bc})$. Similary for the other two block vectors $(X_c, X_e, X_d)$ and $(X_c, X_f, X_g)$. 
+
+To estimate tail dependence in $X$ we need to estimate the edge weights (or edge parameters) $(d1, \ldots, d9)$ (aliases for $\delta_{ab}, (a,b)\in E$).
+
+For estimation we need to choose method `estimate.HRMBG`.
+
+## Object oriented style
+
+The package is developped in an object-oriented style. There are two main types of objects. 
+
+- An object containing **the graph and the dataset** is created using classes `Network`, `Tree` and possibly other subclasses of these. 
+
+- An object containing **the graph and the edge weights** is created with classes `HRMnetwork`, `HRMtree`, `HRMBG` and possibly subclasses of these.
+
+We can look at the first type of objects as one representing the non-parametric view on the problem - all we know is the graph and the data. 
+
+We can look at the second type of objects as representing the Huesler-Reiss parametric model: every clique is parametrized by a Huesler-Reiss distribution with parameters - the edge weigths within this clique. Hence all that characterizes the parametric model is the graph and the edge weigths.
+
+Consider for instance a method `extrCoeff` which is written both for classes `Tree` and `HRMtree`. If we pass an object of class `Tree` to the method `extrCoeff` the command will return non-parametric estimates of the extremal coefficients. If the object passed is of class `HRMtree` the command will return parametric extremal coefficients.
+
+## Naming nodes and edges
+
+A key principle is the following: 
+
+**The nodes of the graph should be named. The edges of the graph should be named. Vectors and dataframes referring to quantities attributed to the nodes should be named according to the names of the nodes. Vectors and dataframes referring to quantities attributed to the edges of the graph should be named according to the edges of the graph.** 
+
+
+## The method `estimate` 
+
+The main goal of the package is estimation, therefore the method \code{estimate} is the key functionality of the tools provided in the package. Estimation in `gremes` happens by using the method `estimate` on an object from one of the following classes: 
+
+- `MME`, `MLE`, `MLE1`, `MLE2`, `EKS`, `EKS_part`, `EngHitz`, `MMEave`, `MLEave` in which case it estimates the edge weights $(\theta_e, e\in E)$ according to a **tree**. See Vignettes "Code - Node" 1-4 and 6.
+
+- `HRMBG` in which case it estimates the edge weights $(\delta_e^2, \in E)$ according to a **block graph**. See Vignettes "Code - Node 5".
+
+## In summary:
+
+<!--- Estimation of edge weights according to a **tree** use one of the following classes `MME`, `MLE`, `MLE1`, `MLE2`, `EKS`, `EKS_part`, `EngHitz`, `MMEave`, `MLEave`. -->
+For models on **trees**:
+
+- `MME` provides method of moments estimates and it is based on the asymptotics in 1. See Vignettes "Estimation - Note 1" and "Code - Note 1".
+
+- `MLE`, `MLE1`, `MLE2` provide maximum Likelihood estimates and are based on the asypmtotics in 1. See Vignettes "Estimation - Note 2" and "Code - Note 2".
+
+- `EKS`, `EKS_part` provide estimates based on extremal coefficients and are based on the asymptotics in 2. See Vignettes "Estimation - Note 3" and "Code - Note 3".
+
+- `EngHitz` provides a type of maximum likelihood estimate too and is based on the asymptotics in 3. See Vignettes "Estimation - Note 4" and "Code - Note 4". 
+
+- `MMEave` and `MLEave` apply the method of moments estimator and a maximum likelihood estimator and are based on the asymptotics in 4. See Vignettes "Estimation - Note 6" and "Code - Note 6". 
+
+Estimation of edge weights according to a **block graph** uses the class `HRMBG`. The only supported method is Method of Moments. See Vignettes "Estimation - Note 5" and "Code - Note 5".
+
+For estimation we need first to create an object of the corresponding class, then call method `estimate` on that object.
+
+For instance:
+
+`mmeobj<- MME(g); estimate(mmeobj, ...)`
+
+where `g` is the graph of the tree and `...` are additional arguments passed to method `estimate`.
+
+For detailed examples in `R` see Vignettes "Code - Note" 1-6.
+
+For detailed explanation of estimators see Vignettes "Estimation - Note" 1-6.
+
+## References

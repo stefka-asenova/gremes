@@ -11,6 +11,8 @@ Computes the vector of partial derivatives of the stdf with respect to the vecto
 \item{obj}{Object of a suitable class}
 
 \item{x}{vector of coordinates, the function is made when x contains only two positive coordinates.}
+
+\item{...}{additional arguments}
 }
 \value{
 A vector of length |E|. Each element of it represents the derivative of \eqn{l(e_J; \theta)} with respect

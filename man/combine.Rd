@@ -3,59 +3,38 @@
 \name{combine}
 \alias{combine}
 \alias{combine.Set}
-\alias{combine.ArgumentSS}
-\alias{combine.ArgumentD}
-\alias{combine.ArgumentHvec}
-\alias{combine.ArgumentCC}
-\title{Generic for method \code{combine}}
+\title{Combines objects}
 \usage{
 combine(obj, ...)
 
 \method{combine}{Set}(obj, ...)
-
-\method{combine}{ArgumentSS}(obj, x, h1, j, ...)
-
-\method{combine}{ArgumentD}(obj, x, h1, j, depParams)
-
-\method{combine}{ArgumentHvec}(obj, x, h1, j, ...)
-
-\method{combine}{ArgumentCC}(obj, x, h1, j, ...)
 }
 \arguments{
-\item{obj}{Object of class \code{Set} or \code{Argument}}
+\item{obj}{Object of class \code{Set}}
 
-\item{...}{If the first argument is of class \code{Set} this argument can be as many objects of class
-\code{RootDepSet}, for instance \code{Neighborhood} or \code{FlowConnect}}
-
-\item{x}{the element which is to be combined with other elements passed before}
-
-\item{j}{step of the combining process}
-
-\item{h}{Argument necessary for efficiency reasons, namely to avoid growing objects within a loop}
-
-\item{depPars}{???}
+\item{...}{lists that are going to be combined}
 }
 \description{
-Defines different ways of combining objects according to the class of its first argument.
-The use of the method with objects of class \code{Argument} is internal method and it does not have
-independent use.
+It is designed to combine objects from classes \code{RootDepSet} for isntance an object of class
+\code{Neighborhood} and an object of class \code{FlowConnect}. For instance if for in one of the objects
+we have root \eqn{a} with subset \eqn{(a,b,c)} and in the second object for root \eqn{a} we have subset
+\eqn{(a,b,d,e)} then
+applying \code{combine} will create for root \eqn{a} a subset \eqn{(a,b)}. See Vignette "Application Danube" for
+examples.
 }
-\details{
-If the first argument is of class \code{Set} followed by several objects of
-class \code{RootDepSet} the method combines the root dependent sets into one set
-which is the intersection of all the sets per root. See examples.
+\examples{
+# using two sets of class \code{RootDepSet}
+rds1<- RootDepSet()
+rds1<- setRootDepSet(rds1, list(a=letters[1:3], b=letters[1:4]), root=c("a", "b"))
+rds2<- RootDepSet()
+rds2<- setRootDepSet(rds2, list(a=letters[1:7], c=letters[2:5]), root=c("a", "c"))
+myset<- Set()
+combine(myset, rds1, rds2)
 
-If the argument passed is of class \code{ArgumentSS} and the second argument is a matrix
-then the matrices are substacked step by step as j increases. The method is similar to rbind(), but
-it avoids growing up matrices at each step j.
-
-If the argument passed is of class \code{ArgumentD} and the second argument is a matrix
-then the matrices are placed on the diagonal of a block matrix.
-
-If the argument passed is of class \code{ArgumentHvec} and the second argument is a matrix
-then the matrices half-vectorized and the vectors are substacked step by step as j increases.
-
-If the argument passed is of class \code{ArgumentCC} then second arguments are
-right stacked step by step as j increases. The result is the one of \code{cbind}, but it
-avoids pre-allocation at every step.
+# using lists with structure that imitates the one of class RootDepSet
+list1<- list(value=list(a=letters[1:5], b=letters[1:4]), root=NULL)
+list2<- list(value=list(a=letters[1:7], b=letters[2:5]), root=NULL)
+myset<- Set()
+combine(myset, list1, list2)
+# See Vignette "Application Danube" for more examples.
 }

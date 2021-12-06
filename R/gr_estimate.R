@@ -1,17 +1,49 @@
-#' @title Provides estimation of a parametric model
-#' @description  Estimates the parameters of a statistical graphical model
+#' Provides estimation of parameters
+#'
+#' Estimates the edge weights or edge parameters of a model parameterized cliquewise by Huesler-Reiss
+#' distributions. For description of the model please consult the Vignette "Introduction".
 #' @export
+#' @param obj object of on of the following classes \code{MME, MLE, MLE1, MLE2, EKS, EKS_part, EngHitz, MME_ave, MLE_ave, HRMBG}.
+#' The classes \code{MME, MLE, MLE1, MLE2, EKS, EKS_part, EngHitz} are subclasses of class \code{HRMtree},
+#' hence if no other method is available, the method for \code{HRMtree} applies.
+#' @param Data the dataset, it should have named columns. For \code{estimate.MLE} all variables on the tree should
+#' be observed, i.e., \code{Data} should have nonempty column for every node in the tree.
+#' @param subsets object of class \code{RootDepSet} containing the roots and the respective subsets.
+#' When \code{obj} is of class \code{EngHitz} the argument \code{subsets} should be a list of subsets,
+#' not a \code{RootDepSet} object. When \code{obj} is of class \code{EngHitz} the union of all subsets should cover
+#' the whole vertex set and also
+#' every pair of subsets can have at most one node in common. See also Vignettes
+#' "Code - Note 4" and "Estimation - Note 4".
+#' @param k_ratio a scalar the ratio of the number of upper order statistics to the number of observations
+#' @param coord A matrix of evaluation points with number of columns equal to the number of nodes in the tree and
+#' column names according to the
+#' names of the nodes.
+#' The matrix of evaluation points should not contain a positive coordinate for a variable which is unobserved.
+#' For creation of coordinates based on tuples, triples, and adjacent nodes see classes
+#' \code{Coordinates}, \code{Tuples}, \code{Triples}, \code{Adjacent} as well as method \code{evalPoints}
+#' @param ... additional arguments
 #' @rdname  estimate
+#' @return The estimates of edge weights. For objects \code{MME} and \code{MLE} it returns the squared
+#' values of the parameters.
+#' @details For an object of class \code{EKS_part} for a fixed subset all coordinates based on both tuples and triples
+#' are taken.
+#' @note For detailed examples please consult Vignettes "Code - Note" 1-6.
 estimate<- function(obj, ...)
 {
   UseMethod("estimate")
 }
+
+
+
 
 #' @export
 estimate.default<- function(obj, ...)
 {
   return("Default method called on unrecognized object")
 }
+
+
+
 
 #' @export
 estimate.HRMnetwork<- function(obj, ...)
@@ -27,32 +59,34 @@ estimate.HRMnetwork<- function(obj, ...)
 
 
 #' @rdname estimate
-#' @aliases estimate
-#' @export
-#' @param obj Object of appropriate class
-#' @param Data Dataset with the variables placed on the columns, object of classes \code{matrix} or \code{data.frame}.
-#' Each variable should have the same names as the node to which it belongs. For instance
-#' if the name of the variable in the dataset is 'X2' the name of the node to which it belongs should be
-#' 'X2'.
-#' @param subsets Object of class \code{RootDepSet}
-#' @param k_ratio The fraction of the upper order statistics of the sample size
-#' @param xx A named vector of coordinates, used to evaluate the stable tail dependence function.
-#' The vector should be of length at least the number of vertices for which there is data available.
-#' It should be named with the names of the vertices. The values given can be arbitrary, but values of
-#' 1 correspond to extremal coefficints.
-#' @return The estimates of \eqn{\theta}. For objects \code{MME} and \code{MLE} it returns the squared
-#' values of the parameters.
+# #' @aliases estimate
+# #' @export
+# #' @param obj Object of class \code{MME}, \code{MLE}
+# #' @param Data Dataset with the variables placed on the columns, object of classes \code{matrix} or \code{data.frame}.
+# #' Each variable should have the same names as the node to which it belongs. For instance
+# #' if the name of the variable in the dataset is 'X2' the name of the node to which it belongs should be
+# #' 'X2'.
+# #' @param subsets Object of class \code{RootDepSet}. The sets for EngHitz are different!!!! EXPLAIN
+# #' @param k_ratio The fraction of the upper order statistics of the sample size
+ #' @param xx A vector of length the number of observed variables and named with the names of the nodes with
+ #' observed variables.
+ #' Default is NULL. For \code{estimate.EKS_part} it should be filled in. For the other methods
+ #' the value at default should be kept.
+# #' The vector should be of length at least the number of vertices for which there is data available.
+# #' It should be named with the names of the vertices. The values given can be arbitrary, but values of
+# #' 1 correspond to extremal coefficints.
 #' @import igraph
 #' @importFrom quadprog solve.QP
+#' @export
 estimate.HRMtree<- function(obj, Data, subsets, k_ratio, xx=NULL, ...)
 {
 
-  # # # # # #debug
-  #   obj<- eks_partobj
-  #   Data=data_red
-  # #   subsets<- rdsobj
-  # # # # k_ratio=0.5
-  # # # # # #-------
+ #  # # # # #debug
+ #    obj<- mme
+ #    Data=DataEvents
+ #     subsets<- comb_set
+ # k_ratio=0.5
+ #  # # # # #-------
 
 
   x<- createObj(obj, Data) # by default it creates a GTree (CovSelectTree is in case .MLE,
@@ -91,6 +125,8 @@ estimate.HRMtree<- function(obj, Data, subsets, k_ratio, xx=NULL, ...)
 #' @export
 estimate.MME<- function(obj, Data, subsets, k_ratio, obj2, Ubar, par_names,  gr, ...)
 {
+  #obj MME, MLE, ..
+  #obj2 GTree, CovSelectTree, BlockGraph
 
   h1<- h(subsets, U_bar = Ubar)
   s<- ArgumentHvec(sum(h1*(h1+1)/2))
@@ -106,21 +142,24 @@ estimate.MME<- function(obj, Data, subsets, k_ratio, obj2, Ubar, par_names,  gr,
   # return(A)
 }
 
+
+
+
 #' @rdname estimate
 #' @export
 estimate.HRMBG<- estimate.HRMtree
 
 
 
-#' Estimates the parameters of a HRM tree using the MLE version 1
-#'
-#' The function is designed to be used as inherited method
-#' @references Asenova, S and Segers, J. Husler-Reiss Markov tree
-#' @param mle1obj Object of class \code{MLE1}
-#' @param obj2 Object of class \code{Gtree}
-#' @param Ubar The set of nodes for which there are no data available
-#' @param par_names A character vector with the names of the parameters associated to the edges of the tree
-#' @param gr The graph associated to the mle1obj
+# #' Estimates the parameters of a HRM tree using the MLE version 1
+# #'
+# #' The function is designed to be used as inherited method
+# #' @references Asenova, S and Segers, J. Husler-Reiss Markov tree
+# #' @param mle1obj Object of class \code{MLE1}
+# #' @param obj2 Object of class \code{Gtree}
+# #' @param Ubar The set of nodes for which there are no data available
+# #' @param par_names A character vector with the names of the parameters associated to the edges of the tree
+# #' @param gr The graph associated to the mle1obj
 #' @export
 estimate.MLE1<- function(obj,  Data, subsets, k_ratio, obj2, Ubar, par_names, gr, ...)
 {
@@ -157,9 +196,6 @@ estimate.MLE1<- function(obj,  Data, subsets, k_ratio, obj2, Ubar, par_names, gr
 
 
 
-#' EKS estimator based on subsets
-#'
-#'
 #' @export
 estimate.EKS_part<- function(obj, Data, subsets, k_ratio, obj2 , Ubar, par_names, gr, xx, ...)
 {
@@ -198,7 +234,7 @@ estimate.EKS_part<- function(obj, Data, subsets, k_ratio, obj2 , Ubar, par_names
 
 
 
-#' @rdname estimate
+
 #' @export
 #' @importFrom stats optim
 estimate.MLE2<- function(obj, Data, subsets, k_ratio, ...)
@@ -252,13 +288,14 @@ estimate.MLE2<- function(obj, Data, subsets, k_ratio, ...)
 
 
 
-
-#' @export
-#' @param coord A matrix of evaluation points with column names according to the
-#' names of the edges. For creation of coordinates based on tuples, triples, and adjacent nodes see classes
-#' \code{Coordinates}, \code{Tuples}, \code{Triples}, \code{Adjacent} as well as method \code{evalPoints}
+# #' Estimation based on extremal coefficients
+#'
+# #' @param coord A matrix of evaluation points with column names according to the
+# #' names of the edges. For creation of coordinates based on tuples, triples, and adjacent nodes see classes
+# #' \code{Coordinates}, \code{Tuples}, \code{Triples}, \code{Adjacent} as well as method \code{evalPoints}
 #' @rdname estimate
 #' @importFrom stats optim
+#' @export
 estimate.EKS<- function(obj, Data, coord, k_ratio,... )
 {
   #debug
@@ -280,7 +317,7 @@ estimate.EKS<- function(obj, Data, coord, k_ratio,... )
       stop("The model is not identifiable. Add more coordinates at which the stdf is evaluated")
   }
 
-  stdf_emp<- suppressMessages(stdf(tobj, evalPoints = coord, k_ratio))
+  stdf_emp<- suppressMessages(stdf(tobj, Y = coord, k_ratio))
   params<- rep(1, en)         # the initial values
   res<- suppressMessages(stats::optim(params, fnk,
                                gr = NULL,
@@ -329,7 +366,7 @@ estimate.MLE<- function(obj, Data, subsets, k_ratio, obj2, Ubar, par_names, gr, 
 
 #' @rdname estimate
 #' @export
-estimate.MMEave<- function(obj, Data, rdsobj, k_ratio, ss_bar = NULL, ...)
+estimate.MMEave<- function(obj, Data, k_ratio, ...)
 {
 
   # obj is an object of class MMEave
@@ -340,11 +377,11 @@ estimate.MMEave<- function(obj, Data, rdsobj, k_ratio, ss_bar = NULL, ...)
 
 
   # # # # debug
-  # obj<- aveobj
-  # Data<- mydata
-  # k_ratio<- 0.15
+  # obj<- mme_ave #aveobj
+  # Data<- resid #mydata
+  # k_ratio<- 0.2
   # rdsobj<- RootDepSet()
-  # rdsobj<- setRootDepSet(rdsobj,  get.vertex.attribute(g, "name", V(g)), "a")
+  # rdsobj<- setRootDepSet(rdsobj,  get.vertex.attribute(seg, "name", V(seg)), "Paris")
   # ################
   n<- nrow(Data)
   k<- round(n*k_ratio)
@@ -355,11 +392,17 @@ estimate.MMEave<- function(obj, Data, rdsobj, k_ratio, ss_bar = NULL, ...)
   deltaExcess<- Y[ind_ex,]-Y_bar[ind_ex]
 
 
+  seg<- getGraph(obj)
+  gtobj<- GTree(seg, Data = deltaExcess)
 
-  gtobj<- GTree(g = obj$graph, Data = deltaExcess)
-  g<- getGraph(obj)
   Uc<- getNoDataNodes(gtobj)
+  U<- getNodesWithData(gtobj)
 
+  rdsobj<- RootDepSet()
+  rdsobj<- setRootDepSet(rdsobj,  get.vertex.attribute(seg, "name", V(seg)), U[1])
+
+
+  ss_bar = NULL
   ss_hat<- as.vector(sigma(gtobj))
 
   if (is.null(ss_bar))
@@ -380,22 +423,26 @@ estimate.MMEave<- function(obj, Data, rdsobj, k_ratio, ss_bar = NULL, ...)
 #' @rdname estimate
 #' @importFrom stats optim
 #' @export
-estimate.MLEave<- function(obj, Data, rdsobj, k_ratio, lmbd = NULL, ...)
+estimate.MLEave<- function(obj, Data, k_ratio, ...)
 {
 
-  # # debug
-  # obj<- MLEave(g)
-  # Data<- hrmdata
-  # k_ratio<- 0.2
-  # lmbd<- Lambda
-  # #------------------
-
-
-  tobj<- Tree(x= obj$graph, data = Data)
+  # # # debug
+  #  obj<- mle_ave
+  #  Data<- Seine
+  #  k_ratio<- 0.2
+  # # lmbd<- Lambda
+  # # #------------------
+  seg<- obj$graph
+  tobj<- Tree(x= seg, data = Data)
   Uc<- getNoDataNodes(tobj)
+  U<- getNodesWithData(tobj)
+
+  rdsobj<- RootDepSet()
+  rdsobj<- setRootDepSet(rdsobj,  get.vertex.attribute(seg, "name", V(seg)), U[1])
+
   n<- nrow(Data)
   k<- round(k_ratio*n)
-
+  lmbd = NULL
   if (is.null(lmbd))
   {
     lmbd<- Lambda(obj, rdsobj, U_bar = Uc)
@@ -427,21 +474,31 @@ estimate.MLEave<- function(obj, Data, rdsobj, k_ratio, lmbd = NULL, ...)
 }
 
 
-#' @rdname estimate
+
 #' @importFrom stats optim
 #' @export
-estimate.EngHitz<- function(obj, data, subsets, k_ratio, ...)
+estimate.EngHitz<- function(obj, Data, subsets, k_ratio, ...)
 {
+
+  # #debug
+  #  obj<- eh
+  #  Data<- XU
+  #  subsets<- list(c("c", "h"), letters[1:7])
+  #  k_ratio<- 0.2
+  # #-----------------------
+
+
+
   g<- getGraph(obj)
-  n<- nrow(data)
+  n<- nrow(Data)
   k<- round(k_ratio*n)
-  Xbar<- 1/(1-copula::pobs(data))
+  Xbar<- 1/(1-copula::pobs(Data))
   Xmax<- apply(Xbar, 1, max)
   excIndex<- order(Xmax)[(n-k+1):n]
   deltaExc<- Xbar[excIndex,]*k/n
 
   #create the tobj to obtain the Uc, the set of latent variables, else you don't need this object
-  tobj<- Tree(g, data)
+  tobj<- Tree(g, Data)
   Uc<- getNoDataNodes(tobj)
 
   res<- getParams(obj)
@@ -450,11 +507,11 @@ estimate.EngHitz<- function(obj, data, subsets, k_ratio, ...)
   {
     subtree<- induced_subgraph(g, subsets[[i]])
 
-
+    good_for_roots<- base::setdiff(subsets[[i]], Uc)
     # create the sigma matrix
     hrmtobj<- HRMtree(subtree)
     ssobj<- RootDepSet()
-    ssobj<- setRootDepSet(ssobj, subsets[[i]], subsets[[i]][1])
+    ssobj<- setRootDepSet(ssobj, subsets[[i]], good_for_roots[1])
     MA<- sigma(hrmtobj, ssobj, Uc)
 
     # prepare for optimization

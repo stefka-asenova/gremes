@@ -14,6 +14,8 @@ fnk(params, eksobj, evalPoints, stdf_emp, Ubar)
 \item{evalPoints}{A matrix of evaluation points with column names according to the edge names}
 
 \item{stdf_emp}{The empirical stdf, evaluated at the 'evalPoints', a vector of values}
+
+\item{Ubar}{the set of non-observed variables}
 }
 \description{
 Combines the empirical and the parametric stdf of a HRM tree in

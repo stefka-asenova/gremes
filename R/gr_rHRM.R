@@ -1,5 +1,15 @@
-#' Generate random sample from \code{HRMnetwork}
-#' @rdname rHRMtree
+#' Generates random sample
+#'
+#' If the method is called on object of class \code{HRMtree} it generates a random sample from
+#' a Markov tree whose every two adjacent nodes are parameterized
+#' with a bivariate Huesler-Reiss distribution with parameter the weight associated to the edge connecting the
+#' two variables. Markov tree means that the random vector satisfies the global Markov property.
+#' See Vignette "Additional functionalities" for further explanation of the distribution from which it is sampled.
+#' If the method is called on an object of class \code{HRMBG} then it generates a random sample from a
+#' Huesler-Reiss distribution with structured parameter matrix.
+#' See Vignette "Additional functionalities" for further explanation of the distribution from which it is sampled.
+#' See Vignette "Huesler-Reiss distributions" for the parameterization on block graphs.
+#' @rdname rHRM
 #' @export
 rHRM<- function(obj,...)
 {
@@ -10,13 +20,16 @@ rHRM<- function(obj,...)
 
 
 
-
-#' @rdname rHRM
 #' @export
-#' @param obj Object of class \code{HRMtree}
+#' @rdname rHRM
+#' @param obj Object of class \code{HRMnetwork} or its subclasses such as \code{HRMtree} and \code{HRMBG} or
+#' subclasses of these two. If no explicit method exists the method \code{rHRM.HRMnetwork} is called.
 #' @param n The size of the sample
 #' @param noise TRUE/FALSE indicates whether to include (TRUE) a standard normal noise
 #' to all observations in the sample. The default is FALSE.
+#' @param lambda is a structured parameter matrix of the Huesler-Reiss distribution. See Vignette
+#'  "Huesler-Reiss distributions" parameterization on block graphs.
+#' @param ... additional arguments
 #' @return A matrix with the generated observations
 #' @examples
 #' # create a graph with named vertices
@@ -36,7 +49,7 @@ rHRM.HRMnetwork<- function(obj, n, noise = FALSE, ...)
 }
 
 
-
+# #' @rdname rHRM
 #' @export
 #' @importFrom stats rnorm
 rHRM.HRMtree<- function(obj, n, noise, graph, params, ...)
@@ -112,11 +125,11 @@ cdistr1<- function(t, x, th, u) {
 
 
 
-
+#' @rdname rHRM
 #' @export
 #' @importFrom stats rnorm
 #' @importFrom mev rmev
-rHRM.HRMBG<- function(obj, lambda, n, noise , ...)
+rHRM.HRMBG<- function(obj, lambda, n, noise=FALSE , ...)
 {
   # returns a matrix of observations using the husler-reiss distribution from
   # the package 'mev'

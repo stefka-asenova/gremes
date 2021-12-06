@@ -25,12 +25,15 @@
 
 
 #' Plot method for Simulation results.
-#' @param obj an object of class Simulation
+#' @param x an object of class Simulation
 #' @param ind_params a numeric vector of indices which indicates for which parameters the plots
 #' are to be produced. For instance: the object that contains the estimates has four dimensions,
 #' the first one equal to the number of parameters in the model. If ind_params=c(1,3) then plots
 #' will be produced for the parameters in the first and third places of the first dimension
 #' of the object with estimates.
+#' @param path_to_file the path to the place where the file will be stored
+#' @param name_file the name of the file
+#' @param ... additional arguments
 #' @export
 #' @importFrom grDevices pdf dev.off
 #' @importFrom graphics abline curve legend matplot par title

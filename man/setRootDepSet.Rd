@@ -2,24 +2,34 @@
 % Please edit documentation in R/gr_setters.R
 \name{setRootDepSet}
 \alias{setRootDepSet}
-\title{Setter for \code{RootDepSet}}
+\alias{setRootDepSet.RootDepSet}
+\title{Setter for objects of class \code{RootDepSet}}
 \usage{
 setRootDepSet(obj, subset, root, ...)
+
+\method{setRootDepSet}{RootDepSet}(obj, subset, root, ...)
 }
 \arguments{
 \item{obj}{Object of class \code{RootDepSet}}
 
-\item{subset}{One dimensional array or list with subsets on the set of vertices, referred by their names.}
+\item{subset}{list containing the subsets on the set of vertices, referred by their names.
+An element of the list should
+be named with the name of the corresponding root to that subset.}
 
-\item{root}{One dimensional array or a scalar of the root(s), corresponding to the subset(s) above
+\item{root}{One dimensional array of the roots, corresponding to the subsets above
 referred by name.}
+
+\item{...}{additional arguments}
 }
 \description{
-It sets the values of the two slots in the object.
+It is used to set the slots \code{$value} and \code{$root} of an object of class \code{RootDepSet} and
+its subclasses, such as \code{Neighborhood} and \code{FlowConnect}. Every node in the graph with observable
+variable
+must be taken as a root. For a fixed root, a subset of nodes must be chosen.
 }
 \examples{
 rds<- RootDepSet()
-rds_values<- list(a=c("a", "b"), b=c("b", "c", "d"), c=c("c", "d"), d=c("c", "d", "e"), e=c("d", "e"))
-rds_roots<- c("a", "b","c","d","e")
-rds<- setRootDepSet(rds,rds_values, rds_roots )
+rds_values<- list(a = c("a", "b"), b = c("b", "c", "d"))
+rds_roots<- c("a", "b")
+rds<- setRootDepSet(rds, rds_values, rds_roots)
 }

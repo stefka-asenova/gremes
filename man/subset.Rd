@@ -6,6 +6,11 @@
 \usage{
 subset(obj, ...)
 }
+\arguments{
+\item{obj}{object of appropriate class}
+
+\item{...}{additional arguments}
+}
 \description{
 Generic for \code{subset}
 }
@@ -17,10 +22,5 @@ For description and examples of the method applied on objectobjects of class \co
 \section{See \code{subset.Neighborhood} }{
 
 For description and examples of the method applied on objectobjects of class \code{Neighborhood}.
-}
-
-\section{See \code{subset.CovSelectTree} }{
-
-For description and examples of the method applied on objectobjects of class \code{CovSelectTree}.
 }
 

@@ -1,31 +1,54 @@
 ---
-title: "Estimation - Note 2"
+title: "Code - Note 2"
+subtitle: "Likelihood based estimation for models on trees"
 author: "Stefka Asenova"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimation - Note 2}
+  %\VignetteIndexEntry{Code - Note 2}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: mypr1_rev1.bib
 ---
+
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+```
+
+
+```{r}
+#devtools::load_all("~/gremes", export_all=FALSE)
+
 library(gremes)
+
 ```
 
 Load the data.
+
 ```{r}
-load("~/gremes/data/SeineData.rda")
-head(resid)
+load("~/gremes/data/SeineData.RData")
+head(Seine)
 
 ```
 
 Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+
 ```{r}
 seg<- graph(c(1,2,
               2,3,
@@ -39,34 +62,50 @@ seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) #
 ```
 
 Extract the nodes for which we do not observe realizations.
+
 ```{r}
-tobj<- Tree(seg, resid)
+tobj<- Tree(seg, Seine)
 Uc<- getNoDataNodes(tobj)
 
 ```
 
-Create the subsets
+Create the subsets.
+
 ```{r}
 subs<- Neighborhood()
-subs<- subset(subs, 3, seg, Uc) # neighborhood of level three
+subs<- subset(subs, 3, seg, Uc) # neighborhood of order three
+
+# verify if the identifiability criterion is satisfied for every subgraph induced by a subset
+is_identifiable(subs, tobj) 
+
+# change the order of the neighborhood and verify the identifiability again
+subs<- subset(subs, 2, seg, Uc) # neighborhood of order two
+is_identifiable(subs, tobj)
 
 ```
 
-Estimate MLE Version 1
+Subsets are created on the principle of neighborhood of order two for every observed variable.
+
+## Estimate MLE Version 1
+
 ```{r}
 mle1<- MLE1(seg)
-mle1<- estimate(mle1, resid, subs, k_ratio=0.2)
-
-```
-
-Estimate MLE Version 2 
-```{r}
-mle2<- MLE2(seg)
-mle2<- estimate(mle2, resid, subs, k_ratio=0.2)
+mle1<- estimate(mle1, Seine, subs, k_ratio=0.2)
 
 ```
 
 The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+
+## Estimate MLE Version 2
+
+```{r}
+mle2<- MLE2(seg)
+mle2<- estimate(mle2, Seine, subs, k_ratio=0.2)
+
+```
+
+
+The estimates from the two versions of the likelihood based estimators are very similar.
 
 ```{r}
 mle1$depParams
@@ -76,8 +115,10 @@ mle2$depParams
 
 
 ## The Covariance selection method 
+
 The Covariance Selection Method in @grim is not applicable when there are latent variables.
-To use the Covariance Selection method compose a graph without nodes with latent variables.
+To illustrate the Covariance Selection method using the dataset on Seine we create a graph without nodes with latent variables.
+
 ```{r}
 seg_short<- graph(c(1,2,
               2,3,
@@ -89,30 +130,37 @@ seg_short<- set.vertex.attribute(seg_short, "name", V(seg_short), name_stat) #
 ```
 
 Extract the nodes for which we do not observe realizations.
+
 ```{r}
-tobj<- Tree(seg_short, resid)
+tobj<- Tree(seg_short, Seine)
 Uc<- getNoDataNodes(tobj)
 
 ```
 
-Create the subsets
+Create the subsets.
 ```{r}
 subs_short<- Neighborhood()
-subs_short<- subset(subs, 3, seg_short, Uc) # neighborhood of level three
+subs_short<- subset(subs, 2, seg_short, Uc) # neighborhood of level three
 
 ```
 
 Estimate using Covariance Selection Model. 
+
 ```{r}
 mle<- MLE(seg_short)
-mle<- estimate(mle, resid, subs_short,  k_ratio=0.2)
-mle$depParams
+mle<- estimate(mle, Seine, subs_short,  k_ratio=0.2)
 
 ```
+
 The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
 
 The estimates are squares of the parameters, hence take the square root.
+
 ```{r}
 sqrt(mle$depParams)
 
 ```
+
+## References
+
+

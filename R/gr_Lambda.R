@@ -2,16 +2,16 @@
 
 Lambda<- function(obj, ...)
 {
-  UseMethod("Lambda", obj)
+  UseMethod("Lambda")
 }
 
-
+#' @export
 Lambda.default<- function(obj, ...)
 {
   return("Default method")
 }
 
-
+#' @export
 Lambda.MMEave<- function(obj, obj2, U_bar=NULL, ... )
 {
   # #debug
@@ -48,5 +48,5 @@ Lambda.MMEave<- function(obj, obj2, U_bar=NULL, ... )
 }
 
 
-
+#' @export
 Lambda.MLEave<- Lambda.MMEave

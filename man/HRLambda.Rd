@@ -3,23 +3,28 @@
 \name{HRLambda}
 \alias{HRLambda}
 \alias{HRLambda.HRMBG}
-\title{Generates the parameter matrix of a Huesler-Reiss distribution}
+\title{Parameter matrix of a Huesler-Reiss distribution}
 \usage{
 HRLambda(obj, ...)
 
 \method{HRLambda}{HRMBG}(obj, ...)
 }
 \arguments{
-\item{obj}{is an object of class \code{HRMBG}.}
+\item{obj}{is an object of class \code{HRMBG} with non-zero edge weights.}
+
+\item{...}{additional arguments}
 }
 \value{
 A symmetric matrix whose entry lambda_{ij} is the sum of the edge weights on the shortest
 path between node i and node j.
 }
 \description{
-It is used to generate observations from a Huesler-Reiss distribution with parameter matrix
-having a particular structure: entry lambda_{ij} is the sum of the edge weights on the shortest
-path between node i and node j in a block graph.
+It creates the parameter matrix Lambda of the limiting max-stable Huesler-Reiss distribution which is an attractor of
+a graphical model with respect to some block graph and whose distribution is composed cliquewise from
+Huesler-Reiss distributions. See Vignette "Introduction" too.
+The entry lambda_{ij} is the sum of the edge weights on the shortest
+ path between node i and node j in the block graph.
+The matrix Lambda can be used to generate observations from that max-stable Huesler-Reiss distribution.
 }
 \examples{
 g<- graph(c(1,3,1,2,2,3,

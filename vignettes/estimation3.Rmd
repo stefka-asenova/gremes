@@ -1,31 +1,51 @@
 ---
-title: "Estimation - Note 3"
+title: "Code - Note 3"
+subtitle: "Extremal Coefficients Estimator for models on trees"
 author: "Stefka Asenova"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimation - Note 3}
+  %\VignetteIndexEntry{Code - Note 3}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: mypr1_rev1.bib
 ---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+```
+
+
+```{r}
 library(gremes)
+
 ```
 
 Load the data.
+
 ```{r}
-load("~/gremes/data/SeineData.rda")
-head(resid)
+load("~/gremes/data/SeineData.RData")
+head(Seine)
 
 ```
 
-Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+Generate the graph with two missing data points. Note that assigning names to nodes is crucial. the names of the nodes should correspond to the names of the columns in the dataset.
+
 ```{r}
 seg<- graph(c(1,2,
               2,3,
@@ -39,19 +59,22 @@ seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) #
 ```
 
 Extract the nodes for which we do not observe realizations.
+
 ```{r}
-tobj<- Tree(seg, resid)
+tobj<- Tree(seg, Seine)
 Uc<- getNoDataNodes(tobj)
 
 ```
 
 Alternatively just do it manually.
+
 ```{r}
 Uc<- c("2", "5")
 
 ```
 
 Create the set of coordinates, in this case only vectors with two non-zero entries. 
+
 ```{r}
 tup<- Tuples()
 x<- rep(1,5)
@@ -60,31 +83,38 @@ tup<- evalPoints(tup, tobj, x)
 
 ```
 
-Estimate EKS Version 1
+## Estimate ECE Version 1
+
 ```{r}
 eks<- EKS(seg)
-eks<-estimate(eks, resid, tup, k_ratio=0.2)
+eks<-estimate(eks, Seine, tup, k_ratio=0.2)
 
 ```
+
+## Estimate ECE Version 2
 
 To apply EKS Version 2 we need to create subsets for local estimation.
 Create the subsets.
+
 ```{r}
 subs<- Neighborhood()
-subs<- subset(subs, 2, seg, Uc) # neighborhood of level three
+subs<- subset(subs, 2, seg, Uc) # neighborhood of level two
 
 ```
 
-Estimate EKS Version 2
+Call the estimation method.
+
 ```{r}
 eks_part<- EKS_part(seg)
-eks_part<- estimate(eks_part, resid, subs, k_ratio=0.2, xx=x)
+eks_part<- suppressMessages(estimate(eks_part, Seine, subs, k_ratio=0.2, xx=x))
 
 ```
-The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+
+Because the method gives many mesages we suppress them. The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
 
 
-Compare estimates
+Compare estimates from the two versions.
+
 ```{r}
 eks$depParams
 eks_part$depParams

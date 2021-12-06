@@ -1,8 +1,12 @@
+# don't export the generic
+
 createObj<- function(obj,...)
 {
   UseMethod("createObj", obj)
 }
 
+
+#' @export
 createObj.default<- function(obj, data,...)
 {
   #creating a GTree object as default method
@@ -11,6 +15,8 @@ createObj.default<- function(obj, data,...)
 }
 
 
+
+#' @export
 createObj.MLE<- function(obj, data)
 {
   myobj<- CovSelectTree(obj$graph, Data = data)
@@ -23,7 +29,7 @@ createObj.MLE<- function(obj, data)
 
 
 
-
+#' @export
 createObj.HRMBG<- function(obj, data)
 {
   myobj<- BlockGraph(obj$graph, data)

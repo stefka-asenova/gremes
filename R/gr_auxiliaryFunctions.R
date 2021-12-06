@@ -1,16 +1,15 @@
-#'
+
+
 #' Combine matrices along in a three dimensional matrix
 #' @importFrom abind abind
-#' @export
+#' @param ... arrays of dimension 3
 acomb<- function(...) abind::abind(..., along=3)
 
 
-#' @importFrom abind abind
-# #' @export
-acomb<- function(...) abind::abind(..., along=3)
 
 
-# #' @export walking
+
+
 walking <-  function(g, v, a = NULL)
 {
 
@@ -41,6 +40,8 @@ augmentCols<- function(A, nameCols)
   }
   return(A_aug)
 }
+
+
 
 
 augmentMatrix1<- function(A, name_to_add)
@@ -96,10 +97,9 @@ spanned_subgraph<- function(g, u, W)
 }
 
 
-#' Mean and covariance matrix
-#'
-#' Computes the mean and the covariance matrix for the vector \eqn{R_j}. It is designed to
-#' be used by the method \code{stdf.EKS()}
+
+# Computes the mean and the covariance matrix for the vector \eqn{R_j}. It is designed to
+# be used by the method \code{stdf.EKS()}
 tilde_Rj<- function(Ju, j, mu, sig)
 {
 
@@ -156,6 +156,8 @@ looknan<- function(x)
 }
 
 
+
+
 #' Computes means and standard deviations for a matrix of estimates
 #'
 #' It cleans up the matrix of estimates from NaNs and after that it computes the means
@@ -166,7 +168,6 @@ looknan<- function(x)
 #' a matrix of variances (v). The matrix of means is of dimensions (#estimators)X(#k)X(#parameters).
 #' To access the estimates of the first parameter use [,,1] and so on. Similarly for the matrix
 #' of variances.
-#' @export
 #' @importFrom stats var
 means_vars<- function(obj)
 {
@@ -195,9 +196,8 @@ means_vars<- function(obj)
 
 
 
-
+# this one isn't working properly - DON't export
 # the function serves to clean up from zeros the estimates
-#??
 clean_up<- function(estim, endval)
 {
 
@@ -225,19 +225,16 @@ clean_up<- function(estim, endval)
 }
 
 
-#??
+
 clean_up_nan<- function(estim)
 {
 
   #estim must have named columns
 
 
-
   #debug
-
   #estim<- mme_all
   #endval<- 0
-
   #-----------------
 
 
@@ -254,26 +251,103 @@ clean_up_nan<- function(estim)
 }
 
 
+#' Plots Extremal coefficients
+#'
+#' It generates a scatterplot of bivariate parametric versus non-parametric extremal coefficients.
+#' It marks which ones extremal coefficients are between flow connected nodes. Used for application on rivers.
+#'
+#' @param matT Matrix of parametric estimates of biavariate extremal coefficients
+#' @param matE Matrix of non-parametric estimates of bivariate extremal coefficients
+#' @param flowConnect Matrix of ones and zeros: 1 at row i and column j means that node i and node j are
+#' flow connected
+#' @param ... additional arguments
+#' @export
+#' @importFrom graphics plot
+#' @importFrom graphics points
+#' @note See Vignettes "Application Danube" and "Application Seine" for examples on post-estimation analysis.
+plotEC<- function(matT, matE, flowConnect,...)
+{
+  W_<- colnames(matT)
+  nW_<- length(W_)
+  q<- c(1:nW_)
+  colIndex<- unlist(sapply(q, function(x) base::setdiff(W_, W_[1:x])))
+  pairsOfSigma<- base::rbind(rep(W_, c((nW_-1):0)), colIndex)
+
+  #nV<- ncol(ecMatrix)
+  graphics::plot(1, type="n",
+       ylab="non-parametric",
+       xlim=c(1, 2),
+       ylim=c(1, 2),
+       lwd=1.5,
+       ...)
+  abline(a=0, b=1)
+  legend(x = "topleft",c("flow unconnected", "flow connected"),
+         pch = c(1, 3), col = c("black", "tomato"), pt.lwd = 1.5, bty = "n")
+
+  for (i in 1:(nW_*(nW_+1)/2-nW_))
+  {
+    ch<- ifelse(flowConnect[pairsOfSigma[1,i],pairsOfSigma[2,i]]==1, 3, 1 )
+    colrs<- ifelse(flowConnect[pairsOfSigma[1,i],pairsOfSigma[2,i]]==1, "tomato", "black")
+    graphics::points(matT[pairsOfSigma[1,i],pairsOfSigma[2,i]], matE[pairsOfSigma[1,i], pairsOfSigma[2,i]],
+           col=colrs, type="p", pch=ch, lwd=1.5)
+  }
+
+}
 
 
-# this function is equivalent to 'edge_names_along_path(obj, u,v, edge_names=FALSE)'
-# hence it needs to be suppressed
+#' Identifiability in case of latent variables
+#'
+#' It verifies if the idenifiability criterion in case of latent variables is satisfied on the level of subsets.
+#' Basically it verifies for each subset whether the identifiability criterion is satisfied for the subgraph
+#' induced by this subset: verifies if every node with latent variables within the subgraph has degree at least
+#'  three. It is applicable only for tree models.
+#' @param obj should be an object of class \code{RootDepSet}
+#' @param tobj should be an object of class \code{Tree}
+#' @export
+#' @examples
+#'  seg<- graph(c(1,2,
+#' 2,3,
+#' 2,4,
+#' 4,5,
+#' 5,6,
+#' 5,7), directed = FALSE)
+#' name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+#' seg<- set.vertex.attribute(seg, "name", V(seg), name_stat)
+#' # we need some data to create the object of class "Tree"
+#' seg_data<- matrix(rnorm(10*7), 10, 7)
+#' colnames(seg_data)<- name_stat
+#' tobj<- Tree(seg, seg_data[,c("Paris", "Meaux", "Melun", "Nemours", "Sens")])
+#' # create the neighborhood of order one and call the function "is_identifiable"
+#' nobj<- Neighborhood()
+#' nobj<- subset(nobj, 1, seg, U_bar=getNoDataNodes(tobj))
+#' is_identifiable(nobj, tobj)
+#' nobj<- subset(nobj, 2, seg, U_bar=getNoDataNodes(tobj))
+#' is_identifiable(nobj, tobj)
+#'  # See also Vignette "Subsets and Coordianates"
+is_identifiable<- function(obj, tobj)
+{
 
-# shortPath2vec<- function(g, fc, sc)
-# {
-#   # # debug
-#   # fc<- "a"
-#   # sc<- "d"
-#   # #-------------
-#
-#
-#   sp<- unlist(get.shortest.paths(g, fc, sc)$vpath)
-#   sp1<- rep(sp, rep(2, length(sp)))
-#   sp1<- sp1[2:(length(sp1)-1)]
-#   geids<- get.edge.ids(g, sp1)
-#   enames<- get.edge.attribute(g, "name", geids)
-#   aa<- rep(0, ecount(g))
-#   names(aa)<- get.edge.attribute(g, "name", E(g))
-#   aa[enames]<- 1
-#   return(aa)
-# }
+  # debug
+  #obj<- nobj
+  #tobj
+  #-----------
+
+
+  nvalue<- length(obj$value)
+  for (i in 1:nvalue)
+  {
+    set<- obj$value[[i]]
+    set_Uc<- base::intersect(set, tobj$noDataNodes)
+    g_set<- induced_subgraph(tobj$graph, set)
+    non_confUset<- set_Uc[degree(g_set, set_Uc)<3]
+    if (length(non_confUset)>0)
+    {
+      message(cat("The nodes with latent variables { ", non_confUset,  " } in set { ", set, " } have degree less than three.
+                  The subgraph contains edge parameters that are non-identifiable.\n", sep=" "))
+    }
+  }
+}
+
+
+
+

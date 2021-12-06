@@ -2,13 +2,14 @@
 % Please edit documentation in R/gr_subset.R
 \name{subset.FlowConnect}
 \alias{subset.FlowConnect}
-\title{Subset from flow connection}
+\title{Subsets using flow connection information}
 \usage{
 \method{subset}{FlowConnect}(
   obj,
   from,
   g,
-  vertices = get.vertex.attribute(g, "name", V(g)),
+  U_bar = NULL,
+  vertices = base::setdiff(get.vertex.attribute(g, "name", V(g)), U_bar),
   matrixForm = FALSE,
   ...
 )
@@ -16,36 +17,45 @@
 \arguments{
 \item{obj}{Object of class \code{FlowConnect}}
 
-\item{from}{The object from which the subset should be extracted. For now two input types
+\item{from}{The object from which the subsets should be extracted. For now two input types
 are supported: \code{FlowConnectionMatrix} and \code{FlowConnectionGraph}.
-In case of a matrix: entry ij is equal to 1 if node i is flow connected to node j.
-In case of a graph: the graph should be directed according to the flow direction.}
+The matrix in an object of class \code{FlowConnectionMatrix} is such that: entry ij is equal to 1 if node i
+is flow connected to node j.
+The graph in object of class \code{FlowConnectionGraph} should be directed according to the direction
+of the water flow.}
 
-\item{g}{\code{igraph} object, it may be directed (according to the flow) or undirected graph}
+\item{g}{\code{igraph} object, it may be directed (according to the water flow) or undirected graph}
+
+\item{U_bar}{The set of nodes for which data are missing. Default is NULL.}
 
 \item{vertices}{The vertices for which the set(s) of flow connected nodes are computed. The default
-is all vertices in the graph}
+is the vertices with observed variables}
 
-\item{matrixForm}{Display results as matrix; default form}
+\item{matrixForm}{a matrix of ones and zeros: one if the node is in the subset and zero otherwise.}
+
+\item{...}{additional arguments}
 }
 \value{
-Object of the same class as \code{obj} but with non empty slots
-
-value A matrix or a list. If matrix the number of columns should be the same as the number of vertices
-in the graph. If list the list should contain for each of the roots an array of the nodes with
-which it is (a given root) flow connected.
-
-root The vertices for which the flow connection sets are obtained
+Object of the same class as \code{obj} but with non empty slots.
+Slot \code{$value} contains a matrix or a list.
+If it is a matrix, the number of columns is the same as the number of vertices
+in the graph. If it is a list, the list contains for each of the roots an array of the nodes with
+which that given root is flow connected.
+The slot \code{$root} represents the roots - one for every subset.
 }
 \description{
-It derives the sbset(s) based on flow connection information.
+It derives subsbset(s) based on flow connection information. For uses see Vignettes "Subsets and Coordinates"
+or "Application Danube".
 }
 \examples{
 rdsobj<- FlowConnect()
 seg<- graph(c(1,2, 2,3, 2,4, 4,5, 5,6, 5,7), directed = FALSE)
 name_stat<- c("paris", "2", "meaux", "melun", "5", "nemours", "sens")
 seg<- set.vertex.attribute(seg, "name", V(seg), name_stat)
-seg_dir<- graph(c("2","paris", "meaux", "2", "melun", "2","5", "melun","nemours", "5", "sens", "5"), directed = TRUE)
+seg_dir<- graph(c("2","paris", "meaux", "2", "melun", "2","5", "melun","nemours", "5", "sens", "5"),
+directed = TRUE)
 fcg<- FlowConnectionGraph(seg_dir)
-rdsobj<- subset(rdsobj, from=fcg, g=seg)
+subset(rdsobj, from = fcg, g = seg, U_bar = c("2", "5"), matrixForm = TRUE)
+subset(rdsobj, from = fcg, g = seg, vertices=c("paris",  "meaux", "melun", "nemours", "sens"))
+subset(rdsobj, from = fcg, g = seg)
 }

@@ -2,16 +2,29 @@
 % Please edit documentation in R/gr_flowConnection.R
 \name{flowConnection}
 \alias{flowConnection}
-\alias{flowConnection.FlowConnectionMatrix}
 \alias{flowConnection.FlowConnectionGraph}
-\title{Generic for \code{flowConnection}}
+\title{Creates a matrix of flow connectedness for a tree}
 \usage{
 flowConnection(obj, ...)
 
-\method{flowConnection}{FlowConnectionMatrix}(obj, g, vertices = rownames(obj), ...)
+\method{flowConnection}{FlowConnectionGraph}(obj, ...)
+}
+\arguments{
+\item{obj}{object of class \code{FlowConnectionGraph}}
 
-\method{flowConnection}{FlowConnectionGraph}(obj, vertices = get.vertex.attribute(obj, "name", V(obj)), ...)
+\item{...}{additional arguments}
 }
 \description{
-Generic for \code{flowConnection}
+Designed for use on river network and its representation as a tree. It is used on object of class
+\code{FlowConnectionGraph}.
+}
+\details{
+As input it takes a directed tree according to the flow connection and the output is a matrix of 1's and 0's
+1 meaning flow connectedness between node i and node j.
+}
+\examples{
+g<- graph(c(1,2,3,2, 2,4,4,5), directed=TRUE)
+g<- set.vertex.attribute(g, "name", V(g), c("a", "b", "c", "d", "e"))
+fcg<- FlowConnectionGraph(g)
+flowConnection(fcg)
 }

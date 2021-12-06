@@ -2,21 +2,26 @@
 % Please edit documentation in R/gr_HRMnetwork.R
 \name{MLE}
 \alias{MLE}
-\title{\code{MLE} class}
+\title{Object of class \code{MLE}}
 \usage{
 MLE(g)
 }
 \arguments{
-\item{g}{must be an \code{igraph} object}
+\item{g}{must be an \code{igraph} object, a tree.}
 }
 \value{
-Object of class \code{MLE} with two slots: one containing the graph and the other the edge weights
-corresponding to the dependence parameters.
+Object of class \code{MLE} with two slots:  \code{$graph} containing the graph and \code{$depParams}
+containing the edge weights corresponding to the dependence parameters.
+The edge weights are initialized with zero values.
 }
 \description{
-\code{MLE} class
+Creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+the edge weights which are initialized with zero values.
+It is intended to be used for edge weights estimation using the Covariance selection model.
+Consult also Vignettes "Code - Note 2" and "Estimation - Note 2".
 }
 \examples{
-g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
+g<- make_tree(8,3, mode="undirected")
+g<- set.vertex.attribute(g, "name", V(g), letters[1:8])
 mle<- MLE(g)
 }

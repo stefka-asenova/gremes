@@ -6,16 +6,18 @@
 \alias{getNoDataNodes.Network}
 \title{It retrives the nodes without data}
 \usage{
-getNoDataNodes(object, ...)
+getNoDataNodes(obj, ...)
 
-\method{getNoDataNodes}{default}(object, ...)
+\method{getNoDataNodes}{default}(obj, ...)
 
-\method{getNoDataNodes}{Network}(object, ...)
+\method{getNoDataNodes}{Network}(obj, ...)
 }
 \arguments{
-\item{obj}{Object of class 'Network'}
+\item{obj}{Object of class \code{Network} or its subclasses \code{Tree, GTree, CovSelectTree, BlockGraph}}
+
+\item{...}{additional arguments}
 }
 \description{
-It retrieves the value of the slot 'noDataNodes', the set of nodes for which there are no data available
- for an object 'Network'.
+It retrieves the value of the slot \code{$noDataNodes}, the set of nodes for which there are no data available
+ for an object of class \code{Network}.
 }

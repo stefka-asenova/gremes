@@ -2,7 +2,7 @@
 % Please edit documentation in R/gr_HRMnetwork.R
 \name{HRMBG}
 \alias{HRMBG}
-\title{\code{HRMBG} class}
+\title{Object of class \code{HRMBG}}
 \usage{
 HRMBG(g)
 }
@@ -10,11 +10,17 @@ HRMBG(g)
 \item{g}{must be an \code{igraph} object}
 }
 \value{
-Object of class \code{HRMBG} with two slots: one containing the graph and the other the edge weights
-corresponding to the dependence parameters.
+Object of class \code{HRMBG} with two slots: \code{$graph} containing the graph and \code{$depParams}
+containing the edge weights corresponding to the dependence parameters. Ig the graph which is passed
+in the argument has named edges these names are kept, if the edges are not named,
+they are given names "e1", "e2", etc.
+if the graph
 }
 \description{
-\code{HRMBG} class
+It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+the edge weights which are initialized with zero values.
+It is intended to be used for estimation of edge weights of models on block graphs.
+Consult Vignettes "Code - Note 5" and "Estimation - Note 5".
 }
 \examples{
 g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)

@@ -1,14 +1,14 @@
 
+# don't export generics ; export other methods
 
-#' @title Generic for method \code{for_u_in_U}
-#' @description It generates arguments that are used in the estimation via MM and ML methods. For every node \eqn{u\in U} produces the empirical or the parameric covariance matrices and
-#' depending on the class of the first argument it combines them in (so far) three different ways:
-#' - substacking of vectors
-#' - substacking of matrices
-#' - creating a block diagonal matrix
-#'
-#'
-#' @rdname for_u_in_U
+
+
+# Generic for method \code{for_u_in_U}
+# It generates arguments that are used in the estimation via MM and ML methods. For every node \eqn{u\in U} produces the empirical or the parameric covariance matrices and
+# depending on the class of the first argument it combines them in (so far) three different ways:
+# - substacking of vectors
+# - substacking of matrices
+# - creating a block diagonal matrix
 for_u_in_U<- function(obj,...)
 {
   UseMethod("for_u_in_U")
@@ -17,6 +17,9 @@ for_u_in_U<- function(obj,...)
 
 
 
+
+
+#' @export
 for_u_in_U.default<- function(obj,...)
 {
   return("Default method called on unrecognized object")
@@ -24,14 +27,18 @@ for_u_in_U.default<- function(obj,...)
 
 
 
-#' @rdname for_u_in_U
-#' @param obj Object of class \code{Argument}
-#' @param obj2 Object of class \code{HRMtree, GTree, CovSelectTree}
-#' @param subsets Object of class \code{RootDepSet}
-#' @param k_ratio The fraction of the upper order statistics in the sample size
-#' @param h1 A numeric vector with the length of the subsets for each root, after removing the corresponding root and the nodes with missing data.
-#' @param depParams Named vector with the values with the values of the parameters
-#' @param Ubar Vector with the names of the nodes with missing data
+
+
+
+#' @export
+# obj Object of class \code{Argument}
+# obj2 Object of class \code{HRMtree, GTree, CovSelectTree}
+# subsets Object of class \code{RootDepSet}
+# k_ratio The fraction of the upper order statistics in the sample size
+# h1 A numeric vector with the length of the subsets for each root, after removing the corresponding root and the nodes with missing data.
+# depParams Named vector with the values with the values of the parameters
+# Ubar Vector with the names of the nodes with missing data
+# ... additional arguments
 for_u_in_U.Argument<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar=NULL, ...)
 {
   # # #debug
@@ -47,7 +54,7 @@ for_u_in_U.Argument<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar=
   values<- getValue(subsets)
   roots<- getRoot(subsets)
   nvalues<- length(values)
-  gg<- getGraph(obj2)
+  this_graph<- getGraph(obj2)
   if(!is.list(values))
     stop(" 'subsets' must contain at least two subsets")
 
@@ -57,7 +64,7 @@ for_u_in_U.Argument<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar=
   {
     set_i<- setRootDepSet(set_i, values[[i]], roots[i])
     yy<- pot(obj=obj2, set_i, k_ratio=k_ratio)
-    thisArg<- NextMethod(y = yy, set = set_i, g = gg, ...)
+    thisArg<- NextMethod(y = yy, set = set_i, which_graph = this_graph, ...)
     obj<- combine(obj, thisArg, h1, j, depParams)
     j<- j+1
   }
@@ -68,7 +75,11 @@ for_u_in_U.Argument<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar=
 
 
 
-for_u_in_U.ArgumentSS<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, ...)
+
+
+
+#' @export
+for_u_in_U.ArgumentSS<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, which_graph, ...)
 {
 
 
@@ -82,9 +93,9 @@ for_u_in_U.ArgumentSS<- function(obj, obj2, subsets, k_ratio, h1, depParams, Uba
 
 
 
-
+#' @export
 #' @importFrom stats optim
-for_u_in_U.ArgumentSSvec<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, obj_mle1, ...)
+for_u_in_U.ArgumentSSvec<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, which_graph, obj_mle1, ...)
 {
   # obj must be ArgumentSSvec
   # y must be GTree on the subset set
@@ -128,8 +139,8 @@ for_u_in_U.ArgumentSSvec<- function(obj, obj2, subsets, k_ratio, h1, depParams, 
 
 
 
-
-for_u_in_U.ArgumentEKS_part<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, Data, xx, ...)
+#' @export
+for_u_in_U.ArgumentEKS_part<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, which_graph, Data, xx, ...)
 {
   # 1) include submodel identifiability conditions here !!!!!
 
@@ -183,7 +194,9 @@ for_u_in_U.ArgumentEKS_part<- function(obj, obj2, subsets, k_ratio, h1, depParam
 
 
 
-for_u_in_U.ArgumentHvec<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set,...)
+
+#' @export
+for_u_in_U.ArgumentHvec<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, which_graph, ...)
 {
   x<- sigma(y, set, U_bar=Ubar)
   return(x)
@@ -196,8 +209,8 @@ for_u_in_U.ArgumentHvec<- function(obj, obj2, subsets, k_ratio, h1, depParams, U
 
 
 
-
-for_u_in_U.ArgumentD<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set,... ) # the inputs should be modified, it is somehow
+#' @export
+for_u_in_U.ArgumentD<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, which_graph, ... ) # the inputs should be modified, it is somehow
   #unclear why the arguments are matched
 {
   a<- sigma(y, set, U_bar=Ubar)
@@ -209,7 +222,9 @@ for_u_in_U.ArgumentD<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar
 
 
 
-for_u_in_U.ArgumentMLE1<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, g, ...)
+
+#' @export
+for_u_in_U.ArgumentMLE1<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, which_graph, ...)
 {
   g<- getGraph(y)
   x<- diag(ecount(g))
@@ -230,21 +245,8 @@ for_u_in_U.ArgumentMLE1<- function(obj, obj2, subsets, k_ratio, h1, depParams, U
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-for_u_in_U.ArgumentCC<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, ...)
+#' @export
+for_u_in_U.ArgumentCC<- function(obj, obj2, subsets, k_ratio, h1, depParams, Ubar, y, set, which_graph, ...)
 {
   return(y$data)
 }

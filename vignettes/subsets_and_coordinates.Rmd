@@ -1,0 +1,280 @@
+---
+title: "Subsets and Coordinates"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Subsets and Coordinates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+# devtools::load_all("~/gremes", export_all=FALSE)
+library(gremes)
+
+```
+
+
+A collection of subsets is one of the arguments in the `estimate` method for many of the classes designed for parametric estimation. It is a key component of the estimation process. The idea is to choose a node and call it a *root*. Then to create a subset of nodes containing the root. There are three recommendations when creating the subsets from the point of view of the estimation process.
+
+**Every node with observable variable should be a root with some subset of nodes assigned to it.**
+
+**The subgraph induced by the subset of nodes should be connected.**
+
+When there are latent variables we add one more recommendation:
+
+**The subgraph induced by the node in the subset must be such that all edge parameters that belong to the subgraph are identifiable. This means that every node within the subgraph with latent variable must be connected to at least three nodes which are also part of the subgraph.**  
+
+
+## Creating sets manually
+
+The argument which contains the roots and the subsets which is passed to the method `estimate` must be of class `RootDepSet`. This is a class containing as subclasses `Neighborhood`, `FlowConnect` and `Set`. An object of this class has one slot containing the subsets as a list, `$values`, and one slot containing the roots as vector, `$root`.
+
+We can create the subsets manually.
+
+```{r}
+rdsobj<- RootDepSet()
+rdsobj<- setRootDepSet(rdsobj, subset = list(c("a", "b", "c"), c("b", "c")), root = c("a", "b"))
+rdsobj
+
+```
+
+For large graphs this will be not so handy. Below there are some tools to create subsets automaticaly that satisfy the first two recommendations above.
+
+## Creating subsets on the priciple of **neighborhood**.
+
+The sets here are based on the principle of **neighborhood**. It makes sense for every root to take a neighborhood of some order. This can also have a bias reduction effect on the estimator.
+
+```{r}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat)  
+subs<- Neighborhood()
+subset(subs, 3, seg)
+
+# passing the latent variables
+subset(subs, 2, seg, U_bar=c("2", "5"))
+
+```
+
+The subsets appear in the slot `$values` and roots appear in the slot `&root`.
+
+In the first case for every node in the graph a subset of neighbors is created. In the second case, when latent variables are passed, a subset of neighbors is created only for **nodes with observable variables**. This is in line with the estimation process. However the subset itself is allowed to contain unobserved variables. This is because the subset should induce a connected subgraph. For the third recommendation regarding the identifiability of the edge parameters in every induced subgraph we can use the method `validate` - read below.
+
+## Subsets based on the principle of **flow connected** nodes
+
+We could instead consider the set of flow connected nodes. In rivers this is reasonable as flow connection locations are highly dependent @asenova2021. Two nodes $i,j$ are flow connected if in a digraph directed according to the flow of the water, there is a directed path either from $i$ to $j$ or from $j$ to $i$.
+
+A collection of subsets based on the principle of flow connection could also have a bias reduction property for the estimators. 
+
+We first introduce two tools regarding flow connection.
+
+**Class `FlowConnectionMatrix`**
+
+Sometimes it can happen that the information is stored in a matrix. In a matrix carrying information about flow connectedness 1 means that node $i$ is flow connected to node $j$, and if $i,j$ are not flow connected, $i,j$-th entry of the matrix is zero. 
+
+
+In case flow connection information is stored in a matrix we need to create an object named `FlowConnectionMatrix`. Creating the object executes some checks on the matrix passed with respect to the graph which is also passed to the generator function: the check is about the match between the names of the graph and the names of the rows/columns of the matrix. 
+
+The check is not whether the matrix is correct with respect to the graph passed or vice versa. 
+Therefore the graph that is passed need not be directed according to the water flow, but simply the graph that is used in the application.  
+
+If the matrix is available to the user already, here we show how it can be used to create subsets based on the principle of flow connection.
+
+```{r, fig.height=4.5, fig.width=4.5}
+# create a graph and name the vertices
+g<- graph(c(1,2,3,2, 2,4,4,5), directed=TRUE)
+g<- set.vertex.attribute(g, "name", V(g), letters[1:5])
+
+# create the flow connection matrix if not available 
+x<- matrix(rep(1,25), 5, 5)
+x[1,3]<- x[3,1]<- 0
+colnames(x)<- rownames(x)<- letters[1:5] # note that the columns and rows should be named according to the nodes
+
+# create the object of class 'FlowConnectionMatrix'
+fcmat<- FlowConnectionMatrix(x,g)
+fcmat
+plot(g)
+
+```
+
+Class `FlowConnectionGraph`
+
+If the flow connection information is stored in a graph, we can create the flow connection matrix from this graph by applying the method `flowConnection` to an object of class `FlowConnectionGraph`.
+
+```{r fig.height=4.5, fig.width=4.5}
+
+g<- graph(c(1,2,3,2, 2,4,4,5), directed=TRUE)
+g<- set.vertex.attribute(g, "name", V(g), c("a", "b", "c", "d", "e"))
+fcg<- FlowConnectionGraph(g)
+plot(g)
+flowConnection(fcg)
+
+```
+
+<br> 
+
+Next we create the collection of subsets based on flow connection.
+
+We use real dataset on Danube. We thank Adrien Hitz for providing us with the data. They were first used in @asadi.
+
+```{r fig.height=7, fig.width=7}
+load("~/gremes/data/DanubeGraph.RData")
+plot(DanubeTree, layout=layout_as_tree(DanubeTree, root=c(1)))
+load("~/gremes/data/DanubeFlowConnectedNodes.RData")
+
+```
+
+Create the source from which information on the flow connection is taken. The source can be a matrix containing the flow connection information or a directed graph. If it is a matrix, the entry $ij$ is one if location $i$ is connected to location $j$. If it is a graph, the direction must correspond to the water flow.
+
+```{r}
+# if the source object is a matrix, create an object "FlowConnectionMatrix"
+fcmat<- FlowConnectionMatrix(DanubeFlow, DanubeTree)
+rds<- FlowConnect()
+sets<- subset(rds, from = fcmat, DanubeTree)
+sets$value$X3
+sets$value$X21
+
+```
+
+To illustrate the object of class `FlowConnectionGraph` we use a fictive graph.
+
+```{r}
+
+# if the source object is a directed graph, create an object "FlowConnectionGraph"
+fcg<- FlowConnectionGraph(g)
+sets<- subset(rds, fcg, g)
+sets
+
+```
+
+We can use the flow connection matrix as additional information in plots - see Vignette "Application Danube".
+
+
+<br> 
+
+A matrix of coordinates is an argument of the method `estimate.EKS`. We show here how to create easy this matrix.
+
+## Creating the set of evaluation points for the Extremal Coefficients estimator.
+
+As the name suggests this estimator is based on extremal coefficients. An extremal coefficient for a set $J$ is the stable tail dependence function evaluated at a vector $1_J=(1_{i\in J}, i\in V)$. Usually we take $|J|=2$ or $|J|=3$. 
+
+```{r}
+tup<- Tuples()
+seg<- make_tree(8,2, mode = "undirected")
+seg<- set.vertex.attribute(seg, "name", V(seg), letters[1:8]) # 
+data<- matrix(rnorm(10*8), 10,8)
+colnames(data)<- letters[1:8]
+
+tobj<- Tree(seg, data)
+x<- rep(1,8)
+names(x)<- get.vertex.attribute(tobj$graph, "name", V(tobj$graph))
+ep<- evalPoints(tup, tobj, x)
+head(ep)
+
+```
+
+We can also create evaluation points with different values than only ones. 
+
+```{r}
+x<- c(1:8)
+names(x)<- get.vertex.attribute(tobj$graph, "name", V(tobj$graph))
+ep<- evalPoints(tup, tobj, x)
+head(ep)
+
+```
+
+In a similar manner we can create evaluation points based on triples or quadruples or adjacent nodes.
+
+```{r}
+tri<- Triples()
+ep<- evalPoints(tri, tobj, x)
+head(ep)
+
+quad<- Quadruples()
+ep<- evalPoints(quad, tobj, x)
+head(ep)
+
+adj<- Adjacent()
+ep<- evalPoints(adj, tobj, x)
+head(ep)
+
+```
+
+
+Using only evaluation points based on adjacent nodes is not recommended when there are latent variables. The reason is that the evaluation points might not be enough to identify all the edge weights. Therefore it is recommended to use evaluation points based on adjacent nodes in combination with evaluation points based on tuples or triples.
+
+
+## Subsets and latent variables
+
+When there are no latent variables any subsets or set of evaluation points is good. But when there are latent variables the choice of subsets is more important. Although not necessary the following rule is useful when creating subsets: 
+
+**The subgraph induced by the node in the subset must be such that all edge parameters that belong to the subgraph are identifiable. This means that every node within the subgraph with latent variable must be connected to at least three nodes which are also part of the subgraph.**  
+
+Consider the following example:
+
+```{r fig.height=4.5, fig.width=4.5}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) 
+plot(seg)
+
+```
+
+The nodes 2 and 5 contain latent variables. A model on the graph induced by the nodes $\{Paris, 2, Meaux\}$ will have not uniquely identifiable edge parameters, because node 2 is connected within this graph to only two other nodes. We should add the node $Melun$ and then the model on the four nodes $\{Paris, 2, Meaux, Melun\}$ has uniquely identifiable edge parameters. 
+
+If we create subsets on the principle of neighborhood of order two there are subsets to  
+
+```{r}
+# we need some data to create the object of class "Tree"
+seg_data<- matrix(rnorm(10*7), 10, 7)
+colnames(seg_data)<- name_stat
+tobj<- Tree(seg, seg_data[,c("Paris", "Meaux", "Melun", "Nemours", "Sens")])
+
+# create the neighborhood of order one and call the function "is_identifiable" 
+nobj<- Neighborhood()
+nobj<- subset(nobj, 1, seg, U_bar=getNoDataNodes(tobj))
+is_identifiable(nobj, tobj)
+
+```
+
+We receive messages that there are subsets whose induced subgraphs contain edge weights that are not identifiable.
+
+If the neighborhoods are of order two then all subsets are such that the induced subgraphs contains non identifiable edge weights. We get no message from the function `is_identifiable`.
+
+```{r}
+nobj<- subset(nobj, 2, seg, U_bar=getNoDataNodes(tobj))
+is_identifiable(nobj, tobj)
+
+```
+
+## References

@@ -1,0 +1,139 @@
+---
+title: "Huesler-Reiss distributions"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Huesler-Reiss distributions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+## Parameterization on trees
+
+The parameterization used for models on **trees** is the following
+\begin{equation} 
+%\begin{split} 
+    H_{\Lambda}(z)
+    %\\&
+    =
+    \exp\left\{-
+    \sum_{u\in V}
+    \frac{1}{z_u}\Phi_{|V|-1}\left(
+     \ln\frac{z_v}{z_u} +2\lambda^2_{uv}, v\in V\setminus u; \Sigma_{V,u}(\Lambda)
+      \right)
+      \right\},
+    \qquad z \in (0, \infty)^{|V|}, 
+%\end{split}
+\end{equation}
+where $\Phi_p(\,\cdot\,; \Sigma)$ denotes the $p$-variate zero mean Gaussian cdf with covariance matrix $\Sigma$. This is a Huesler-Reiss copula with univariate Frechet margins. This expression is due to @nikoloulopoulos_2009, @genton2011 and @huser_dav2013. 
+The matrix $\lambda_{ij}$ depends on $(\theta_e, e\in E)$, namely 
+\begin{equation} 
+	\big(\Lambda(\theta)\big)_{ij}
+	= \lambda^2_{ij}(\theta)
+	= \frac{1}{4}\sum_{e \in p(i,j)} \theta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+$p(i,j)$ is the unique path between nodes $i,j$.
+The matrix $\Sigma_{W,u}$ is given by 
+\begin{equation} \label{eq:hrdist}
+   \big(\Sigma_{W,u}(\Lambda)\big)_{ij}
+    =
+    2(\lambda_{iu}^2
+    +
+    \lambda_{ju}^2
+    -
+    \lambda^2_{ij}),
+    \qquad i,j\in W\setminus u.
+\end{equation}
+
+The bivariate Huesler-Reiss copula with Unit Frechet margins when the variables are adjacent and the edge weight between them is $\theta_e$ is given  by  
+\begin{equation} 
+%\begin{split} 
+    H_{\theta_e}(z_u, z_v)
+    %\\&
+    =
+    \exp\left\{-
+    \frac{1}{z_u}\Phi\left(
+     \frac{\theta_e}{2}+\frac{\ln z_v/z_u}{\theta_e}\right)
+      -
+      \frac{1}{z_v}\Phi\left(
+     \frac{\theta_e}{2}+\frac{\ln z_u/z_v}{\theta_e}\right)
+      \right\},
+    \qquad z_u, z_v \in (0, \infty)^2, 
+%\end{split}
+\end{equation}
+
+Such a parameterization means that large values of $\theta$'s or $\lambda$'s correspond to weak extremal dependence and small values to stronger extremal dependence. 
+
+
+**The method `estimate` applied to objects of classes  `MME`, `MLE`, `MLE1`, `MLE2`, `EKS`, `EKS_part`, `EngHitz`, `MMEave`, `MLEave` estimates $(\theta_e, e\in E)$.** See also Vignettes "Code - Note" 1-4 and 6.
+
+## Parameterization on block graphs 
+
+The parameterization of the Huesler-Reiss distribution for models on **block graphs** is the following
+\begin{equation} 
+%\begin{split} 
+    H_{\Lambda}(z)
+    %\\&
+    =
+    \exp\left\{-
+    \sum_{u\in V}
+    \frac{1}{z_u}\Phi_{|V|-1}\left(
+     \ln\frac{z_v}{z_u} +2\lambda^2_{uv}, v\in V\setminus u; \Sigma_{V,u}(\Lambda)
+      \right)
+      \right\},
+    \qquad z \in (0, \infty)^{|V|}, 
+%\end{split}
+\end{equation}
+
+where the parameter $\lambda_{ij}^2, i,j \in V$ is defined in terms of the edge weights $\delta^2_{e}, e\in E$. The relation is given by
+\begin{equation}
+	\big(\Lambda(\theta)\big)_{ij}=\lambda_{ij}^2(\delta) = \sum_{e\in p(i,j)}\delta^2_{e}
+\end{equation}
+for $\delta=(\delta_e^2, e\in E)$ and $p(i,j)$ the unique shortest path between nodes $i,j$. The matrix $\Sigma_{W,u}$ is given by
+\begin{equation} 
+   \big(\Sigma_{W,u}(\Lambda)\big)_{ij}
+    =
+    2(\lambda_{iu}^2
+    +
+    \lambda_{ju}^2
+    -
+    \lambda^2_{ij}),
+    \qquad i,j\in W\setminus u.
+\end{equation}
+
+The bivariate Huesler-Reiss copula with Unit Frechet margins when the variables are adjacent and the edge weight between them is $\delta_e$ is given  by  
+\begin{equation} 
+%\begin{split} 
+    H_{\delta_e}(z_u, z_v)
+    %\\&
+    =
+    \exp\left\{-
+    \frac{1}{z_u}\Phi\left(
+     \frac{\ln z_v/z_u}{2\delta_e}+\delta_e\right)
+      -
+      \frac{1}{z_v}\Phi\left(
+     \frac{\ln z_u/z_v}{2\delta_e}+\delta_e\right)
+      \right\},
+    \qquad z_u, z_v \in (0, \infty)^2, 
+%\end{split}
+\end{equation}
+
+Such a parameterization means that large values of $\delta$'s or $\lambda$'s correspond to weak extremal dependence and small values to stronger extremal dependence. 
+
+
+**The method `estimate` applied to objects of classes `HRMBG` estimates $(\delta^2_e, e\in E)$.** See also Vignette "Code - Note 5".  
+
+
+## References
+

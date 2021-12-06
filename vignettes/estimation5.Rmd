@@ -1,14 +1,26 @@
 ---
-title: "Estimation - Note 5"
+title: "Code - Note 5"
+subtitle: "Method of Moment estimation for models on block graphs"
 author: "Stefka Asenova"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimation - Note 5}
+  %\VignetteIndexEntry{Code - Note 5}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: mypr1_rev1.bib
 ---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -19,11 +31,13 @@ library(gremes)
 
 ```
 
-As we do not have a real dataset according to a given block graph we generate observations.
+## Generate the data first
 
-Create the graph
-```{r}
-rm(list=ls())
+We do not have a real dataset according to a given block graph which is not a tree. Therefore we first generate the observations. How is the data generated is described in Vignette "Additional functionalities".
+
+Create the block graph.
+
+```{r fig.height=4.5, fig.width=4.5}
 g<- graph(c(1,3,1,2,2,3,
             3,4,4,5,5,3,
             3,7,3,6,6,7), directed=FALSE)
@@ -32,16 +46,18 @@ plot(g)
 
 ```
 
-Create the edge weights to beassigned to the edges of the graph.
+Create the edge weights to be assigned to the edges of the graph.
+
 ```{r}
 # all deltas are squares already
-C1<- c(0.2, 0.8, 0.6) # d_13^2, d_12^2, d_23^2
-C2<- c(0.3, 0.5, 0.1) #d_34^2, d_45^2, d_35^2
-C3<- c(0.4, 0.05, 0.25) #d_37^2, d_36^2, d_67^2
+C1<- c(0.2, 0.8, 0.6)     # d_13^2, d_12^2, d_23^2
+C2<- c(0.3, 0.5, 0.1)     # d_34^2, d_45^2, d_35^2
+C3<- c(0.4, 0.05, 0.25)   # d_37^2, d_36^2, d_67^2
 
 ```
 
-Attach the edge weights to the edges 
+Attach the edge weights to the edges.
+
 ```{r}
 hrmbgobj<- HRMBG(g)
 hrmbgobj<- setParams(hrmbgobj, c(C1, C2, C3))
@@ -49,8 +65,8 @@ hrmbgobj
 
 ```
 
-Create the matrix Lambda, whose entry $\lambda_{ij}$ is the sum of the edge weights on the shortest path between 
-node $i$ and node $j$.
+Create the matrix $\Lambda$, whose entry $\lambda_{ij}$ is the sum of the edge weights on the unique shortest path between node $i$ and node $j$.
+
 ```{r}
 hrmlam<- HRLambda(hrmbgobj)
 hrmlam
@@ -59,27 +75,37 @@ hrmlam
 
 Generate 1000 observations from Huesler-Reiss distribution with parameter matrix $\Lambda$ and some independent
 random noise.
+
 ```{r}
 X<- rHRM(hrmbgobj, hrmlam, 1000, noise = TRUE)
 
 ```
 
+## Perform estimation 
+
 Create the subsets for local estimation.
+
 ```{r}
 rdsobj<- RootDepSet()
-rdsobj<- setRootDepSet(rdsobj,subset=list(c("a", "b", "d", "e", "f", "g"),
-                                          c("a", "b", "d", "e", "f", "g"),
-                                          c("a", "b", "d", "e", "f", "g"),
-                                          c("a", "b", "d", "e", "f", "g"),
-                                          c("a", "b", "d", "e", "f", "g"),
-                                          c("a", "b", "d", "e", "f", "g")), 
+rdsobj<- setRootDepSet(rdsobj, subset = list(c("a", "b", "d", "e", "f", "g"),
+                                             c("a", "b", "d", "e", "f", "g"),
+                                             c("a", "b", "d", "e", "f", "g"),
+                                             c("a", "b", "d", "e", "f", "g"),
+                                             c("a", "b", "d", "e", "f", "g"),
+                                             c("a", "b", "d", "e", "f", "g")), 
                        c("a", "b", "d", "e", "f", "g"))
+
 ```
 
-Estimate the model treating the third variable as latent.
+Estimate the model treating the third variable as latent: create first an object of class `HRMBG` and then use on it the method `estimate`.
+
 ```{r}
-X<- X[,-3]
-hrmbgobj<- estimate(hrmbgobj, X, rdsobj, k_ratio=0.2)
-hrmbgobj$depParams
+hrmbg<- HRMBG(g)
+hrmbg<- suppressMessages(estimate(hrmbg, X[,-3], rdsobj, k_ratio=0.2))
+hrmbg$depParams
 
 ```
+
+We have suppressed the messages. The messages are informative, if they don't stop the process they are not errors.
+
+

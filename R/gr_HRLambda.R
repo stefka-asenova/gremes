@@ -1,8 +1,11 @@
-#' Generates the parameter matrix of a Huesler-Reiss distribution
+#' Parameter matrix of a Huesler-Reiss distribution
 #'
-#' It is used to generate observations from a Huesler-Reiss distribution with parameter matrix
-#' having a particular structure: entry lambda_{ij} is the sum of the edge weights on the shortest
-#' path between node i and node j in a block graph.
+#' It creates the parameter matrix Lambda of the limiting max-stable Huesler-Reiss distribution which is an attractor of
+#' a graphical model with respect to some block graph and whose distribution is composed cliquewise from
+#' Huesler-Reiss distributions. See Vignette "Introduction" too.
+#' The entry lambda_{ij} is the sum of the edge weights on the shortest
+#'  path between node i and node j in the block graph.
+#' The matrix Lambda can be used to generate observations from that max-stable Huesler-Reiss distribution.
 #' @rdname HRLambda
 #' @export
 HRLambda<- function(obj, ...)
@@ -14,7 +17,8 @@ HRLambda<- function(obj, ...)
 
 
 #' @rdname HRLambda
-#' @param obj is an object of class \code{HRMBG}.
+#' @param obj is an object of class \code{HRMBG} with non-zero edge weights.
+#' @param ... additional arguments
 #' @return A symmetric matrix whose entry lambda_{ij} is the sum of the edge weights on the shortest
 #' path between node i and node j.
 #' @export

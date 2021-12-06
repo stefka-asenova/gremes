@@ -7,14 +7,19 @@
 FlowConnectionGraph(g)
 }
 \arguments{
-\item{g}{should be an object of class "igraph"}
+\item{g}{should be an object of class "igraph". It should have named vertices.}
 }
 \description{
-It is used as an input to create subsets based on the criterion of flow connectedness.
-Within a subset all nodes will be flow connected.
+It creates an object from class \code{FlowConnectionGraph}. The function verifies whether the graph is
+directed and the vertices are named. The object can be used further to create subsets based on the criterion of
+flow connectedness. See Vignette "Subsets and Coordiantes".
 }
 \examples{
 seg_dir<- graph(c("2","paris", "meaux", "2", "melun", "2","5", "melun","nemours", "5", "sens", "5"),
  directed = TRUE)
 fcg<- FlowConnectionGraph(seg_dir)
+rds<- FlowConnect()
+
+# call method subset to create subsets
+subset(rds, fcg, seg_dir)
 }

@@ -1,9 +1,9 @@
 
-
-stdf_star<- function(obj,...)
-{
-  UseMethod("stdf_star", obj)
-}
+#
+# stdf_star<- function(obj,...)
+# {
+#   UseMethod("stdf_star", obj)
+# }
 
 
 

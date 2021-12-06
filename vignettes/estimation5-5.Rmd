@@ -1,0 +1,129 @@
+---
+title: "Estimation - Note 5"
+subtitle: "Method of Moment estimation for models on block graphs"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 5}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+header-includes:
+   - \usepackage{bbm}
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+The estimator is the same as the MME for trees described in Vignette "Estimation - Note 1".
+
+<br>
+
+For application of this estimator, see Vignette "Code - Note 5".
+
+<br>
+
+The idea is to find the edge weights $\delta=(\delta^2_e, e\in E)$ which minimizes the distance between the empirical and the theoretical covariance matrices:
+\begin{equation} 
+	\hat{\delta}^{\mathrm{MM}}_{n,k}
+	=
+	\arg\min_{\delta\in(0,\infty)^{E}}
+	\sum_{u\in U} \| \hat{\Sigma}_{W_u, u}-\Sigma_{W_u,u}(\delta) \|_F^2\, .
+\end{equation}
+
+where
+
+- $n$ is the number of all observations in the sample
+
+- $k$ is the number of the upper order statistics used in the estimation
+
+- $u$ is the node for which we condition on the event $\{X_u>t\}$
+
+- $\| \cdot \|_F$ is the Frobenius norm
+
+- $U\subseteq V$ is the set of observable variables
+
+- $W_u$ is a subset on the node set depending on $u$. Typically a neighborhood of $u$ or the nodes that are flow connected to $u$ or the intersection of both. Note that the induced graph on $W_u$ must be connected.  A good practice is to compose the sets such that within each subset all parameters are uniquely identifiable. This means that every node in $W$ with latent variable shold be connected to at least three other cliques in the same set $W$.
+
+- $\hat{\Sigma}_{W_u, u}$ is the non-parametric covariance matrix
+
+- $\Sigma_{W_u,u}(\delta)$ is the parametric covariance matrix
+
+- For fixed $u$ and $W_u$ the parametric matrix $\Sigma_{W_u,u}$ is given by 
+\begin{equation} \label{eq:hrdist}
+   \big(\Sigma_{W,u}(\Lambda)\big)_{ij}
+    =
+    2(\lambda_{iu}^2
+    +
+    \lambda_{ju}^2
+    -
+    \lambda^2_{ij}),
+    \qquad i,j\in W\setminus u.
+\end{equation}
+with 
+\begin{equation} 
+	\big(\Lambda(\delta)\big)_{ij}
+	= \lambda^2_{ij}(\delta)
+	= \sum_{e \in p(i,j)} \delta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+(See also he parameterization used for block graphs in Vignette "Introduction".)
+
+- If the sample of the original variables is $\xi_{v,i}, v\in U, i=1,\ldots, n$ consider the transformation using the empirical cumulative distribution function $\hat{F}_{v,n}(x)=\big[\sum_{i=1}^n\mathbb{1}(\xi_{v,i}\leq x)\big]/(n+1)$.
+
+\begin{equation*} 
+	\hat{X}_{v,i} = \frac{1}{1-\hat{F}_{v,n}(\xi_{v,i})}, \qquad 
+	v \in U, \quad i = 1, \ldots, n.
+\end{equation*}
+
+- Fix $u$ and $W_u$. For given $k\in \{1,\ldots n\}$ consider the set of indices 
+\[
+I_{u} = \{i = 1,\ldots,n: \hat{X}_{u,i} > n/k\}
+\]
+
+- For every $v\in W_u\setminus u$ and $i\in I_u$ compose the differences
+\begin{equation}
+	\Delta_{uv,i} =
+	\ln\hat{X}_{v,i}-\ln\hat{X}_{u,i}.
+\end{equation}
+
+- The vector of means of these differences is given by
+\begin{equation*} 
+\hat{\mu}_{W_u,u}
+    =
+    \frac{1}{|I_u|}\sum_{i\in I_u}(\Delta_{uv,i}, v\in W_u \setminus u).
+\end{equation*}
+
+-  The non-parametric covariance matrix $\hat{\Sigma}_{W_u,u}$ is given by
+
+\begin{equation*}
+    \hat{\Sigma}_{W_u,u}
+    =
+    \frac{1}{|I_u|}\sum_{i\in I_u}(\Delta_{uv,i}-\hat{\mu}_{W_u,u}, v\in W_u\setminus u)
+    (\Delta_{uv,i}-\hat{\mu}_{W_u,u}, v\in W_u\setminus u)^\top\, .
+%\end{split}
+\end{equation*}
+
+
+
+
+The non-parametric estimators $\hat{\mu}$ and $\hat{\Sigma}$ has been suggested in @engelke.
+
+## References

@@ -16,7 +16,7 @@ validate<- function(obj,...)
 #' @export
 validate.default<- function(obj, ...)
 {
-  warning("Default method is called on unrecognised object")
+ # warning("Default method is called on unrecognised object")
   return(obj)
 }
 
@@ -139,6 +139,8 @@ validate.HRMtree<- function(obj, gr, ...)
 #' @export
 validate.FlowConnectionGraph<- function(obj, ...)
 {
+  #obj<- g
+
   if (!is.directed(obj))
     stop("The graph must be directed, corresponding to the flow direction")
   if (!is.named(obj))

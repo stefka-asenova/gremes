@@ -1,0 +1,109 @@
+---
+title: "Estimation - Note 3"
+subtitle: "Extremal Coefficients Estimator for models on trees"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 3}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+header-includes:
+   - \usepackage{bbm}
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+
+<br>
+
+For application of this estimator, see Vignette "Code - Note 3".
+
+<br>
+
+## Extremal coefficient estimator (ECE)
+
+The pairwise extremal coefficients estimator, named at the beginning EKS to the authors of the paper where it appeared @eks16, is based on the bivariate stable tail dependence function (stdf). It is decribed in Section 4.3 in  @asenova2021. More on the stdf can be found in @haan.
+
+For the Huesler--Reiss distribution with parameter matrix $\Lambda(\theta)$ and for a pair of nodes $J = \{u, v\}$, the bivariate extremal coefficient is just 
+\begin{equation}
+l_J(1, 1) = 2 \Phi(\lambda_{uv}(\theta)),
+\end{equation}
+with $\Phi$ the standard normal cdf and 
+\begin{equation} 
+	\big(\Lambda(\theta)\big)_{ij}
+	= \lambda^2_{ij}(\theta)
+	= \frac{1}{4}\sum_{e \in p(i,j)} \theta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+
+The non-parametric estimator of the stdf dates back to @drees1998 and yields the following estimator for the extremal coefficient $l_J(1, \ldots, 1)$ for $J \subseteq V$:
+\begin{equation} 
+\label{eqn:lJkn}
+  \hat{l}_{J;n,k}(1,\ldots,1)
+  =
+  \frac{1}{k}\sum_{i=1}^n
+  \mathbb{1}\left( \max_{j \in J} n\hat{F}_{j,n}(\xi_{j,i}) >n+1/2-k \right).
+\end{equation}
+
+Let $\mathcal{Q} \subseteq \{ J \subseteq U : |J| = 2 \}$ be a collection of pairs of nodes associated to observable variables and put $q = |\mathcal{Q}|$, ensuring that $q \ge |E| = d-1$, the number of free edge parameters. The pairwise extremal coefficients estimator (ECE) of $\theta$ is
+\begin{equation} 
+\label{eqn:ECE}
+	\hat{\theta}^{\mathrm{ECE}}_{n,k}
+	=
+	\arg\min_{\theta \in (0,\infty)^{|E|}}
+	\sum_{J \in \mathcal{Q}} \left( \hat{l}_{J;n,k}(1,1) - l_J(1, 1;\theta) \right)^2.
+\end{equation}    
+
+The $\mathcal{Q}$ must be the collection of all possible pairs of nodes in $U$. One may include also tri-variate extremal coefficients, in which case we will have $|J|=3$.
+
+
+- $n$ is the number of all observations in the sample
+
+- $k$ is the number of the upper order statistics used in the estimation
+
+- If the sample of the original variables is $\xi_{v,i}, v\in U, i=1,\ldots, n$ consider the transformation using the empirical cumulative distribution function $\hat{F}_{v,n}(x)=\big[\sum_{i=1}^n\mathbb{1}(\xi_{v,i}\leq x)\big]/(n+1)$.
+
+## ECE Version 2  
+
+The second version of the ECE which is imlemented with object of class `EKS_part` uses the subsets $W_u$ for every $u\in U$ where $U$ is the set of noted with observable variables. It is similar to the MLE Version 1 explained in Vignette "Estimation - Note 2".
+
+For fixed $u$ and $W_u$ such that $G(W_u)$ is a connected subgraph we apply the EC estimator of $\theta_{W_u}$ which is the collection of all edge weights within the subgraph $G(W_u)$. 
+
+In the first step we solve for every $u\in U$ and given $W_u$
+\begin{equation}
+	\hat{\theta}_{W_u,n,k}
+	=
+	\arg\min_{\theta \in (0,\infty)^{|W_u|-1}}
+	\sum_{J \in \mathcal{Q_u}} \left( \hat{l}_{J;n,k}(1,1) - l_J(1, 1;\theta) \right)^2.
+\end{equation}    
+where $\mathcal{Q_u}$ is the collection of all possible pairs (and possibly triples) of nodes in $W_u$. 
+
+In a second step combine all estimates to obtain one estimate of $(\theta_e, e\in E)$
+
+\begin{equation} 
+    \hat{\theta}^{\mathrm{ECEp}}_{k,n}
+    =
+    \min_{\theta\in [0,\infty)^{|E|}}
+    \sum_{u\in U}\sum_{e\in E}(\hat{\theta}_{e,W_u}-\theta_{e})^2.
+    \end{equation}
+
+## References

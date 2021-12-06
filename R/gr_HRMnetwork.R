@@ -1,7 +1,9 @@
-#' \code{HRMnetwork} class
+#' Object of class \code{HRMnetwork}
+#'
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{HRMnetwork} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
+#' @return Object of class \code{HRMnetwork} with two slots: \code{$graph} containing the graph and
+#' \code{$depParams} the edge weights corresponding to the dependence parameters.
+#' The dependence parameters are initialized at zero.
 #' @export HRMnetwork
 #' @examples
 #' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
@@ -26,7 +28,8 @@ HRMnetwork<- function(g)
 
 
 
-#' \code{HRMtree} class
+#' Object of class \code{HRMtree}
+#'
 #' @param g must be an \code{igraph} object
 #' @return Object of class \code{HRMtree} with two slots: one containing the graph and the other the edge weights
 #' corresponding to the dependence parameters.
@@ -50,14 +53,20 @@ HRMtree<- function(g)
 
 
 
-#' \code{MME} class
-#' @param g must be an \code{igraph} object
-#' @return Object of class \code{MME} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
-#' @export MME
+#' Object of class \code{MME}
+#'
+#' It creates an object with two slots: \code{$graph} which contains the graph and \code{$depParams}
+#' which contains the edge weights, initialized with zero values. It is a subclass of \code{HRMtree}.
+#' It is intended to be used for models on trees to estimate edge weights using method of moment estimator.
+#' Please consult Vignettes "Code - Note 1" and "Estimation - Note 1".
+#' @param g must be an \code{igraph} object, a tree.
+#' @return Object of class \code{MME} with two slots: \code{$graph} containing the graph and \code{$depParams}
+#' containing the edge weights corresponding to the dependence parameters.
+#' The edge weights are initialized with zero values.
+#' @export
 #' @examples
 #' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
-#' mme<- MME(g)
+#' MME(g)
 MME<- function(g)
 {
   obj<- HRMtree(g)
@@ -68,13 +77,20 @@ MME<- function(g)
 
 
 
-#' \code{MLE} class
-#' @param g must be an \code{igraph} object
-#' @return Object of class \code{MLE} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
-#' @export MLE
+#' Object of class \code{MLE}
+#'
+#' Creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for edge weights estimation using the Covariance selection model.
+#' Consult also Vignettes "Code - Note 2" and "Estimation - Note 2".
+#' @param g must be an \code{igraph} object, a tree.
+#' @return Object of class \code{MLE} with two slots:  \code{$graph} containing the graph and \code{$depParams}
+#' containing the edge weights corresponding to the dependence parameters.
+#' The edge weights are initialized with zero values.
+#' @export
 #' @examples
-#' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
+#' g<- make_tree(8,3, mode="undirected")
+#' g<- set.vertex.attribute(g, "name", V(g), letters[1:8])
 #' mle<- MLE(g)
 MLE<- function(g)
 {
@@ -86,13 +102,19 @@ MLE<- function(g)
 
 
 
-#' \code{MLE1} class
-#' @param g must be an \code{igraph} object
-#' @return Object of class \code{MLE1} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
-#' @export MLE1
+#' Object of class \code{MLE1}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on trees.
+#' Consult also Vignettes "Code - Note 2" and "Estimation - Note 2".
+#' @param g must be an \code{igraph} object, a tree.
+#' @return Object of class \code{MLE1} with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#'  the edge weights corresponding to the dependence parameters. The edge weights are initialized with zero values.
+#' @export
 #' @examples
-#' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
+#' g<- make_tree(8,3, mode="undirected")
+#' g<- set.vertex.attribute(g, "name", V(g), letters[1:8])
 #' mle1<- MLE1(g)
 MLE1<- function(g)
 {
@@ -103,13 +125,20 @@ MLE1<- function(g)
 
 
 
-#' \code{MLE2} class
-#' @param g must be an \code{igraph} object
-#' @return Object of class \code{MLE2} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
-#' @export MLE2
+#' Object of class \code{MLE2}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on trees.
+#' Consult Vignettes "Code - Note 2" and "Estimation - Note 2".
+#' @param g must be an \code{igraph} object, a tree.
+#' @return Object of class \code{MLE2} with two slots: \code{$graph} containing the graph and \code{$depParams}
+#' containing the edge weights corresponding to the dependence parameters.
+#' The edge weights are initialized with zero values.
+#' @export
 #' @examples
-#' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
+#' g<- make_tree(8,3, mode="undirected")
+#' g<- set.vertex.attribute(g, "name", V(g), letters[1:8])
 #' mle2<- MLE2(g)
 MLE2<- function(g)
 {
@@ -121,10 +150,15 @@ MLE2<- function(g)
 
 
 
-#' \code{EKS} class
+#' Object of class \code{EKS}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on trees.
+#' Consult Vignettes "Code - Note 3" and "Estimation - Note 3".
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{EKS} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
+#' @return Object of class \code{EKS} with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights corresponding to the dependence parameters.
 #' @export EKS
 #' @examples
 #' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
@@ -139,9 +173,14 @@ EKS<- function(g)
 
 
 
-#' \code{EKS_part} class
+#' Object of class \code{EKS_part}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on trees.
+#' Consult Vignettes "Code - Note 3" and "Estimation - Note 3".
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{EKS_part} with two slots: one containing the graph and the other the edge weights
+#' @return Object of class \code{EKS_part} with two slots: \code{$graph} containing the graph and \code{$depParams} containing the edge weights
 #' corresponding to the dependence parameters.
 #' @export EKS_part
 #' @examples
@@ -155,9 +194,14 @@ EKS_part<- function(g)
 }
 
 
-#' \code{MMEave} class
+#' Object of class \code{MMEave}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on trees.
+#' Consult Vignettes "Code - Note 6" and "Estimation - Note 6".
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{MMEave} with two slots: one containing the graph and the other the edge weights
+#' @return Object of class \code{MMEave} with two slots: \code{$graph} containing the graph and \code{$depParams} containing the edge weights
 #' corresponding to the dependence parameters.
 #' @export MMEave
 #' @examples
@@ -170,9 +214,19 @@ MMEave<- function(g)
   return(obj)
 }
 
-#' \code{MLEave} class
+
+
+
+
+#' Object of class \code{MLEave}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on trees.
+#' Consult Vignettes "Code - Note 6" and "Estimation - Note 6".
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{MLEave} with two slots: one containing the graph and the other the edge weights
+#' @return Object of class \code{MLEave} with two slots: \code{$graph} containing the graph and \code{$depParams}
+#' containing the edge weights
 #' corresponding to the dependence parameters.
 #' @export MLEave
 #' @examples
@@ -185,10 +239,21 @@ MLEave<- function(g)
   return(obj)
 }
 
-#' \code{HRMBG} class
+
+
+
+#' Object of class \code{HRMBG}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on block graphs.
+#' Consult Vignettes "Code - Note 5" and "Estimation - Note 5".
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{HRMBG} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
+#' @return Object of class \code{HRMBG} with two slots: \code{$graph} containing the graph and \code{$depParams}
+#' containing the edge weights corresponding to the dependence parameters. Ig the graph which is passed
+#' in the argument has named edges these names are kept, if the edges are not named,
+#' they are given names "e1", "e2", etc.
+#' if the graph
 #' @export HRMBG
 #' @examples
 #' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)
@@ -204,11 +269,15 @@ HRMBG<- function(g)
 
 
 
-
-#' \code{EngHitz} class
+#' Object of class \code{EngHitz}
+#'
+#' It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+#' the edge weights which are initialized with zero values.
+#' It is intended to be used for estimation of edge weights of models on trees.
+#' Consult Vignettes "Code - Note 4" and "Estimation - Note 4".
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{Enghitz} with two slots: one containing the graph and the other the edge weights
-#' corresponding to the dependence parameters.
+#' @return Object of class \code{Enghitz} with two slots: \code{$graph} containing the graph and \code{$depParams}
+#' containing the edge weights corresponding to the dependence parameters.
 #' @export EngHitz
 #' @examples
 #' g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)

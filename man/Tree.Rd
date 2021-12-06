@@ -2,18 +2,25 @@
 % Please edit documentation in R/gr_Network.R
 \name{Tree}
 \alias{Tree}
-\title{\code{Tree} class}
+\title{Creates an object of class \code{Tree}}
 \usage{
 Tree(x, data)
 }
 \arguments{
-\item{x}{An object of class \code{igraph}}
+\item{x}{the graph with named nodes,  an object of class \code{igraph}}
 
-\item{data}{Data set associated to the graph}
-}
-\value{
-An object of class \code{Tree}
+\item{data}{Dataset with named columns}
 }
 \description{
-Class definition
+An object which contains the tree and the dataset
+}
+\examples{
+g<- make_tree(7,3, mode="undirected")
+g<- set.vertex.attribute(g, "name", V(g), letters[1:7])
+data<- matrix(rnorm(10*7), 10,7)
+colnames(data)<- get.vertex.attribute(g, "name", V(g))
+# object without latent variables
+Tree(x = g, data = data)
+# object with latent variables
+Tree(x = g, data = data[,-c(1,2)])
 }

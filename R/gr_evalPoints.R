@@ -1,9 +1,13 @@
-#' Generates a matrix of evaluation points, used by the EKS estimator.
-#' @export
+#' Matrix of coordinates
+#'
+#' Generates a matrix of evaluation points, used by the extremal coefficients estimator.
 #' @rdname evalPoints
-#' @param obj Object of a suitable class
+#' @export
+#' @param obj Object of class \code{Tuples, Triples, Quadruples, Adjacent} which are subclasses of class
+#' \code{Coordiantes} or an object of class \code{RootDepSet}.
 #' @param obj2 Object of class \code{Tree}
-#' @param x A named vector of coordinates of length |U|, where U is the set of available data nodes.
+#' @param x A named vector of coordinates of length |U|, where U is the set of nodes with available data.
+#' @param ... additional arguments
 evalPoints<- function(obj, ...)
 {
   UseMethod("evalPoints", obj)
@@ -19,15 +23,14 @@ evalPoints.default<- function(obj, ...)
 
 
 
-
-#' @export
 #' @rdname evalPoints
+#' @export
 #' @examples
 #' # create an object of class Adjacent
 #' adjobj<- Adjacent()
 #' # create a graph with named vertices
 #' g<- graph(c("a", "b", "b", "c", "b", "d"), directed = FALSE)
-#' # create a dataset with naled columns
+#' # create a dataset with named columns
 #' mydata<- matrix(rnorm(10*4), ncol=4, nrow=10)
 #' colnames(mydata)<- get.vertex.attribute(g, "name", V(g))
 #' # create object of class Network
@@ -49,8 +52,7 @@ evalPoints.default<- function(obj, ...)
 #' x<- c(1:vcount(g))
 #' names(x)<- c("a", "b", "c", "d")
 #' mytrip<- Triples()
-#' mytrip<- evalPoints(mytrip, mytree, x)
-#' mytrip
+#' evalPoints(mytrip, mytree, x)
 evalPoints.Coordinates<- function(obj, obj2, x, ...)
 {
   #debug

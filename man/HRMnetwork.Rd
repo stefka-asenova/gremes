@@ -2,7 +2,7 @@
 % Please edit documentation in R/gr_HRMnetwork.R
 \name{HRMnetwork}
 \alias{HRMnetwork}
-\title{\code{HRMnetwork} class}
+\title{Object of class \code{HRMnetwork}}
 \usage{
 HRMnetwork(g)
 }
@@ -10,11 +10,12 @@ HRMnetwork(g)
 \item{g}{must be an \code{igraph} object}
 }
 \value{
-Object of class \code{HRMnetwork} with two slots: one containing the graph and the other the edge weights
-corresponding to the dependence parameters.
+Object of class \code{HRMnetwork} with two slots: \code{$graph} containing the graph and
+\code{$depParams} the edge weights corresponding to the dependence parameters.
+The dependence parameters are initialized at zero.
 }
 \description{
-\code{HRMnetwork} class
+Object of class \code{HRMnetwork}
 }
 \examples{
 g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)

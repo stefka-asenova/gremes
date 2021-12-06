@@ -2,7 +2,7 @@
 % Please edit documentation in R/gr_HRMnetwork.R
 \name{MMEave}
 \alias{MMEave}
-\title{\code{MMEave} class}
+\title{Object of class \code{MMEave}}
 \usage{
 MMEave(g)
 }
@@ -10,11 +10,14 @@ MMEave(g)
 \item{g}{must be an \code{igraph} object}
 }
 \value{
-Object of class \code{MMEave} with two slots: one containing the graph and the other the edge weights
+Object of class \code{MMEave} with two slots: \code{$graph} containing the graph and \code{$depParams} containing the edge weights
 corresponding to the dependence parameters.
 }
 \description{
-\code{MMEave} class
+It creates an object with two slots: \code{$graph} containing the graph and \code{$depParams} containing
+the edge weights which are initialized with zero values.
+It is intended to be used for estimation of edge weights of models on trees.
+Consult Vignettes "Code - Note 6" and "Estimation - Note 6".
 }
 \examples{
 g<- graph(c("a","b", "b","c", "b", "d"), directed=FALSE)

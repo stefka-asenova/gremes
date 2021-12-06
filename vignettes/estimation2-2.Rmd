@@ -1,0 +1,201 @@
+---
+title: "Estimation - Note 2"
+subtitle: "Likelihood based estimation for models on trees"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+header-includes:
+   - \usepackage{bbm}
+---
+
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+<br>
+
+For application of this estimator, see Vignette "Code - Note 2".
+
+<br>
+
+- $n$ is the number of all observations in the sample
+
+- $k$ is the number of the upper order statistics used in the estimation
+
+- $u$ is the node for which we condition on the event $\{X_u>t\}$
+
+- $U\subseteq V$ is the set of observable variables
+
+- $\| \cdot \|_F$ is the Frobenius norm
+
+- $W_u$ is a subset on the node set depending on $u$. Typically a neighborhood of $u$ or the nodes that are flow connected to $u$ or the intersection of both. Note that the induced graph on $W_u$ must be connected.  A good practice is to compose the sets such that within each subset all parameters are uniquely identifiable. This means that every node in $W$ with latent variable shold be connected to at least three other nodes in the same set $W$.
+
+- $\mu_{W_u, u}$ is the parametric mean vector 
+
+\begin{equation}
+	\{\mu_{W_u,u}(\theta)\}_v 
+=
+-\frac{1}{2}\sum_{e \in p(u,v)} \theta_{e}^2, \quad v\in W_u \setminus u
+\end{equation}
+
+- $\Sigma_{W_u,u}(\theta)$ is the parametric covariance matrix
+
+\begin{equation} 
+	\big(\Lambda(\theta)\big)_{ij}
+	= \lambda^2_{ij}(\theta)
+	= \frac{1}{4}\sum_{e \in p(i,j)} \theta_e^2\, , \qquad i,j\in V, \ i \ne j, e\in E.
+\end{equation}
+
+ 
+\begin{equation} \label{eq:hrdist}
+   \big(\Sigma_{W_u,u}(\Lambda)\big)_{ij}
+    =
+    2(\lambda_{iu}^2
+    +
+    \lambda_{ju}^2
+    -
+    \lambda^2_{ij}),
+    \qquad i,j\in W_u\setminus u.
+\end{equation}
+
+
+
+- If the sample of the original variables is $\xi_{v,i}, v\in U, i=1,\ldots, n$ consider the transformation using the empirical cumulative distribution function $\hat{F}_{v,n}(x)=\big[\sum_{i=1}^n\mathbb{1}(\xi_{v,i}\leq x)\big]/(n+1)$.
+\begin{equation*} 
+	\hat{X}_{v,i} = \frac{1}{1-\hat{F}_{v,n}(\xi_{v,i})}, \qquad 
+	v \in U, \quad i = 1, \ldots, n.
+\end{equation*}
+
+- Fix $u$ and $W_u$. For given $k\in \{1,\ldots n\}$ consider the set of indices 
+\[
+I_{u} = \{i = 1,\ldots,n: \hat{X}_{u,i} > n/k\}
+\]
+
+- For every $v\in W_u\setminus u$ and $i\in I_u$ compose the differences
+\begin{equation}
+	\Delta_{uv,i} =
+	\ln\hat{X}_{v,i}-\ln\hat{X}_{u,i}.
+\end{equation}
+
+## Maximum likelihood method - Version 1
+
+The estimator of $(\theta_e, e\in E)$ is obtained in a two-step procedure:
+
+- Step 1: For each $u\in U$ obtain:
+\begin{equation} 
+        \begin{split}
+            \hat{\theta}_{W_u,k,n}
+            =
+            \arg\max_{\theta_{W_u}\in(0,\infty)^{|W_u|-1}}
+            L\Big(\mu_{W_u\setminus u}(\theta), \Sigma_{W_u\setminus u}(\theta); 
+            \{\Delta_{uv,i}: v\in W_u\setminus u, i\in I_u\}\Big)
+        \end{split}
+    \end{equation}
+    
+-  Step 2: Solve:
+  \begin{equation} 
+    \hat{\theta}^{MLE1}_{k,n}
+    =
+    \min_{\theta\in [0,\infty)^{|E|}}
+    \sum_{u\in U}\sum_{e\in E}(\hat{\theta}_{e,W_u}-\theta_{e})^2
+    \end{equation}
+    $\hat{\theta}_{e, W_u}$ is the estimate of $\theta_{e}$ from the vector of estimates  $\hat{\theta}_{W_u}$.
+    
+
+
+## Maximum likelihood method - Version 2
+
+Consider the likelihood function of a random sample $y_{i}, i=1, \ldots, k$ of mulivariate normal distribution with mean vector $\mu$ and covariance matrix $\Sigma$, where $y_i$ is of dimension $d$.
+
+\begin{align*}
+    L(\mu,\Sigma;\,  &y_1,\ldots,y_k)
+    =
+    \prod_{i=1}^k\phi_d(y_i-\mu;\Sigma)
+    \\&=
+    (2\pi)^{-kd/2}(\det \Sigma^{-1})^{k/2}
+    %\\&
+    %\times
+    \exp\Big(
+        -\frac{1}{2}\sum_{i=1}^k(y_i-\mu)^T\Sigma^{-1}(y_i-\mu)
+    \Big)\, .
+\end{align*}
+
+The method of composite likelihoods consists of optimizing a function that collects the likelihood functions across all the sets $W_u, u\in U$. So let for all $u\in U$ the subsets $W_u$ be given.
+
+Consider the composite likelihood function
+\begin{equation} 
+\begin{split}
+    L\big(\theta; \, & \{\Delta_{uv,i}: v\in W_u\setminus u,\, i\in I_u, u\in U\}\big)
+    \\&=
+    \prod_{u\in U}L\big(\theta_{W_u};  \{\Delta_{uv,i}: v\in W_u\setminus u, i\in I_u\}\big)
+    \\&=
+    \prod_{u\in U}\prod_{i\in I_u}
+    \phi\Big(\{\Delta_{uv,i}: v\in W_u\setminus u, i\in I_u\} - \mu_{W_u, u}(\theta);
+    \Sigma_{W_u, u}(\theta)
+   \Big)\, .
+\end{split}
+\end{equation}
+
+The estimator is given by 
+
+\begin{equation}
+\hat{\theta}^{MLE2}_{k,n}
+=
+\arg\max_{\theta\in(0,\infty)^{|E|}}
+L\big(\theta; \{\Delta_{uv,i}: v\in W_u\setminus u, i\in I_u, u\in U\}\big)
+\end{equation}
+
+The assumption under this definition is that for any $u,v \in U$ we have $\Delta_{W_u\setminus u}\perp \Delta_{W_v\setminus v}$, which is clearly not true for overlapping vertex sets $W_u$ and $W_v$. However this simplifies the joint likelihood function and simulation results show that the estimator has comparable qualities to the moment estimator or the one based on extremal coefficients. 
+
+
+
+## Covariance selection model
+    
+Let $G(W_u)$ is the subgarph induced on the node set $W_u$. This graph must be connected. The ML estimator of $\theta\in (0,\infty)^{|E|}$ is obtained in a two-step procedure similar to the MM estimator, but using the MLE of $\Sigma_{\cdot\setminus u}(\theta)$ instead.
+
+As a first step a maximum likelihood approach is used to obtain an estimator of $\Sigma_{\cdot\setminus u}(\theta)$ and then a least squares procedure is used to estimate $\theta$ in the second step. The first step is an implementation of the Iterative Proportional Scaling algorithm from the R package `gRim` by @grim. For description of the IPS we refer to @laurit. 
+
+- Step 1: For every $u\in V$ obtain:
+    \begin{equation}
+        \begin{split}
+            \widehat{\Sigma^{-1}}_{W_u\setminus u}
+            =
+            \arg\max_{(\Sigma^{-1})_{W_u\setminus u}}
+            L\Big(\hat{\mu}_{W_u\setminus u}, (\Sigma^{-1})_{W_u\setminus u}; 
+            \{\Delta_{uv,i}: v\in W_u\setminus u, i\in I_u\}\Big)
+        \end{split}
+    \end{equation}
+    
+- Step 2: Solve the problem:
+    \begin{equation} 
+    \hat{\theta}^{MLE}_{k,n}
+    =
+    \arg\min_{\theta\in [0,\infty)^{|E|}}
+    \sum_{W_u \subseteq V, u\in V}
+    \Big\|\widehat{\Sigma^{-1}}_{W_u\setminus u}-\Sigma_{W_u\setminus u}(\theta)\Big\|_F^2
+   \end{equation}
+    
+    
+## References
+
+

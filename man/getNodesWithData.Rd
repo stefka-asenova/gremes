@@ -13,9 +13,11 @@ getNodesWithData(obj, ...)
 \method{getNodesWithData}{Network}(obj, ...)
 }
 \arguments{
-\item{obj}{Object of class 'Network'}
+\item{obj}{Object of class 'Network' or its subclasses \code{Tree, GTree, CovSelectTree, BlockGraph}}
+
+\item{...}{additional arguments}
 }
 \description{
-It retrieves the slot 'nodesWithData' of an object 'Network'. The slot represents the set of nodes for
-which there is no data available.
+It retrieves the value of the slot \code{$nodesWithData}, the set of nodes for which there are data available
+ for an object of class \code{Network}.
 }

@@ -4,12 +4,10 @@
 \alias{estimate}
 \alias{estimate.HRMtree}
 \alias{estimate.HRMBG}
-\alias{estimate.MLE2}
 \alias{estimate.EKS}
 \alias{estimate.MMEave}
 \alias{estimate.MLEave}
-\alias{estimate.EngHitz}
-\title{Provides estimation of a parametric model}
+\title{Provides estimation of parameters}
 \usage{
 estimate(obj, ...)
 
@@ -17,41 +15,55 @@ estimate(obj, ...)
 
 \method{estimate}{HRMBG}(obj, Data, subsets, k_ratio, xx = NULL, ...)
 
-\method{estimate}{MLE2}(obj, Data, subsets, k_ratio, ...)
-
 \method{estimate}{EKS}(obj, Data, coord, k_ratio, ...)
 
-\method{estimate}{MMEave}(obj, Data, rdsobj, k_ratio, ss_bar = NULL, ...)
+\method{estimate}{MMEave}(obj, Data, k_ratio, ...)
 
-\method{estimate}{MLEave}(obj, Data, rdsobj, k_ratio, lmbd = NULL, ...)
-
-\method{estimate}{EngHitz}(obj, data, subsets, k_ratio, ...)
+\method{estimate}{MLEave}(obj, Data, k_ratio, ...)
 }
 \arguments{
-\item{obj}{Object of appropriate class}
+\item{obj}{object of on of the following classes \code{MME, MLE, MLE1, MLE2, EKS, EKS_part, EngHitz, MME_ave, MLE_ave, HRMBG}.
+The classes \code{MME, MLE, MLE1, MLE2, EKS, EKS_part, EngHitz} are subclasses of class \code{HRMtree},
+hence if no other method is available, the method for \code{HRMtree} applies.}
 
-\item{Data}{Dataset with the variables placed on the columns, object of classes \code{matrix} or \code{data.frame}.
-Each variable should have the same names as the node to which it belongs. For instance
-if the name of the variable in the dataset is 'X2' the name of the node to which it belongs should be
-'X2'.}
+\item{...}{additional arguments}
 
-\item{subsets}{Object of class \code{RootDepSet}}
+\item{Data}{the dataset, it should have named columns. For \code{estimate.MLE} all variables on the tree should
+be observed, i.e., \code{Data} should have nonempty column for every node in the tree.}
 
-\item{k_ratio}{The fraction of the upper order statistics of the sample size}
+\item{subsets}{object of class \code{RootDepSet} containing the roots and the respective subsets.
+When \code{obj} is of class \code{EngHitz} the argument \code{subsets} should be a list of subsets,
+not a \code{RootDepSet} object. When \code{obj} is of class \code{EngHitz} the union of all subsets should cover
+the whole vertex set and also
+every pair of subsets can have at most one node in common. See also Vignettes
+"Code - Note 4" and "Estimation - Note 4".}
 
-\item{xx}{A named vector of coordinates, used to evaluate the stable tail dependence function.
-The vector should be of length at least the number of vertices for which there is data available.
-It should be named with the names of the vertices. The values given can be arbitrary, but values of
-1 correspond to extremal coefficints.}
+\item{k_ratio}{a scalar the ratio of the number of upper order statistics to the number of observations}
 
-\item{coord}{A matrix of evaluation points with column names according to the
-names of the edges. For creation of coordinates based on tuples, triples, and adjacent nodes see classes
+\item{xx}{A vector of length the number of observed variables and named with the names of the nodes with
+observed variables.
+Default is NULL. For \code{estimate.EKS_part} it should be filled in. For the other methods
+the value at default should be kept.}
+
+\item{coord}{A matrix of evaluation points with number of columns equal to the number of nodes in the tree and
+column names according to the
+names of the nodes.
+The matrix of evaluation points should not contain a positive coordinate for a variable which is unobserved.
+For creation of coordinates based on tuples, triples, and adjacent nodes see classes
 \code{Coordinates}, \code{Tuples}, \code{Triples}, \code{Adjacent} as well as method \code{evalPoints}}
 }
 \value{
-The estimates of \eqn{\theta}. For objects \code{MME} and \code{MLE} it returns the squared
+The estimates of edge weights. For objects \code{MME} and \code{MLE} it returns the squared
 values of the parameters.
 }
 \description{
-Estimates the parameters of a statistical graphical model
+Estimates the edge weights or edge parameters of a model parameterized cliquewise by Huesler-Reiss
+distributions. For description of the model please consult the Vignette "Introduction".
+}
+\details{
+For an object of class \code{EKS_part} for a fixed subset all coordinates based on both tuples and triples
+are taken.
+}
+\note{
+For detailed examples please consult Vignettes "Code - Note" 1-6.
 }

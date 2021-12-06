@@ -1,6 +1,7 @@
+
 pot<- function(obj, ...)
 {
-  UseMethod("pot", obj)
+  UseMethod("pot")
 }
 
 
@@ -15,6 +16,7 @@ pot<- function(obj, ...)
 
 # 23.03.2020 pot.default is changed to this method in order for the function to be accessible
 # by a class 'Network' 'BlockGraph', Note that
+#' @export
 pot.default<- function(obj, newg, newd, ...)
 {
   obj1<- Network(newg, newd)
@@ -36,15 +38,16 @@ pot.default<- function(obj, newg, newd, ...)
 
 
 
-
-#' @rdname pot
-#' @title Peaks over threshold graph and data
-#' @param obj Object of class \code{GTree} or \code{CovSelectTree} or \code{HRMtree}
-#' @param obj2 Object of class \code{RootDepSet}. If multiple subsets are passed only the first is considered.
-#' @param k_ratio The number of the upper order statistics as a percentage of the sample size
-#' @return An object of the same class attribute as \code{obj} with two slots:
-#' @return \code{g} is the induced subgraph on the vertices in \code{obj2}
-#' @return \code{data} is the Peaks over threshold for the variables in the subset of \code{obj2}
+#pot
+# Peaks over threshold graph and data
+# obj Object of class \code{GTree} or \code{CovSelectTree} or \code{HRMtree}
+# obj2 Object of class \code{RootDepSet}. If multiple subsets are passed only the first is considered.
+# k_ratio The number of the upper order statistics as a percentage of the sample size
+# ... additional arguments
+# An object of the same class attribute as \code{obj} with two slots:
+# \code{g} is the induced subgraph on the vertices in \code{obj2}
+# \code{data} is the Peaks over threshold for the variables in the subset of \code{obj2}
+#' @export
 pot.Network<- function(obj, obj2, k_ratio, ...)
 {
   g<- getGraph(obj)
@@ -66,6 +69,8 @@ pot.Network<- function(obj, obj2, k_ratio, ...)
 
   n<- nrow(X)
   k<- round(k_ratio*n)
+  if (length(k)>1)
+    stop("From pot.Network: k-ratio must be a scalar")
   if (k==1)
     stop(" 'k' = 1: there can not be variation in the sample, increase 'k_ratio' ")
 
@@ -98,7 +103,7 @@ pot.Network<- function(obj, obj2, k_ratio, ...)
 
 
 
-
+#' @export
 pot.GTree<- function(obj, obj2, k_ratio,  newg, newd, ...)
 {
   obj1<- GTree(newg, newd)
@@ -110,7 +115,7 @@ pot.GTree<- function(obj, obj2, k_ratio,  newg, newd, ...)
 
 
 
-
+#' @export
 pot.BlockGraph<- function(newg, newd, ...)
 {
 
@@ -129,7 +134,7 @@ pot.BlockGraph<- function(newg, newd, ...)
 
 
 
-
+#' @export
 pot.CovSelectTree<- function(obj, obj2, k_ratio, newg, newd, ...)
 {
   obj1<- CovSelectTree(newg, newd)
@@ -142,7 +147,7 @@ pot.CovSelectTree<- function(obj, obj2, k_ratio, newg, newd, ...)
 
 
 
-
+#' @export
 pot.HRMnetwork<- function(obj,...)
 {
   NextMethod()
@@ -153,7 +158,8 @@ pot.HRMnetwork<- function(obj,...)
 
 
 
-#' @rdname pot
+
+#' @export
 pot.HRMtree<- function(obj, obj2, ...)
 {
   W<- getValue(obj2)
@@ -173,6 +179,9 @@ pot.HRMtree<- function(obj, obj2, ...)
 }
 
 
+
+
+#' @export
 pot.HRMBG<-  function(obj, obj2, ...)
 {
   W<- getValue(obj2)

@@ -1,0 +1,89 @@
+---
+title: "Code - Note 6"
+subtitle: "Estimation based on large average for models on trees"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Code - Note 6}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+Load the data.
+```{r}
+load("~/gremes/data/SeineData.RData")
+head(Seine)
+
+```
+
+Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+
+```{r fig.height=4.5, fig.width=4.5}
+seg<- graph(c(1,2,
+              2,3,
+              2,4,
+              4,5,
+              5,6,
+              5,7), directed = FALSE)
+name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) # 
+plot(seg)
+
+```
+
+Create an object combining the graph and the data. We can extract from it the nodes with latent variables.
+
+```{r}
+tobj<- Tree(seg, Seine) 
+Uc<- getNoDataNodes(tobj)
+
+```
+
+The messages say that edges are also named, and that there are latent variables in the model.
+
+
+Estimate according to the Method of Moments: first create an object of the appropriate class and then call the 
+method `estimate`. 
+
+```{r}
+mme_ave<- MMEave(seg)
+estimate(mme_ave, Seine, k_ratio=0.2)$depParams
+
+```
+
+Estimate according to the method of maximum likelihood: first create an object of the appropriate class and then call the method `estimate`. 
+
+```{r}
+mle_ave<- MLEave(seg)
+estimate(mle_ave, Seine, k_ratio=0.2)$depParams
+
+```
+
+The estimates are slightly different from each other. Note also that the estimates are a bit higher 
+compared to MME and MLE in Estimation - Notes 1,2,3, but they all display similar pattern: edge weights two and 
+five are above one and e3, e4 and e6 have similar values around 0.6-0.9.
+
+Although local estimation is possible using a collection of subsets around every node with observable variable, we do not pursue this method here.
+

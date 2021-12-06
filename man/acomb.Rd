@@ -6,6 +6,9 @@
 \usage{
 acomb(...)
 }
+\arguments{
+\item{...}{arrays of dimension 3}
+}
 \description{
 Combine matrices along in a three dimensional matrix
 }

@@ -6,19 +6,22 @@
 \usage{
 Neighborhood()
 }
-\arguments{
-\item{value}{Matrix or list containing subsets of the vertex set.
-A subset represents a neighborhood of a given node.}
-
-\item{root}{A list of vertices.}
-}
 \description{
-An empty object of class \code{Neighborhood}
+It is a subclass of \code{RootDepSet}.
+It creates an object with two empty slots \code{$value} for the collection of subsets and \code{$root} for the roots
+ associated to each of the subsets in \code{$value}.
+Every node with observable variable should be taken as a root.
+A subset of nodes is created for every root.
+For every root the subset of nodes is created on the principle of neighborhood of some order.
+The slots are supposed to be assigned values.
+The simplest one is using method \code{setRootDepSet}. For other examples see Vignette "Subsets and Coordinates".
 }
 \examples{
 seg<- graph(c(1,2, 2,3, 2,4, 4,5, 5,6, 5,7), directed = FALSE)
 name_stat<- c("paris", "2", "meaux", "melun", "5", "nemours", "sens")
 seg<- set.vertex.attribute(seg, "name", V(seg), name_stat)
 rdsobj<- Neighborhood()
+rdsobj # the slots are empty
 rdsobj<- subset(rdsobj, 2, seg)
+rdsobj # the slots are filled under the criterion of neighborhood of order 2.
 }

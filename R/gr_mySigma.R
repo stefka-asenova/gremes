@@ -1,34 +1,35 @@
-#' @description It computes the empirical or the parametric covariance matrix depending on the class of
-#' its first argument. See Details.
-#' @title Covariance matrix
-#' @rdname sigma
-#' @param obj Object of class \code{GTree} or \code{CovSelectTree} or \code{HRMtree}
+#' Covariance matrix
+#'
 #' @export
-#' @details If the first argument is of class \code{GTree} the method returns the empirical covariance matrix
-#' of the data in the GTree object.
-#' @details If the first argument is of class \code{CovSelectTree} the method returns the covariance matrix
-#' of the corresponding Gaussian graphical model associated to the object.
-#' @details  If the first argument is of class \code{HRMtree} the method returns
-#' a matrix of ones and zeros which corresponds to \eqn{hvec(\Sigma(\theta))=A\theta}
-#' @return see Details.
-sigma<- function(obj,...)
+#' @param obj Object of class \code{GTree} or \code{CovSelectTree} or \code{HRMtree}
+#' @param ... additional arguments
+# If the first argument is of class \code{GTree} the method returns the empirical covariance matrix
+# of the data in the GTree object.
+# If the first argument is of class \code{CovSelectTree} the method returns the covariance matrix
+# of the corresponding Gaussian graphical model associated to the object.
+# If the first argument is of class \code{HRMtree} the method returns
+# a matrix of ones and zeros which corresponds to \eqn{hvec(\Sigma(\theta))=A\theta}
+#' @note It is not to be used independently
+sigma<- function(obj, ...)
 {
-  UseMethod("sigma", obj)
+   UseMethod("sigma", obj)
 }
 
-
+#' @export
 sigma.default<- function(obj,...)
 {
   return("Default method called on unrecognized object")
 }
 
-sigma.Network<- function(obj,...)
-{
-  NextMethod()
-}
+
+# #' @export
+# sigma.Network<- function(obj,...)
+# {
+#   NextMethod()
+# }
 
 
-#' @rdname sigma
+#' @export
 #' @importFrom stats cov
 sigma.Network<- function(obj, ...)
 {
@@ -51,26 +52,23 @@ sigma.Network<- function(obj, ...)
 
 
 
-
-#' @param S_hat Empirical covariance matrix
-#' @title Covariance matrix
+#' @export
+# S_hat Empirical covariance matrix
 sigma.GTree<- function(obj, s, ...)
 {
   return(s)
 }
 
 
-
+#' @export
 sigma.BlockGraph<- sigma.GTree
 
 
 
-
+#' @export
 #' @importFrom gRim ggmfit
 #' @importFrom gRbase getCliques
 #' @importFrom methods as
-#' @param S_hat Empirical covariance matrix, not to be passed by user
-#' @title Covariance matrix
 sigma.CovSelectTree<- function(obj, s, set, ...)
 {
    which_vars<- base::setdiff(getValue(set), getRoot(set))
@@ -90,7 +88,7 @@ sigma.CovSelectTree<- function(obj, s, set, ...)
 
 
 
-
+#' @export
 sigma.HRMnetwork<- function(obj,...)
 {
   NextMethod()
@@ -99,15 +97,15 @@ sigma.HRMnetwork<- function(obj,...)
 
 
 
-#' @rdname sigma
-#' @param obj2 Object of class \code{RootDepSet}
-#' @param U_bar Vector of the missing vertices in a graph, the default is NULL
+#' @export
+# obj2 Object of class \code{RootDepSet}
+# U_bar Vector of the missing vertices in a graph, the default is NULL
 sigma.HRMtree<- function(obj, obj2, U_bar=NULL,...)
 {
   #debug
 
-  #obj2<- set
-  #U_bar<- NULL
+ # obj2<- set
+#  U_bar<- Uc
   #-------------
 
 
@@ -142,7 +140,7 @@ sigma.HRMtree<- function(obj, obj2, U_bar=NULL,...)
 
 
 
-
+#' @export
 sigma.MMEave<- function(obj, obj2, A_u, U_bar, ...)
 {
   #debug
@@ -192,23 +190,70 @@ sigma.MMEave<- function(obj, obj2, A_u, U_bar, ...)
 
 
 
-
+#' @export
 sigma.MLEave<- sigma.MMEave
 
 
 
 
 
+# # old version
+# #' @export
+# sigma.HRMBG<- function(obj, rdsobj, ... )
+# {
+#   # the code does not take into account latent variables
+#
+#
+#   # debug
+#  # obj<- hrmbgobj
+#
+#   #------------
+#
+#
+#   g<- obj$graph
+#   W<- getValue(rdsobj)
+#   u<- getRoot(rdsobj)
+#   if(is.list(W))
+#   {
+#     W<- W[[1]]
+#     u<- u[1]
+#     message("Multiple input sets. Only the first is considered")
+#   }
+#
+#   W_<- base::setdiff(W, u)
+#   nW_<- length(W_)
+#   q<- c(1:nW_)
+#   colIndex<- unlist(sapply(q, function(x) base::setdiff(W_, W_[1:x])))
+#   pairsOfSigma<- base::rbind(rep(W_, c(nW_:1)), c(W_, colIndex))
+#
+#   A<- matrix(0, nrow = ncol(pairsOfSigma), ncol = ecount(g))
+#   colnames(A)<- get.edge.attribute(g, "name", E(g))
+#   for (i in 1:ncol(pairsOfSigma))
+#   {
+#     fc<- pairsOfSigma[1,i]
+#     sc<- pairsOfSigma[2,i]
+#     A[i, ]<- 2*(edge_names_along_path(obj, u, fc, edge_names = FALSE)+
+#                 edge_names_along_path(obj, u, sc, edge_names = FALSE)-
+#                 edge_names_along_path(obj, fc, sc, edge_names = FALSE))
+#     # A[i, ]<- 2*(shortPath2vec(g, u, fc)+
+#     #             shortPath2vec(g, u, sc)-
+#     #             shortPath2vec(g, fc, sc))
+#
+#
+#   }
+#   return(A)
+# }
 
 
-
-sigma.HRMBG<- function(obj, rdsobj, ... )
+# new version
+#' @export
+sigma.HRMBG<- function(obj, rdsobj, U_bar, ... )
 {
   # the code does not take into account latent variables
 
 
   # debug
- # obj<- hrmbgobj
+  # obj<- hrmbgobj
 
   #------------
 
@@ -218,11 +263,11 @@ sigma.HRMBG<- function(obj, rdsobj, ... )
   u<- getRoot(rdsobj)
   if(is.list(W))
   {
-    W<- W[[1]]
+    W<- base::setdiff(W[[1]], U_bar)
     u<- u[1]
     message("Multiple input sets. Only the first is considered")
   }
-
+  W<- base::setdiff(W, U_bar)
   W_<- base::setdiff(W, u)
   nW_<- length(W_)
   q<- c(1:nW_)
@@ -236,8 +281,8 @@ sigma.HRMBG<- function(obj, rdsobj, ... )
     fc<- pairsOfSigma[1,i]
     sc<- pairsOfSigma[2,i]
     A[i, ]<- 2*(edge_names_along_path(obj, u, fc, edge_names = FALSE)+
-                edge_names_along_path(obj, u, sc, edge_names = FALSE)-
-                edge_names_along_path(obj, fc, sc, edge_names = FALSE))
+                  edge_names_along_path(obj, u, sc, edge_names = FALSE)-
+                  edge_names_along_path(obj, fc, sc, edge_names = FALSE))
     # A[i, ]<- 2*(shortPath2vec(g, u, fc)+
     #             shortPath2vec(g, u, sc)-
     #             shortPath2vec(g, fc, sc))
@@ -246,5 +291,4 @@ sigma.HRMBG<- function(obj, rdsobj, ... )
   }
   return(A)
 }
-
 

@@ -1,14 +1,27 @@
 ---
-title: "Estimation - Note 1"
+title: "Code - Note 1"
+subtitle: "Method of Moments Estimator for models on trees"
 author: "Stefka Asenova"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimation - Note 1}
+  %\VignetteIndexEntry{code - Note 1}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: mypr1_rev1.bib
 ---
+
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -16,16 +29,18 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(gremes)
+
 ```
 
 Load the data.
 ```{r}
-load("~/gremes/data/SeineData.rda")
-head(resid)
+load("~/gremes/data/SeineData.RData")
+head(Seine)
 
 ```
 
 Generate the graph with two missing data points. Note that assigning names to nodes is crucial. Also the names of the nodes should correspond to the names of the columns in the dataset.
+
 ```{r}
 seg<- graph(c(1,2,
               2,3,
@@ -34,27 +49,31 @@ seg<- graph(c(1,2,
               5,6,
               5,7), directed = FALSE)
 name_stat<- c("Paris", "2", "Meaux", "Melun", "5", "Nemours", "Sens")
-seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) # 
+seg<- set.vertex.attribute(seg, "name", V(seg), name_stat) 
 
 ```
 
-Create the subsets.
+Create the subsets. First subsets are used for local estimation on the edge weights and then estimates are combined to produce unique estimates on the edge weights.
+
 ```{r}
 subs<- Neighborhood()
 subs<- subset(subs, 2, seg, U_bar=c("2", "5"))
+subs 
 
 ```
 
 Estimate using method of moment estimator. 
+
 ```{r}
 mme<- MME(seg)
-mme<- estimate(mme, resid, subs,  k_ratio=0.2)
+mme<- estimate(mme, Seine, subs,  k_ratio=0.2)
 
 ```
 
-The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+The messages are informative. They inform you about certain things along the estimation process, but as long as they do not stop the estimation they are not errors. 
 
 The estimates are squares of the parameters, hence take the square root.
+
 ```{r}
 sqrt(mme$depParams)
 

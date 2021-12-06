@@ -2,7 +2,7 @@
 
 sigma_L<- function(obj, ...)
 {
-  UseMethod("sigma_L", obj)
+  UseMethod("sigma_L")
 }
 
 
@@ -14,6 +14,10 @@ sigma_L.HRMtree<- function(obj, evalPts, Ubar = NULL)
   # entries are units ?? is that correct ??- put verification conditions on evalPoints
 
 
+  sum_ep<- apply(evalPts, 1, sum)
+  if(sum((sum_ep>2))>0)
+    stop("Invalid matrix of evaluation points. The evaluation points should be based on tuples only.
+         Also the coordinates should be 1 or 0.")
     # the sets J and K must not contain nodes with unobservable variables - this is respected in the construction
   # Tuples, evaiPoints(), the methods developped to generate the coordinates for the EKS estimator
 

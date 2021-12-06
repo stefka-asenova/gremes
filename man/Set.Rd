@@ -2,10 +2,19 @@
 % Please edit documentation in R/gr_RootDepSet.R
 \name{Set}
 \alias{Set}
-\title{\code{Set} class}
+\title{An empty object of class \code{Set}}
 \usage{
 Set()
 }
 \description{
-Class definition
+It is a subclass of \code{RootDepSet}.
+It creates an object with two empty slots \code{$value} for the collection of subsets
+and \code{$root} for the roots
+associated to each of the subsets in \code{$value}.
+An object of class \code{Set} contains a collection of subsets on the
+ vertex set and it is used in some of the estimation methods.
+}
+\examples{
+myset<- Set()
+# See Vignette "Application Danube"
 }

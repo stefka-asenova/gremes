@@ -3,8 +3,8 @@
 #'
 #' The function is applied on objects of appropriate class with slot 'graph'. It is used instead of the command 'obj_name$graph'.
 #' @param obj Object of appropriate class ('Network', 'HRMnetwork')
+#' @param ... additional arguments
 #' @rdname getGraph
-#' @export
 getGraph<- function(obj,...)
 {
   UseMethod("getGraph")
@@ -69,7 +69,6 @@ getGraph.HRMnetwork<- function(obj,...)
 #' @rdname getData
 #' @param obj Object with slot 'data'
 #' @param ... Additional arguments
-#' @export
 getData<- function(obj,...)
 {
   UseMethod("getData")
@@ -108,12 +107,13 @@ getData.Network<- function(obj,...)
 
 #' It retrives the nodes without data
 #'
-#' It retrieves the value of the slot 'noDataNodes', the set of nodes for which there are no data available
-#'  for an object 'Network'.
+#' It retrieves the value of the slot \code{$noDataNodes}, the set of nodes for which there are no data available
+#'  for an object of class \code{Network}.
 #' @rdname getNoDataNodes
-#' @param obj Object of class 'Network'
+#' @param obj Object of class \code{Network} or its subclasses \code{Tree, GTree, CovSelectTree, BlockGraph}
+#' @param ... additional arguments
 #' @export
-getNoDataNodes<- function(object, ...)
+getNoDataNodes<- function(obj, ...)
 {
   UseMethod("getNoDataNodes")
 }
@@ -121,7 +121,7 @@ getNoDataNodes<- function(object, ...)
 
 #' @rdname getNoDataNodes
 #' @export
-getNoDataNodes.default<- function(object, ...)
+getNoDataNodes.default<- function(obj, ...)
 {
   return("NA")
 }
@@ -130,9 +130,9 @@ getNoDataNodes.default<- function(object, ...)
 
 #' @rdname getNoDataNodes
 #' @export
-getNoDataNodes.Network<- function(object, ...)
+getNoDataNodes.Network<- function(obj, ...)
 {
-  U_bar<- object$noDataNodes
+  U_bar<- obj$noDataNodes
   return(U_bar)
 }
 
@@ -141,14 +141,15 @@ getNoDataNodes.Network<- function(object, ...)
 
 #' It retrieves the nodes for which data are missing
 #'
-#' It retrieves the slot 'nodesWithData' of an object 'Network'. The slot represents the set of nodes for
-#' which there is no data available.
+#' It retrieves the value of the slot \code{$nodesWithData}, the set of nodes for which there are data available
+#'  for an object of class \code{Network}.
 #' @rdname getNodesWithData
-#' @param obj Object of class 'Network'
+#' @param obj Object of class 'Network' or its subclasses \code{Tree, GTree, CovSelectTree, BlockGraph}
+#' @param ... additional arguments
 #' @export
 getNodesWithData<- function(obj, ...)
 {
-  UseMethod("getNodesWithData")
+  UseMethod("getNodesWithData", obj)
 }
 
 
@@ -174,8 +175,8 @@ getNodesWithData.Network<- function(obj, ...)
 #'
 #' It retrieves the value of the slot 'depParams' of a HRMnetwork.
 #' @param obj An object of class 'HRMnetwork'
+#' @param ... additional arguments
 #' @rdname getParams
-#' @export
 getParams<- function(obj, ...)
 {
   UseMethod("getParams")
@@ -206,7 +207,7 @@ getParams.HRMnetwork<- function(obj, ...)
 #' It retrieves the slot 'value' of an object of class 'RootDepSet'.
 #' @rdname getValue
 #' @param obj An object of class 'RootDepSet'
-#' @export
+#' @param ... additional arguments
 getValue<- function(obj,...)
 {
   UseMethod("getValue")
@@ -240,7 +241,7 @@ getValue.RootDepSet<- function(obj, ...)
 }
 
 
-
+#' @export
 getValue.RootIndSet<- function(obj, ...)
 {
   return(obj$value)
@@ -253,7 +254,7 @@ getValue.RootIndSet<- function(obj, ...)
 #' It retrieves the slot 'root'
 #' @rdname getRoot
 #' @param obj An object of class 'RootDepSet'
-#' @export
+#' @param ... additional arguments
 getRoot<- function(obj,...)
 {
   UseMethod("getRoot")
@@ -280,6 +281,8 @@ getRoot.RootDepSet<- function(obj, ...)
 }
 
 
+
+#' @export
 getRoot.RootIndSet<- function(obj, ...)
 {
   return(obj$root)

@@ -1,18 +1,24 @@
-#' generic for method 'intersect'
+#' Intersects elements in a list
+#'
+#' It finds the intersection of all objects in a list.
+#' @param x a list
+#' @export
+#' @rdname intersect
 intersect<- function(x)
 {
   UseMethod("intersect", x)
 }
 
-#' default method for 'intersect'
+#' @export
 intersect.default<- function(x)
 {
   return(base::intersect(x))
 }
 
 
-#'
-#' Intersects the elements in a list; the list can have more than 2 elements
+
+
+#' @export
 intersect.list<- function(x)
 {  if (length(x)==1)
    {

@@ -1,6 +1,6 @@
-#' Log-likelihood function for object of class \code{MLE1}
-#'
-#' Computes the value of the log-likelihood function for type 1 MLE of HRMtree
+# don't export any of these functions
+
+
 #' @importFrom mvtnorm dmvnorm
 ll<- function(params, data_u, A_u)
 {
@@ -11,8 +11,10 @@ ll<- function(params, data_u, A_u)
 
   # similarly if the column names of the data are the same as those of the matrix it should not be a
   # problem
-
+data_u<- as.matrix(data_u)
    hv_sig<- A_u %*% (params^2)
+
+  #  if (dim(data_u)==0)
    sig<- matrix(0, ncol(data_u), ncol(data_u))
    sig[lower.tri(sig, diag=TRUE)]<- hv_sig
    sig[upper.tri(sig)]<- t(sig)[upper.tri(sig)]
@@ -31,25 +33,23 @@ ll<- function(params, data_u, A_u)
 
 
 
-#' Log-likelihood function for estimation of the second type of MLE
-#'
-#' Produces the log-likelihood fuction for estimation of the second type MLE
-#'  @param params The parameters to estimate, It should be a named vector of initial values
-#'  named according to the names of the edges in the
-#'  whole graph (!!! Named vector of values)
-#'  @param data The dataset. It should be a matrix with dimensions k by sum(h).
-#'  @param obj Object of class HRMtree. This one is necessary for construction
-#'  of the covariance matrix, see details
-#'  @details The covariance matrix constructed in this function and passed to the
-#'  multivariate normal density is a block diagonal matrix. Each matrix on the diagonal
-#'  corresponds to the covariance matrix of the variables \eqn{R_{W_u}}. The mean vector is equal
-#'  to \emph{-diag(sig)/2}, where \emph{sig}  is the covariance matrix.
-#'  @param subsets Object of class \code{RootDepSet}
-#'  @param k_ratio The share of the upper order statistics
-#'  @param h1 The number of the variables \eqn{R_{W_u}} for every set in subsets, after subtracting
-#'  the root and the variables with missing data.
-#'  @param Ubar the set of missing data nodes
-#'  @importFrom mvtnorm dmvnorm
+
+# params The parameters to estimate, It should be a named vector of initial values
+#  named according to the names of the edges in the
+#  whole graph (!!! Named vector of values)
+# data The dataset. It should be a matrix with dimensions k by sum(h).
+# obj Object of class HRMtree. This one is necessary for construction
+#  of the covariance matrix, see details
+# The covariance matrix constructed in this function and passed to the
+#  multivariate normal density is a block diagonal matrix. Each matrix on the diagonal
+#  corresponds to the covariance matrix of the variables \eqn{R_{W_u}}. The mean vector is equal
+#  to \emph{-diag(sig)/2}, where \emph{sig}  is the covariance matrix.
+# subsets Object of class \code{RootDepSet}
+# k_ratio The share of the upper order statistics
+# h1 The number of the variables \eqn{R_{W_u}} for every set in subsets, after subtracting
+#  the root and the variables with missing data.
+# Ubar the set of missing data nodes
+#' @importFrom mvtnorm dmvnorm
 llmle2<- function(params, data, obj, subsets, k_ratio, h1, Ubar)
 {
   sig<- ArgumentD(c(sum(h1),sum(h1)))
@@ -95,12 +95,12 @@ ll_EngHitz<- function(params, data, MA, Uc, obj)
 {
   # obj should be HRMtree obj
 
-  # debug
-
-  #obj<- hrmtobj
-  #data<- eot
-
-  #----------------
+  # # debug
+  #
+  # obj<- hrmtobj
+  # data<- eot
+  #
+  # #----------------
 
 
   obj<- setParams(obj, params)

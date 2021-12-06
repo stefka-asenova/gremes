@@ -1,0 +1,194 @@
+---
+title: "Estimation - Note 4"
+subtitle: "Cliquewise likelihood estimation for models on trees"
+author: "Stefka Asenova"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimation - Note 4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mypr1_rev1.bib
+header-includes:
+   - \usepackage{bbm}
+---
+
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(gremes)
+
+```
+
+
+For application of this estimator, see Vignette "Code - Note 4".
+
+<br>
+
+- $n$ is the number of all observations in the sample
+
+- $k$ is the number of the upper order statistics used in the estimation
+
+- $U\subseteq V$ is the set of observable variables
+
+- If the sample of the original variables is $\xi_{v,i}, v\in U, i=1,\ldots, n$ consider the transformation using the empirical cumulative distribution function $\hat{F}_{v,n}(x)=\big[\sum_{i=1}^n\mathbb{1}(\xi_{v,i}\leq x)\big]/(n+1)$.
+
+\begin{equation*} 
+	\hat{X}_{v,i} = \frac{1}{1-\hat{F}_{v,n}(\xi_{v,i})}, \qquad 
+	v \in U, \quad i = 1, \ldots, n.
+\end{equation*}
+
+- For given $k\in \{1,\ldots n\}$ consider the set of indices 
+\[
+I_{k,n} = \{i = 1,\ldots,n: \max_{v\in V}\hat{X}_{v,i} > n/k\}
+\]
+
+- For every $i\in I_{k,n}$ compose the ratios
+\begin{equation}
+	\hat{Y}_{v,i} =
+	\hat{X}_{v,i}/(n/k),
+\end{equation}
+which gives rise to a sample $(\hat{y}_{v,i}, v\in U, i\in I_{k,n})$.
+
+let $B_i\subset V$ such that $\cup_i B_i=V$ and for $i\neq j$ the sets $B_i$ and $B_j$ have only one node in common. We also need that within every subset $B_i$ the condition of identifiability of the parameters is satisfied: namely that every node with latent variable has degree at least three.  
+
+An estimate of $\theta_B=(\theta_{ij},i,j\in B, (i,j)\in E )$ is obtained by maximizing 
+\begin{equation}
+\prod_{i=1}^kf_B(\theta_B; \hat{y}_{B,i})
+=
+\prod_{i=1}^k \frac{\psi_B(\theta_B;\hat{y}_{B,i})}{\Psi_B(\theta_B;1_{|B|})},
+\end{equation}
+where $\Psi$ and $\psi$ are the Huesler-Reiss Pareto exponent measure and its density respectively as in Section 2 of @engelke2020. We have the following terms
+\[
+\Psi_B(\theta_B; 1_{|B|})=l_B(\theta_B; 1_{|B|})=l(\theta; \iota_B),
+\]
+where $l_B$ is the stable tail dependence function (stdf) of the subvector $X_B$ and $l$ is the stdf of the full vector $X=(X_v, v\in V)$, $\iota_B=(1_{i\in B}, i\in V)$.
+
+Note that for $i\neq j$ the subvectors $\theta_{B_i}$ and $\theta_{B_j}$ do not share elements. 
+
+Remember that the relation between the Huesler-Reiss stdf and the Huesler-Reiss copula with unit Frechet margins is given by
+\[
+l(x_1, \ldots, x_d; \theta)=-\ln H_{\Lambda(\theta)}(1/x_1, \dots, 1/x_d), 
+\quad (x_1, \ldots, x_d)\in (0,\infty)^d.
+\]
+
+For the definition of the Huesler-Reiss distribution see Vignette "Introduction".
+
+The density of the exponent measure $\psi$ is given by (see Section 2 in @engelke2020)
+\[
+\psi_B(\theta_B;\hat{y}_{B,i})= \hat{y}_{u,i}^{-2}\prod_{v\neq u}\hat{y}_{v,i}^{-1}
+\phi_{|B|-1}\Big(\ln(\hat{y}_{u,i}/\hat{y}_{v,i})+\lambda^2_{uv}(\theta_B)/2; \Sigma_{B,u}(\theta_B)\Big), 
+\]
+for every $u\in B$. SAY WHAT SIGMA IS!!!
+
+More background behind this estimator follows hereunder.
+
+<br>
+For an extremal graphical model in the sense of @engelke2020 with respect to a special class of decomposable graphs, whose clique separator set consists of only singletons, also known as block graphs, the estimation method proposed in their section 5.2 is based on the idea to estimate the parameters in every clique separately. 
+
+We summarize their idea and introduce a variation of their estimator when there are latent variables.
+
+A tree is a block graph too, and hence this estimation method consists of working with bivariate densities because each clique in a tree contains two variables. More specifically let $Y$ be an extremal graphical model in the sense of @engelke2020 with respect to a block graph $G=(V,E)$. The vector $Y$ has positive and continuous density, and satisfies the global or pairwise Markov properties with respect to $G$ in sense of Definition 1 of their paper. 
+
+The exponent measure associated to $Y$ will be denoted as in their paper by $\Lambda$ with positive and continuous density $\lambda$. We have the cliques $C\in \mathcal{C}$ and clique separators $D\in \mathcal{D}$, which are single nodes. If the parameter space is $\Theta=\times_{C\in \mathcal{C}} \Theta_C$ where $\theta_C\in \Theta_C$ are the parameters defining the dependence between the variables in a clique $C$ then the density of $Y$ is given by
+
+\begin{align} 
+	f(y;\theta_C, C\in\mathcal{C})&=
+	\frac{1}{Z(\theta_C, C\in\mathcal{C})}
+	\frac{1}{\prod_{D\in \mathcal{D}}y_D^{-2}}
+	\prod_{C\in \mathcal{C}}\frac{\lambda_C(y_C; \theta_C)}{\Lambda_C(1_{|C|}; \theta_C)}\nonumber
+	\\&\propto \frac{1}{Z(\theta_C, C\in\mathcal{C})}
+	\prod_{C\in \mathcal{C}}f_C(y_C; \theta_C).
+\end{align}
+	
+The factorization into the densities in the last expression is in the origin of the @engelke2020's idea to estimate each $\theta_C$ from the likelihood function only of the variables in that clique $C$. The term $Z$ depends on all the parameters and it does not factorize, but the autors say that the results based on full likelihood and clique-wise likelihood estimation show not much difference between the two. 
+	
+The problem with the estimation approach outlined above is that when there are latent variables the likelihood function can not be formed for the cliques containing an unobservable variable. We propose however a modification of their method but in the same spirit. 
+	
+We have that $X$ is a vector of variables each indexed to a node of a tree $G=(V,E)$, which is in the max-domain of attraction of a Huesler-Reiss distribution with parameter matrix 
+\begin{equation}
+\lambda_{ij}^2=(1/4)\sum_{e \in p(i,j)}\theta_{e}^2
+\end{equation}
+for $i,j\in V$. The Huesler-Reiss Pareto distribution that corresponds to this max-stable distribution will be denoted by $Y$ and it is an extremal graphical model with respect to the graph $G$. Note that this is not a trivial statement and it needs a proof. The proof is provided in @asejoh2.
+
+If $Y$ is an extremal graphical model with respect to $G$ its density factorizes over the cliques by Theorem 1 in @engelke2020. However we can not use this result on a tree with latent variables because there will be cliques which contain a latent variable.
+
+Instead we use the fact that if $Y$ is extremal graphical model for non-empty disjoint subsets $A,B,C\subset V$ such that C is separator of $A$ and $B$ by Proposition 1 in @engelke2020 we have
+	\begin{equation}
+	f(y)=\frac{\lambda(y)}{\Lambda(1_d)}
+	=\frac{\lambda_{A\cup C}(y_{A\cup C})\lambda_{B\cup C}(y_{B\cup C})}
+	{\Lambda(1_d)\lambda_C(y_C)}.
+	\end{equation}
+	
+Consider the case when $C$ contains one node only, say node $c$, then $\lambda_C(Y_C)=y_C^{-2}$ and the above expression seen as a function of $\theta$ and for fixed $y$ becomes proportional to 
+\begin{equation}
+	\frac{\lambda_{A\cup C}(y_{A\cup C}; \theta)\lambda_{B\cup C}(y_{B\cup C}; \theta)}
+	{\Lambda(1_d; \theta)}.
+\end{equation}
+We have $1_d$ a $d$-variate vector of ones.
+
+Let the set of nodes with observable variables is $U\subset V$ and the complement of it denoted by $\bar{U}$.
+
+We have for the density of $Y_U$ and if $C\notin \bar{U}$
+\begin{align*}
+	f_U(y_U)&\propto
+	\int_{y_{\bar{U}}}
+	\frac{\lambda_{A\cup C}(y_{A\cup C})\lambda_{B\cup C}(y_{B\cup C})}
+	{\Lambda(1_d)}\mathrm{dy}_{\bar{U}}
+	\\&=
+	\frac{1}{\Lambda(1_d)}
+	\int_{y_{(A\cup C)\cap\bar{U}}}\lambda_{A\cup C}(y_{A\cup C})\mathrm{dy}_{(A\cup C)\cap\bar{U}}
+	\int_{y_{(B\cup C)\cap\bar{U}}}\lambda_{B\cup C}(y_{B\cup C})\mathrm{dy}_{(B\cup C)\cap\bar{U}}
+	\\&=
+	\frac{1}{\Lambda(1_d)} 
+	\lambda_{(A\cup C)\cap U}(y_{(A\cup C)\cap U})
+	\lambda_{(B\cup C)\cap U}(y_{(B\cup C)\cap U}).
+\end{align*}
+
+
+Multiplying and dividing by $\Lambda_{(A\cup C)\cap U}(1)$ and $\Lambda_{(B\cup C)\cap U}(1)$ we get an expression which as a function of $\theta$
+\begin{equation}
+	f_U(y_U; \theta)\propto
+	\frac{1}{Z(\theta)}
+	f_{(A\cup C)\cap U}(y_{(A\cup C)\cap U}; \theta_{A\cup C})
+	f_{(B\cup C)\cap U}(y_{(B\cup C)\cap U}; \theta_{B\cup C}),
+\end{equation}
+
+where $Z$ is a term that contains all the parameters $\theta_e, e\in E$ and does not factorize. 
+
+This factorization is what we will use in case of latent variables. 
+
+In the general case for this estimation method we have to divide the node set into subsets $B_i\subset V$ such that $\cup_i B_i=V$ and for $i\neq j$ the sets $B_i$ and $B_j$ have only one node in common. We also need that within every subset $B_i$ the condition of identifiability of the parameters is satisfied: namely that every node with latent variable has degree at least three. 
+
+The density given by
+	$$
+	f_U(y_U; \theta)\propto
+	\frac{1}{Z}
+	\prod_{B_i}f_{B_i\cap U}(y_{B_i\cap U}; \theta_{B_i})
+	=
+	\frac{1}{Z}
+	\prod_{B_i}
+	\frac{\lambda_{B_i\cap U}(y_{B_i\cap U}; \theta_{B_i})}
+	{\Lambda_{B_i\cap U}(1; \theta_{B_i})}.
+	$$
+can be used to estimate $\theta_{B_i}$ for every $i$ and thus obtain not clique-wise likelihood estimates but estimates using the smallest subgraphs from which the corresponding subset of parameters is uniquely identifiable. 
+	
+	
+
+	
+	
+## References

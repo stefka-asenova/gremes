@@ -1,33 +1,53 @@
 
-#' @title Generic for method \code{combine}
-#' @description Defines different ways of combining objects according to the class of its first argument.
-#' The use of the method with objects of class \code{Argument} is internal method and it does not have
-#' independent use.
+#' Combines objects
+#'
+#' It is designed to combine objects from classes \code{RootDepSet} for isntance an object of class
+#' \code{Neighborhood} and an object of class \code{FlowConnect}. For instance if for in one of the objects
+#' we have root \eqn{a} with subset \eqn{(a,b,c)} and in the second object for root \eqn{a} we have subset
+#' \eqn{(a,b,d,e)} then
+#' applying \code{combine} will create for root \eqn{a} a subset \eqn{(a,b)}. See Vignette "Application Danube" for
+#' examples.
 #'
 #' @rdname combine
-#' @param obj Object of class \code{Set} or \code{Argument}
-#' @param ... If the first argument is of class \code{Set} this argument can be as many objects of class
-#' \code{RootDepSet}, for instance \code{Neighborhood} or \code{FlowConnect}
-#' @details If the first argument is of class \code{Set} followed by several objects of
-#' class \code{RootDepSet} the method combines the root dependent sets into one set
-#' which is the intersection of all the sets per root. See examples.
+#' @param obj Object of class \code{Set}
+#' @param ... lists that are going to be combined
+#' @export
+#' @examples
+#' # using two sets of class \code{RootDepSet}
+#' rds1<- RootDepSet()
+#' rds1<- setRootDepSet(rds1, list(a=letters[1:3], b=letters[1:4]), root=c("a", "b"))
+#' rds2<- RootDepSet()
+#' rds2<- setRootDepSet(rds2, list(a=letters[1:7], c=letters[2:5]), root=c("a", "c"))
+#' myset<- Set()
+#' combine(myset, rds1, rds2)
+#'
+#' # using lists with structure that imitates the one of class RootDepSet
+#' list1<- list(value=list(a=letters[1:5], b=letters[1:4]), root=NULL)
+#' list2<- list(value=list(a=letters[1:7], b=letters[2:5]), root=NULL)
+#' myset<- Set()
+#' combine(myset, list1, list2)
+#' # See Vignette "Application Danube" for more examples.
 combine<- function(obj, ...)
 {
   UseMethod("combine")
 }
 
 
+
+#' @export
 combine.default<- function(obj,...)
 {
   return(paste("Method combine undefined for class ", class(obj)))
 }
 
+
+#' @export
 combine.RootDepSet<- function(obj,...)
 {
   NextMethod()
 }
 
-
+#' @export
 #' @rdname combine
 combine.Set<- function(obj, ...)
 {
@@ -40,13 +60,14 @@ combine.Set<- function(obj, ...)
   # - it should have named rows and named columns
   # ----!---- NB----!----
 
+  #x<- list(list1, list2)
 
   x<- list(...)
 
   z<- list()
   i=1
   for (y in x){
-    z[[i]]<- y$value
+    z[[i]]<- y$value # takes only the slot value
     i=i+1
   }
 
@@ -104,22 +125,24 @@ combine.Set<- function(obj, ...)
 
 
 
-
+#' @export
 combine.Argument<- function(obj,...)
 {
   NextMethod()
 }
 
 
-#' @rdname combine
-#' @param x the element which is to be combined with other elements passed before
-#' @param h Argument necessary for efficiency reasons, namely to avoid growing objects within a loop
-#' @param j step of the combining process
-#' @details If the argument passed is of class \code{ArgumentSS} and the second argument is a matrix
-#' then the matrices are substacked step by step as j increases. The method is similar to rbind(), but
-#' it avoids growing up matrices at each step j.
+#' @export
 combine.ArgumentSS<- function(obj, x, h1, j, ...)
 {
+
+  #  x the element which is to be combined with other elements passed before
+  # h1 Argument necessary for efficiency reasons, namely to avoid growing objects within a loop
+  # j step of the combining process
+  #  If the argument passed is of class \code{ArgumentSS} and the second argument is a matrix
+  #  then the matrices are substacked step by step as j increases. The method is similar to rbind(), but
+  #  it avoids growing up matrices at each step j.
+
   h1<- c(0,cumsum(h1*(h1+1)/2))
   dim1<- c((h1[j]+1):h1[j+1])
   x<- augmentCols(x, colnames(obj))
@@ -128,6 +151,8 @@ combine.ArgumentSS<- function(obj, x, h1, j, ...)
 }
 
 
+
+#' @export
 combine.ArgumentMLE1<- function(obj, x, h1, j, ...)
 {
   h1<- c(0,cumsum(h1))
@@ -139,12 +164,15 @@ combine.ArgumentMLE1<- function(obj, x, h1, j, ...)
 
 
 
-#' @rdname combine
-#' @param depPars ???
-#' @details If the argument passed is of class \code{ArgumentD} and the second argument is a matrix
-#' then the matrices are placed on the diagonal of a block matrix.
-combine.ArgumentD<- function(obj, x, h1, j, depParams)
+
+#' @export
+combine.ArgumentD<- function(obj, x, h1, j, depParams, ...)
 {
+
+  # If the argument passed is of class \code{ArgumentD} and the second argument is a matrix
+  #  then the matrices are placed on the diagonal of a block matrix.
+  #  depParams a named vector of edge weights
+
 
   x<- augmentCols(x, names(depParams))
   m<- x %*% (depParams^2)
@@ -168,11 +196,14 @@ combine.ArgumentD<- function(obj, x, h1, j, depParams)
 
 
 
-#' @rdname combine
-#' @details If the argument passed is of class \code{ArgumentHvec} and the second argument is a matrix
-#' then the matrices half-vectorized and the vectors are substacked step by step as j increases.
+
+#' @export
 combine.ArgumentHvec<- function(obj, x, h1, j,...)
 {
+
+  #  If the argument passed is of class \code{ArgumentHvec} and the second argument is a matrix
+  #  then the matrices half-vectorized and the vectors are substacked step by step as j increases.
+
   h1<- c(0,cumsum(h1*(h1+1)/2))
   dim1<- c((h1[j]+1):h1[j+1])
   x<- t(x)[lower.tri(x, diag=TRUE)]
@@ -181,20 +212,28 @@ combine.ArgumentHvec<- function(obj, x, h1, j,...)
 }
 
 
-#' @rdname combine
-#' @details If the argument passed is of class \code{ArgumentCC} then second arguments are
-#' right stacked step by step as j increases. The result is the one of \code{cbind}, but it
-#' avoids pre-allocation at every step.
+#' @export
 combine.ArgumentCC<- function(obj, x, h1, j, ...)
 {
+
+#  If the argument passed is of class \code{ArgumentCC} then second arguments are
+#  right stacked step by step as j increases. The result is the one of \code{cbind}, but it
+#  avoids pre-allocation at every step.
+
   m<- c(0,cumsum(h1))
   obj[,(m[j]+1):(m[j+1])]<- x
   return(obj)
 }
 
 
+
+
+#' @export
 combine.ArgumentSSvec<- function(obj, thisArg, h1, j,...)
 {
+  # thisArg a vector which is substacked
+
+
   b<- c(0, cumsum(h1))
   coord<- c((b[j]+1):b[j+1])
   obj[coord ]<- thisArg
@@ -203,6 +242,7 @@ combine.ArgumentSSvec<- function(obj, thisArg, h1, j,...)
 
 
 
+#' @export
 combine.ArgumentEKS_part<- function(obj, thisArg, h1, j,...)
 {
   b<- c(0, cumsum(h1))

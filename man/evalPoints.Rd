@@ -4,7 +4,7 @@
 \alias{evalPoints}
 \alias{evalPoints.Coordinates}
 \alias{evalPoints.RootDepSet}
-\title{Generates a matrix of evaluation points, used by the EKS estimator.}
+\title{Matrix of coordinates}
 \usage{
 evalPoints(obj, ...)
 
@@ -13,23 +13,26 @@ evalPoints(obj, ...)
 \method{evalPoints}{RootDepSet}(obj, x, U, ...)
 }
 \arguments{
-\item{obj}{Object of a suitable class}
+\item{obj}{Object of class \code{Tuples, Triples, Quadruples, Adjacent} which are subclasses of class
+\code{Coordiantes} or an object of class \code{RootDepSet}.}
+
+\item{...}{additional arguments}
 
 \item{obj2}{Object of class \code{Tree}}
 
-\item{x}{A named vector of coordinates of length |U|, where U is the set of available data nodes.}
+\item{x}{A named vector of coordinates of length |U|, where U is the set of nodes with available data.}
 
 \item{U}{The set of nodes with observable data}
 }
 \description{
-Generates a matrix of evaluation points, used by the EKS estimator.
+Generates a matrix of evaluation points, used by the extremal coefficients estimator.
 }
 \examples{
 # create an object of class Adjacent
 adjobj<- Adjacent()
 # create a graph with named vertices
 g<- graph(c("a", "b", "b", "c", "b", "d"), directed = FALSE)
-# create a dataset with naled columns
+# create a dataset with named columns
 mydata<- matrix(rnorm(10*4), ncol=4, nrow=10)
 colnames(mydata)<- get.vertex.attribute(g, "name", V(g))
 # create object of class Network
@@ -51,8 +54,7 @@ mytree<- Tree(g, mydata)
 x<- c(1:vcount(g))
 names(x)<- c("a", "b", "c", "d")
 mytrip<- Triples()
-mytrip<- evalPoints(mytrip, mytree, x)
-mytrip
+evalPoints(mytrip, mytree, x)
 # create a matrix of coordinates for an arbitrary subsets
 rdsobj<- RootDepSet()
 rds_values<- list(b=c("c", "d"), c=c("b", "d"), d=c("b", "c"))
