@@ -213,7 +213,7 @@ The ML estimates overestimate the EC which means that they predict larger values
 Using the library `corrplot` we can create a palette of colours: from red (strong extremal dependence) to greeen (weak extremal dependence).
 
 ```{r}
-library(corrplot)
+#library(corrplot)
 
 jc<- colorRampPalette(c("#404040", "#000099", "#7F0000", "red",  "#FF7F00", "yellow", "#7FFF7F"))
 
@@ -225,7 +225,7 @@ The upper tringular part presents the method of moment estimates and the lower t
 mec<- ecMM
 mec[lower.tri(mec, diag = TRUE)]<- t(mec)[lower.tri(mec,diag = TRUE)]
 diag(mec)<- 1
-corrplot(mec,
+corrplot::corrplot(mec,
          p.mat = DanubeFlow,
          type = "upper",
          method = "color",
@@ -238,7 +238,7 @@ corrplot(mec,
 mec<- ecE
 mec[lower.tri(mec, diag = TRUE)]<- t(mec)[lower.tri(mec,diag = TRUE)]
 diag(mec)<- 1
-corrplot(mec,
+corrplot::corrplot(mec,
          p.mat = DanubeFlow, 
          add = TRUE, 
          type = "lower",

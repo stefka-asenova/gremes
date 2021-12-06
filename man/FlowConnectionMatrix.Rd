@@ -26,7 +26,7 @@ g<- set.vertex.attribute(g, "name", V(g), letters[1:5])
 # create the flow connection matrix if not available
 x<- matrix(rep(1,25), 5, 5)
 x[1,3]<- x[3,1]<- 0
-colnames(x)<- rownames(x)<- letters[1:5] # note that the columns and rows should be named according to the nodes
+colnames(x)<- rownames(x)<- letters[1:5] # columns and rows are named according to the nodes
 
 # create the object of class 'FlowConnectionMatrix'
 fcmat<- FlowConnectionMatrix(x,g)

@@ -1,6 +1,7 @@
 #' Danube Dataset
 #'
-#' Dataset of events on Upper Danube
+#' Dataset of events on Upper Danube. For detailed description of the data please read in the Appendix
+#' of the paper below.
 #'
 #' @name Danube
 #' @docType data
@@ -14,7 +15,8 @@ NULL
 
 #' Seine Dataset
 #'
-#' Dataset of events on Seine, France
+#' Dataset of events on Seine, France. For detailed description of the data please read in the Appendix
+#' of the paper below.
 #'
 #' @name Seine
 #' @docType data

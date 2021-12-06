@@ -11,8 +11,7 @@
 #'
 #' @param obj Object of class \code{HRMtree}
 #' @param ... additional arguments
-#' @param y bivariate vector with elements between 0 and 1. The coordiantes of the bivariate copula. The default is
-#' (0.5, 0.5).
+#' @param y bivariate vector with elements between 0 and 1. The coordiantes of the bivariate copula.
 #' @export
 diagnost<- function(obj, ...)
 {
@@ -49,11 +48,11 @@ diagnost.default<- function(obj, ...)
 #' # create a dataset
 #' mydata<- rHRM(myobj, 1000)
 #' # do diagnostic on the node "b"
-#' diagnost(myobj, mydata, "b")
+#' diagnost(myobj, mydata, "b", y = c(0.2,0.5) )
 #' # include noise in the data
 #' mydata<- rHRM(myobj, 1000, noise = TRUE)
-#' diagnost(myobj, mydata, "c")
-diagnost.HRMnetwork<- function(obj, X, id, y = c(0.5, 0.5),  ...)
+#' diagnost(myobj, mydata, "c", y = c(0.5,0.5))
+diagnost.HRMnetwork<- function(obj, X, id, y,  ...)
 {
   if(!is.character(id))
     stop("The 'id' should be a character, corresponding to the name of a vertex in the tree")
@@ -93,7 +92,7 @@ diagnost.HRMtree<- function(obj, X, id, y, gr, theta, ...)
     edge_name<- get.edge.attribute(gr, "name", edge_id)
 
     HR_cop<- copula::huslerReissCopula(2/theta[edge_name])
-    u<- matrix(y,nrow = 1)
+    u<- matrix(y, nrow = 1)
     U<- cbind( copula::pobs(X[,id]), copula::pobs(X[,nb[i]]) )
     print(paste("variable ", id,
                 "adj. variable ", nb[i],

@@ -83,7 +83,7 @@ An observation of $X_j$ given $X_v = x_v$ is generated via the inverse function 
 As a diagnostic tool we provide comparison between the bivariate true copula and the bivariate empirical copula. We fix a node, say $a$ and if $b$ and $c$ are adjacent to $a$ we compute the true bivariate copulas and the empirical copulas of pairs $(X_a, X_b)$ and $(X_a, X_c)$ and compare them. We also provide plot of the true and the empirical cumulative distribution function of the selected variable, e.g., of $a$ in the preceding example. 
 
 ```{r fig.height = 4.5, fig.width = 4.5}
-diagnost(hrm, X, "b", y=c(0.3,0.5))
+diagnost(hrm, X, "b", y = c(0.3,0.5))
 
 ```
 

@@ -29,6 +29,7 @@ knitr::opts_chunk$set(
 )
 library(gremes)
 
+
 ```
 
 
@@ -235,7 +236,7 @@ We would like to make a heatmap of the tail dependence coefficients.
 Create the colour palette with the help of the package `corrplot`. 
 
 ```{r}
-library(corrplot)
+#library(corrplot)
 
 jc<- colorRampPalette(c("black" , "blue", "blue", "white", "red"))
 
@@ -248,7 +249,7 @@ ecMat<- matrix(0,7,7)
 ecMat[upper.tri(ecMat)]<- ecTDC
 diag(ecMat)<- 1
 colnames(ecMat)<- rownames(ecMat)<- name_stat
-corrplot(ecMat,
+corrplot::corrplot(ecMat,
          type = "upper",
          method = "color",
          is.corr = FALSE,
@@ -259,7 +260,7 @@ ehMat<- matrix(0,7,7)
 colnames(ehMat)<- rownames(ehMat)<- name_stat
 ehMat[lower.tri(ehMat)]<- ehTDC
 diag(ehMat)<- 1
-corrplot(ehMat,
+corrplot::corrplot(ehMat,
          add = TRUE, 
          type = "lower",
          method = "color", 
@@ -291,7 +292,7 @@ flowMat<- flowConnection(flowg)
 
 
 ```{r fig.height=5.3, fig.width=5.3}
-corrplot(ecMat,
+corrplot::corrplot(ecMat,
          p.mat = flowMat,
          type = "upper",
          method = "color",
@@ -300,7 +301,7 @@ corrplot(ecMat,
          pch = "+", pch.col = "black", pch.cex = 1.3,
          col = jc(20),
          tl.pos = "d", tl.col = "black", tl.cex = 1)
-corrplot(ehMat,
+corrplot::corrplot(ehMat,
          p.mat = flowMat, 
          add = TRUE, 
          type = "lower",

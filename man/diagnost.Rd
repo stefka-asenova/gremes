@@ -7,7 +7,7 @@
 \usage{
 diagnost(obj, ...)
 
-\method{diagnost}{HRMnetwork}(obj, X, id, y = c(0.5, 0.5), ...)
+\method{diagnost}{HRMnetwork}(obj, X, id, y, ...)
 }
 \arguments{
 \item{obj}{Object of class \code{HRMtree}}
@@ -18,8 +18,7 @@ diagnost(obj, ...)
 
 \item{id}{The name of the variable for which the diagnostics is done.}
 
-\item{y}{bivariate vector with elements between 0 and 1. The coordiantes of the bivariate copula. The default is
-(0.5, 0.5).}
+\item{y}{bivariate vector with elements between 0 and 1. The coordiantes of the bivariate copula.}
 }
 \description{
 Performs diagnosis on the generated data according to a graphical model on a tree
@@ -39,8 +38,8 @@ myobj<- setParams(myobj, x)
 # create a dataset
 mydata<- rHRM(myobj, 1000)
 # do diagnostic on the node "b"
-diagnost(myobj, mydata, "b")
+diagnost(myobj, mydata, "b", y = c(0.2,0.5) )
 # include noise in the data
 mydata<- rHRM(myobj, 1000, noise = TRUE)
-diagnost(myobj, mydata, "c")
+diagnost(myobj, mydata, "c", y = c(0.5,0.5))
 }

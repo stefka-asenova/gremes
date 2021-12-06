@@ -5,7 +5,8 @@
 \alias{Danube}
 \title{Danube Dataset}
 \description{
-Dataset of events on Upper Danube
+Dataset of events on Upper Danube. For detailed description of the data please read in the Appendix
+of the paper below.
 }
 \references{
 Peiman Asadi. Anthony C. Davison. Sebastian Engelke. "Extremes on river networks."

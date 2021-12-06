@@ -5,7 +5,8 @@
 \alias{Seine}
 \title{Seine Dataset}
 \description{
-Dataset of events on Seine, France
+Dataset of events on Seine, France. For detailed description of the data please read in the Appendix
+of the paper below.
 }
 \references{
 Asenova, S., Mazo, G. & Segers, J. Inference on extremal dependence in the domain of attraction of a
