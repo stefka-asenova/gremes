@@ -1,6 +1,6 @@
 #' Generic function for method \code{validate}
 #'
-#' Creates a generic function that contains a validator for an object
+#' Creates a generic function that validates an object
 #' @param obj The object that needs to be validated
 #' @param ... Additional arguments
 #' @import igraph
@@ -16,7 +16,7 @@ validate<- function(obj,...)
 #' @export
 validate.default<- function(obj, ...)
 {
- # warning("Default method is called on unrecognised object")
+ # warning("Default method is called on unrecognized object")
   return(obj)
 }
 
@@ -53,7 +53,7 @@ validate.Network<- function(obj, ...)
   }
   if ( length(setdiff(colnames(Data),names(V(g))))!=0 )
     stop("The names of the variables in 'Data' do not correspond to the names of the vertices in 'g'
-         or there are more variables than verices")
+         or there are more variables than vertices")
   if ( setequal(names(V(g)), colnames(Data)) ) {
     message("From validate.Network: No latent variables")
   }
@@ -218,7 +218,7 @@ validate.Simulation<- function(obj, ...)
   if (!is.matrix(obj$endsToParameters))
     stop("The ends of the parameters should be passed as a matrix of size #param*2" )
   if(dm[1]!= nrow(obj$endsToParameters))
-    stop("Incorrest number of estimates or parameter list")
+    stop("Incorrect number of estimates or parameter list")
 }
 
 

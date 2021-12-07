@@ -276,7 +276,7 @@ HRMBG<- function(g)
 #' It is intended to be used for estimation of edge weights of models on trees.
 #' Consult Vignettes "Code - Note 4" and "Estimation - Note 4".
 #' @param g must be an \code{igraph} object
-#' @return Object of class \code{Enghitz} with two slots: \code{$graph} containing the graph and \code{$depParams}
+#' @return Object of class \code{EngHitz} with two slots: \code{$graph} containing the graph and \code{$depParams}
 #' containing the edge weights corresponding to the dependence parameters.
 #' @export EngHitz
 #' @examples

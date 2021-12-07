@@ -48,7 +48,7 @@ For application of this estimator, see Vignette "Code - Note 2".
 
 - $\| \cdot \|_F$ is the Frobenius norm
 
-- $W_u$ is a subset on the node set depending on $u$. Typically a neighborhood of $u$ or the nodes that are flow connected to $u$ or the intersection of both. Note that the induced graph on $W_u$ must be connected.  A good practice is to compose the sets such that within each subset all parameters are uniquely identifiable. This means that every node in $W$ with latent variable shold be connected to at least three other nodes in the same set $W$.
+- $W_u$ is a subset on the node set depending on $u$. Typically a neighborhood of $u$ or the nodes that are flow connected to $u$ or the intersection of both. Note that the induced graph on $W_u$ must be connected.  A good practice is to compose the sets such that within each subset all parameters are uniquely identifiable. This means that every node in $W$ with latent variable should be connected to at least three other nodes in the same set $W$.
 
 - $\mu_{W_u, u}$ is the parametric mean vector 
 
@@ -125,7 +125,7 @@ The estimator of $(\theta_e, e\in E)$ is obtained in a two-step procedure:
 
 ## Maximum likelihood method - Version 2
 
-Consider the likelihood function of a random sample $y_{i}, i=1, \ldots, k$ of mulivariate normal distribution with mean vector $\mu$ and covariance matrix $\Sigma$, where $y_i$ is of dimension $d$.
+Consider the likelihood function of a random sample $y_{i}, i=1, \ldots, k$ of multivariate normal distribution with mean vector $\mu$ and covariance matrix $\Sigma$, where $y_i$ is of dimension $d$.
 
 \begin{align*}
     L(\mu,\Sigma;\,  &y_1,\ldots,y_k)

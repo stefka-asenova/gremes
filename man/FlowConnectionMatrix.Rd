@@ -15,7 +15,7 @@ Note that x is symmetric.}
 }
 \description{
 It creates an object of class \code{FlowConnectionMatrix}. Such an object is used as an input to
-create subsets based on the criterion of flow connectedness. See Vignette "Subsets and Coordiantes".
+create subsets based on the criterion of flow connectedness. See Vignette "Subsets and Coordinates".
 Within a subset all nodes will be flow connected.
 }
 \examples{

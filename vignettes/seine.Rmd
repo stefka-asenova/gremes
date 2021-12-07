@@ -49,7 +49,7 @@ plot(seg)
 ```
 
 
-We load the dataset. Note that there are five observed variables and the columns of the dataset are named with the same names as the nodes of the graph. This is a major princple of the package.
+We load the dataset. Note that there are five observed variables and the columns of the dataset are named with the same names as the nodes of the graph. This is a major principle of the package.
 
 ```{r}
 load("~/gremes/data/SeineData.RData")
@@ -70,7 +70,7 @@ eceobj<- EKS(seg)
 
 For the MME we need to create the subsets. Because this is a case with unobserved variables some care must be taken when forming the subsets. A safe principle to follow is
 
-**In every subgraph induced by the nodes in a given subset, the parameters within that subgraph must be identifiable. This means that for every nde with latent variable the degree of this node with respect to the subgraph should be greater than or equal to three.** 
+**In every subgraph induced by the nodes in a given subset, the parameters within that subgraph must be identifiable. This means that for every node with latent variable the degree of this node with respect to the subgraph should be greater than or equal to three.** 
 
 This criterion has been established in @asenova2021. 
 
@@ -167,7 +167,7 @@ round(head(eh), 3)
 
 The asymptotic distribution of the extremal coefficient estimator is derived in @eks16. Thanks to this we are able to compute confidence intervals for the estimates computed using the extremal coefficient estimator.
 
-The confidence intervals are available only when pairs are used as evaluation points. Therefore we reestimate the edge weights using only coordinates of non-zero pairs.
+The confidence intervals are available only when pairs are used as evaluation points. Therefore we re-estimate the edge weights using only coordinates of non-zero pairs.
 
 ```{r}
 ece2<- matrix(0, gsize(seg), length(kk))
@@ -233,7 +233,7 @@ head(ecTDC)
 ```
 We would like to make a heatmap of the tail dependence coefficients. 
 
-Create the colour palette with the help of the package `corrplot`. 
+Create the color palette with the help of the package `corrplot`. 
 
 ```{r}
 #library(corrplot)
@@ -242,7 +242,7 @@ jc<- colorRampPalette(c("black" , "blue", "blue", "white", "red"))
 
 ```
 
-To make a heat map of the tail dependence coefficients we need to transform the vectors into matrices. The heatmap suggests that there is rather high tail dependence in Seine because most of the colours are in red.
+To make a heat map of the tail dependence coefficients we need to transform the vectors into matrices. The heatmap suggests that there is rather high tail dependence in Seine because most of the colors are in red.
 
 ```{r fig.height=5.3, fig.width=5.3}
 ecMat<- matrix(0,7,7)

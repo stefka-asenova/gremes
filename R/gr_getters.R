@@ -1,5 +1,5 @@
 
-#' It retrives the graph of an object of appropriate class
+#' It retrieves the graph of an object of appropriate class
 #'
 #' The function is applied on objects of appropriate class with slot 'graph'. It is used instead of the command 'obj_name$graph'.
 #' @param obj Object of appropriate class ('Network', 'HRMnetwork')
@@ -84,7 +84,7 @@ getData<- function(obj,...)
 #' @export
 getData.default<- function(obj,...)
 {
-  warning("Default method is called on unrecognised object")
+  warning("Default method is called on unrecognized object")
   return(obj)
 }
 
@@ -105,7 +105,7 @@ getData.Network<- function(obj,...)
 
 
 
-#' It retrives the nodes without data
+#' It retrieves the nodes without data
 #'
 #' It retrieves the value of the slot \code{$noDataNodes}, the set of nodes for which there are no data available
 #'  for an object of class \code{Network}.
@@ -171,7 +171,7 @@ getNodesWithData.Network<- function(obj, ...)
   return(U)
 }
 
-#' It retrives the parameters associated to an HRMnetwork
+#' It retrieves the parameters associated to an HRMnetwork
 #'
 #' It retrieves the value of the slot 'depParams' of a HRMnetwork.
 #' @param obj An object of class 'HRMnetwork'

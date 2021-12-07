@@ -17,14 +17,14 @@ setParams(obj, value, ...)
 EKS_part, EngHitz, HRMBG, MMEave, MLEave}}
 
 \item{value}{A named vector with names corresponding to the names of the edges.
-The vector repesents the edge weights: thetas in case of models on trees and deltas in case of
+The vector represents the edge weights: thetas in case of models on trees and deltas in case of
 models on block graphs. See Vignette "Introduction" also. If an unnamed vector is passed the first element in
 the vector is assigned to the first edge, the second element to the second edge and so on.}
 
 \item{...}{additional arguments}
 }
 \description{
-It assignes values to the vector of edge weights in the slot \code{$depParams} of object of class
+It assigns values to the vector of edge weights in the slot \code{$depParams} of object of class
 \code{HRMnetwork} and its subclasses.
 }
 \examples{

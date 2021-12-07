@@ -106,7 +106,7 @@ data_generation1 <- function(g, theta, n, Fun)
 
 #' @importFrom stats pnorm
 cdistr1<- function(t, x, th, u) {
-  # P(Y<=y|X=x) - u = dF(x,y)/dx : f(x) - u when for F is used Husler Reiss copula and Frechet margins
+  # P(Y<=y|X=x) - u = dF(x,y)/dx : f(x) - u when for F is used Huesler Reiss copula and Frechet margins
   # the exact formula used for the HR copula is as follows:
   # C(u,v)=exp{log(u)*pnorm(theta/2+1/theta*log(log(u)/log(v)))
   #           +log(v)*pnorm(theta/2+1/theta*log(log(v)/log(u))}
@@ -131,7 +131,7 @@ cdistr1<- function(t, x, th, u) {
 #' @importFrom mev rmev
 rHRM.HRMBG<- function(obj, lambda, n, noise=FALSE , ...)
 {
-  # returns a matrix of observations using the husler-reiss distribution from
+  # returns a matrix of observations using the Huesler-Reiss distribution from
   # the package 'mev'
 
   nvert<- vcount(obj$graph)

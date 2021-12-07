@@ -27,7 +27,7 @@ ldArgument.HRMtree<- function(obj, J, ...)
 
 ldArgument.Tree<- function(obj, x, k_ratio, ...)
 {
-  # it returns a vector of the derivatives  via finite differencing method
+  # it returns a vector of the derivatives  via finite difference method
 
   # debug
 #  x<- c(0,0.1,0,0.9,0)

@@ -66,7 +66,7 @@ subs<- list(c("Paris", "2", "Meaux", "Melun"), c("Melun", "5", "Nemours", "Sens"
 ```
 
 In addition to this we require that within the induced subgraph of a given subset all edge parameters are identifiable. This is key in this estimator. We can check this requirement with the function `is_identifiable`.
-To use this function we need however to create an object of class `RootDepSet` and an object of class `Tree`. If it is clear that the criterion is satidfied there is no need from this step and the two additional objects created below. 
+To use this function we need however to create an object of class `RootDepSet` and an object of class `Tree`. If it is clear that the criterion is satisfied there is no need from this step and the two additional objects created below. 
 
 ```{r}
 rdsobj<- RootDepSet()

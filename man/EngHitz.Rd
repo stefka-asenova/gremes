@@ -10,7 +10,7 @@ EngHitz(g)
 \item{g}{must be an \code{igraph} object}
 }
 \value{
-Object of class \code{Enghitz} with two slots: \code{$graph} containing the graph and \code{$depParams}
+Object of class \code{EngHitz} with two slots: \code{$graph} containing the graph and \code{$depParams}
 containing the edge weights corresponding to the dependence parameters.
 }
 \description{

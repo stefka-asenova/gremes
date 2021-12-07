@@ -58,7 +58,7 @@ where
 
 - $U\subseteq V$ is the set of observable variables
 
-- $W_u$ is a subset on the node set depending on $u$. Typically a neighborhood of $u$ or the nodes that are flow connected to $u$ or the intersection of both. Note that the induced graph on $W_u$ must be connected.  A good practice is to compose the sets such that within each subset all parameters are uniquely identifiable. This means that every node in $W$ with latent variable shold be connected to at least three other nodes in the same set $W$.
+- $W_u$ is a subset on the node set depending on $u$. Typically a neighborhood of $u$ or the nodes that are flow connected to $u$ or the intersection of both. Note that the induced graph on $W_u$ must be connected.  A good practice is to compose the sets such that within each subset all parameters are uniquely identifiable. This means that every node in $W$ with latent variable should be connected to at least three other nodes in the same set $W$.
 
 - $\hat{\Sigma}_{W_u, u}$ is the non-parametric covariance matrix
 

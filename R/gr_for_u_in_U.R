@@ -4,7 +4,8 @@
 
 
 # Generic for method \code{for_u_in_U}
-# It generates arguments that are used in the estimation via MM and ML methods. For every node \eqn{u\in U} produces the empirical or the parameric covariance matrices and
+# It generates arguments that are used in the estimation via MM and ML methods.
+# For every node \eqn{u\in U} produces the empirical or the parametric covariance matrices and
 # depending on the class of the first argument it combines them in (so far) three different ways:
 # - substacking of vectors
 # - substacking of matrices

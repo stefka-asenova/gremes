@@ -23,7 +23,7 @@ taildepCoeff<- function(obj, ...)
 #' Default is FALSE, hence n-k.
 #' @param ... additional arguments
 #' @return If the \code{obj} is of class \code{Network} the TDC are non-parametric. If the \code{obj} is of class
-#' \code{HRMtree} or its subclasses repectively the TDC are parametric.
+#' \code{HRMtree} or its subclasses respectively the TDC are parametric.
 #' @examples
 #' # non-parametric tdc
 #' g<- graph(c(1,2,2,3), directed=FALSE)
@@ -36,10 +36,10 @@ taildepCoeff<- function(obj, ...)
 #' taildepCoeff(net, 0.2, v = v, correction = TRUE)
 taildepCoeff.Network<- function(obj, k_ratio, v, correction = FALSE, ...)
 {
-  # v shoud be a named vector of coordinates
+  # v should be a named vector of coordinates
   # k_ratio should be a scalar
   # the taildepCoeff calculates the empirical estimate of
-  # tP(X_v>t) when X_v is a vector of Pareto varibles indexed on the set v.
+  # tP(X_v>t) when X_v is a vector of Pareto variables indexed on the set v.
   # Another way of v={W \union u}
 
   # debug

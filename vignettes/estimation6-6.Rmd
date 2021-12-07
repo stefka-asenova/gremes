@@ -100,7 +100,7 @@ with
 	\hat{X}_{v,i} = \frac{1}{1-\hat{F}_{v,n}(\xi_{v,i})}, \qquad 
 	v \in U, \quad i = 1, \ldots, n.
 \end{equation*}
-Then consider their loharithm
+Then consider their logarithm
 \[
 \hat{Y}_{v,i}=\ln \hat{X}_{v,i}
 \]

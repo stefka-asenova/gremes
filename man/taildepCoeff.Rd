@@ -30,7 +30,7 @@ Default is FALSE, hence n-k.}
 }
 \value{
 If the \code{obj} is of class \code{Network} the TDC are non-parametric. If the \code{obj} is of class
-\code{HRMtree} or its subclasses repectively the TDC are parametric.
+\code{HRMtree} or its subclasses respectively the TDC are parametric.
 }
 \description{
 It computes parametric (Huesler-Reiss) or non-parametric Tail dependence coefficients -

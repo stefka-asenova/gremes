@@ -12,7 +12,7 @@ is_identifiable(obj, tobj)
 \item{tobj}{should be an object of class \code{Tree}}
 }
 \description{
-It verifies if the idenifiability criterion in case of latent variables is satisfied on the level of subsets.
+It verifies if the identifiability criterion in case of latent variables is satisfied on the level of subsets.
 Basically it verifies for each subset whether the identifiability criterion is satisfied for the subgraph
 induced by this subset: verifies if every node with latent variables within the subgraph has degree at least
  three. It is applicable only for tree models.
@@ -36,5 +36,5 @@ nobj<- subset(nobj, 1, seg, U_bar=getNoDataNodes(tobj))
 is_identifiable(nobj, tobj)
 nobj<- subset(nobj, 2, seg, U_bar=getNoDataNodes(tobj))
 is_identifiable(nobj, tobj)
- # See also Vignette "Subsets and Coordianates"
+ # See also Vignette "Subsets and Coordinates"
 }

@@ -19,7 +19,7 @@ sigma_L.HRMtree<- function(obj, evalPts, Ubar = NULL)
     stop("Invalid matrix of evaluation points. The evaluation points should be based on tuples only.
          Also the coordinates should be 1 or 0.")
     # the sets J and K must not contain nodes with unobservable variables - this is respected in the construction
-  # Tuples, evaiPoints(), the methods developped to generate the coordinates for the EKS estimator
+  # Tuples, evaiPoints(), the methods developed to generate the coordinates for the EKS estimator
 
   # debug
   # obj<- hrmobj

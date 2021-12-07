@@ -33,7 +33,7 @@ Journal of the Royal Statistical Society: Series B, 82: 871-932.
 
 
  Describes the model, the edge weights that represent
- the scope of the estimation and how they characterise the tail dependence structure of the model.
+ the scope of the estimation and how they characterize the tail dependence structure of the model.
 }
 
 \section{Vignette "Detailed contents"}{
@@ -64,7 +64,7 @@ Journal of the Royal Statistical Society: Series B, 82: 871-932.
 \section{Vignettes "Application Danube" and "Application Seine"}{
 
 
-  Two case studies - one without unibserved variables and one with unobserved variables respectively.
+  Two case studies - one without unobserved variables and one with unobserved variables respectively.
 }
 
 \section{Vignette "Additional functionalities"}{
@@ -78,7 +78,7 @@ Journal of the Royal Statistical Society: Series B, 82: 871-932.
 \section{Object oriented style}{
 
 
- The package is developped in an object-oriented style. There are two main types of objects.
+ The package is developed in an object-oriented style. There are two main types of objects.
 
  An object containing the graph and the dataset is created using classes \code{Network}, \code{Tree} and
  possibly other subclasses of these.
@@ -90,8 +90,8 @@ Journal of the Royal Statistical Society: Series B, 82: 871-932.
   all we know is the graph and the data.
 
   We can look at the second type of objects as representing the Huesler-Reiss parametric model: every
-   clique is parametrized by a Huesler-Reiss distribution with parameters - the edge weigths
-   within this clique. Hence all that characterizes the parametric model is the graph and the edge weigths.
+   clique is parameterized by a Huesler-Reiss distribution with parameters - the edge weights
+   within this clique. Hence all that characterizes the parametric model is the graph and the edge weights.
 
    Consider for instance a method \code{extrCoeff} which is written both for classes \code{Tree} and \code{HRMtree}.
     If we pass an object of class \code{Tree} to the method \code{extrCoeff} the command will return

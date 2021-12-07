@@ -93,7 +93,7 @@ eks<-estimate(eks, Seine, tup, k_ratio=0.2)
 
 ## Estimate ECE Version 2
 
-To apply EKS Version 2 we need to create subsets for local estimation.
+To apply ECE Version 2 we need to create subsets for local estimation.
 Create the subsets.
 
 ```{r}
@@ -110,7 +110,7 @@ eks_part<- suppressMessages(estimate(eks_part, Seine, subs, k_ratio=0.2, xx=x))
 
 ```
 
-Because the method gives many mesages we suppress them. The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
+Because the method gives many messages we suppress them. The messages are informative. They inform you about certain things but as long as they do not stop the estimation they are not errors.
 
 
 Compare estimates from the two versions.

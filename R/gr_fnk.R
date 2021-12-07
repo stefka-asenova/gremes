@@ -4,7 +4,7 @@
 #' A function combining the empirical and the parametric stdf
 #'
 #' Combines the empirical and the parametric stdf of a HRM tree in
-#' \eqn{||l_{kn}-l(\theta)||^2}. It is the function which is minimised to obtain the EKS estimators
+#' \eqn{||l_{kn}-l(\theta)||^2}. It is the function which is minimized to obtain the EKS estimators
 #' of the dependence parameters \eqn{\theta}.
 #' @param params A vector of |V|-1 parameters' values
 #' @param eksobj An object of class \code{EKS}

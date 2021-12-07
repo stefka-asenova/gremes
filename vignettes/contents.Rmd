@@ -149,7 +149,7 @@ Regarding a model for $X$ as being Markov with respect to a **tree** and being p
 
 - computes ECE based on the result that such a model is in the domain of attraction of a Huesler-Reiss distribution with some parameter matrix derived from edge weights - use method `estimate.EKS`, `estimate.EKS_part`; both are applicable when there are latent variables. ???
 
-- computes cliquewise estimator by @engelke2020 based on an asypmtotic result about $(X/t)\mid \max_{v\in V}X_v>t$ - use method `estimate.MME`; applicable when there are latent variables.
+- computes cliquewise estimator by @engelke2020 based on an asymptotic result about $(X/t)\mid \max_{v\in V}X_v>t$ - use method `estimate.MME`; applicable when there are latent variables.
 
 - computes MME and MLE based on an asymptotic result about $(\ln X_v- \overline{\ln X})\mid \overline{\ln X}>t$ - use method `estimate.MME_ave` or `estimate.MLE_ave`; applicable when there are latent variables???
 

@@ -16,7 +16,7 @@ Generic for \code{subset}
 }
 \section{See \code{subset.FlowConnect} }{
 
-For description and examples of the method applied on objectobjects of class \code{FlowConnect}.
+For description and examples of the method applied on objects of class \code{FlowConnect}.
 }
 
 \section{See \code{subset.Neighborhood} }{

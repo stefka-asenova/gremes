@@ -13,7 +13,7 @@ setGraph<- function(obj, ...)
 #' @export
 setGraph.default<- function(obj,...)
 {
-  warning("Default method is called on unrecognised object")
+  warning("Default method is called on unrecognized object")
   return(obj)
 }
 
@@ -111,12 +111,12 @@ setRootDepSet.RootDepSet<- function(obj, subset, root, ...)
 #' Sets edge parameters
 #'
 #'
-#' It assignes values to the vector of edge weights in the slot \code{$depParams} of object of class
+#' It assigns values to the vector of edge weights in the slot \code{$depParams} of object of class
 #' \code{HRMnetwork} and its subclasses.
 #' @param obj An object of class \code{HRMnetwork} or its subclasses \code{HRMtree, MME, MLE, MLE1, MLE2, EKS,
 #' EKS_part, EngHitz, HRMBG, MMEave, MLEave}
 #' @param value A named vector with names corresponding to the names of the edges.
-#' The vector repesents the edge weights: thetas in case of models on trees and deltas in case of
+#' The vector represents the edge weights: thetas in case of models on trees and deltas in case of
 #' models on block graphs. See Vignette "Introduction" also. If an unnamed vector is passed the first element in
 #' the vector is assigned to the first edge, the second element to the second edge and so on.
 #' @param ... additional arguments

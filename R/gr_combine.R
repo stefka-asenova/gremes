@@ -1,7 +1,7 @@
 
 #' Combines objects
 #'
-#' It is designed to combine objects from classes \code{RootDepSet} for isntance an object of class
+#' It is designed to combine objects from classes \code{RootDepSet} for instance an object of class
 #' \code{Neighborhood} and an object of class \code{FlowConnect}. For instance if for in one of the objects
 #' we have root \eqn{a} with subset \eqn{(a,b,c)} and in the second object for root \eqn{a} we have subset
 #' \eqn{(a,b,d,e)} then

@@ -18,7 +18,7 @@ diagnost(obj, ...)
 
 \item{id}{The name of the variable for which the diagnostics is done.}
 
-\item{y}{bivariate vector with elements between 0 and 1. The coordiantes of the bivariate copula.}
+\item{y}{bivariate vector with elements between 0 and 1. The coordinates of the bivariate copula.}
 }
 \description{
 Performs diagnosis on the generated data according to a graphical model on a tree

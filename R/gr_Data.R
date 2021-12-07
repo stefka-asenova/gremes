@@ -1,4 +1,4 @@
-# con't export any of these class definitions
+# do not export any of these class definitions
 
 
 

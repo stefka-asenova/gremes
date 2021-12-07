@@ -4,7 +4,7 @@
 \alias{getParams}
 \alias{getParams.default}
 \alias{getParams.HRMnetwork}
-\title{It retrives the parameters associated to an HRMnetwork}
+\title{It retrieves the parameters associated to an HRMnetwork}
 \usage{
 getParams(obj, ...)
 

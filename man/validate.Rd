@@ -12,5 +12,5 @@ validate(obj, ...)
 \item{...}{Additional arguments}
 }
 \description{
-Creates a generic function that contains a validator for an object
+Creates a generic function that validates an object
 }

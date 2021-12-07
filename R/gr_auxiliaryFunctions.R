@@ -253,11 +253,11 @@ clean_up_nan<- function(estim)
 
 #' Plots Extremal coefficients
 #'
-#' It generates a scatterplot of bivariate parametric versus non-parametric extremal coefficients.
+#' It generates a scatterplot of pairwise parametric versus non-parametric extremal coefficients.
 #' It marks which ones extremal coefficients are between flow connected nodes. Used for application on rivers.
 #'
-#' @param matT Matrix of parametric estimates of biavariate extremal coefficients
-#' @param matE Matrix of non-parametric estimates of bivariate extremal coefficients
+#' @param matT Matrix of parametric estimates of pairwise extremal coefficients
+#' @param matE Matrix of non-parametric estimates of pairwise extremal coefficients
 #' @param flowConnect Matrix of ones and zeros: 1 at row i and column j means that node i and node j are
 #' flow connected
 #' @param ... additional arguments
@@ -297,7 +297,7 @@ plotEC<- function(matT, matE, flowConnect,...)
 
 #' Identifiability in case of latent variables
 #'
-#' It verifies if the idenifiability criterion in case of latent variables is satisfied on the level of subsets.
+#' It verifies if the identifiability criterion in case of latent variables is satisfied on the level of subsets.
 #' Basically it verifies for each subset whether the identifiability criterion is satisfied for the subgraph
 #' induced by this subset: verifies if every node with latent variables within the subgraph has degree at least
 #'  three. It is applicable only for tree models.
@@ -323,7 +323,7 @@ plotEC<- function(matT, matE, flowConnect,...)
 #' is_identifiable(nobj, tobj)
 #' nobj<- subset(nobj, 2, seg, U_bar=getNoDataNodes(tobj))
 #' is_identifiable(nobj, tobj)
-#'  # See also Vignette "Subsets and Coordianates"
+#'  # See also Vignette "Subsets and Coordinates"
 is_identifiable<- function(obj, tobj)
 {
 

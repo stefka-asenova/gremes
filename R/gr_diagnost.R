@@ -11,7 +11,7 @@
 #'
 #' @param obj Object of class \code{HRMtree}
 #' @param ... additional arguments
-#' @param y bivariate vector with elements between 0 and 1. The coordiantes of the bivariate copula.
+#' @param y bivariate vector with elements between 0 and 1. The coordinates of the bivariate copula.
 #' @export
 diagnost<- function(obj, ...)
 {

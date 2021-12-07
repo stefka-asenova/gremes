@@ -59,7 +59,7 @@ ece<- EKS_part(DanubeTree)
 
 ## Create the subsets for local estimation with the MME and MLE2. 
 
-As we have a matrix with the flow connection information we are going to illustrate how we can use it for estilation and later for post-estimation plots. 
+As we have a matrix with the flow connection information we are going to illustrate how we can use it for estimation and later for post-estimation plots. 
 
 The subsets used in the estimation will be composed in the following way:
 
@@ -67,7 +67,7 @@ The subsets used in the estimation will be composed in the following way:
 
 - Take the nodes that are in the intersection of these two sets, i.e., the nodes that are neighbors and those that are flow connected to the root.
 
-We create an object of class `FlowConnectionMatrix`. We do this by passing the graph and the matrix to the constructor. The constructor exxecutes some checks between the matrix and the graph. However it does not check whether the matrix is correct with respect to the graph. 
+We create an object of class `FlowConnectionMatrix`. We do this by passing the graph and the matrix to the constructor. The constructor executes some checks between the matrix and the graph. However it does not check whether the matrix is correct with respect to the graph. 
 
 ```{r}
 fcmat<- FlowConnectionMatrix(DanubeFlow, DanubeTree)
@@ -101,7 +101,7 @@ comb_set$value$X1
 
 ```
 
-Such a collection of subsets may have bies reduction effect on the estimates.
+Such a collection of subsets may have bias reduction effect on the estimates.
 
 ## MME 
 
@@ -210,7 +210,7 @@ The ML estimates overestimate the EC which means that they predict larger values
 
 ## Heatmap of extremal coefficients
 
-Using the library `corrplot` we can create a palette of colours: from red (strong extremal dependence) to greeen (weak extremal dependence).
+Using the library `corrplot` we can create a palette of colors: from red (strong extremal dependence) to green (weak extremal dependence).
 
 ```{r}
 #library(corrplot)
@@ -219,7 +219,7 @@ jc<- colorRampPalette(c("#404040", "#000099", "#7F0000", "red",  "#FF7F00", "yel
 
 ```
 
-The upper tringular part presents the method of moment estimates and the lower triangular part the extremal coefficients estimates. The white plusses indicate if two nodes are flow connected. 
+The upper triangular part presents the method of moment estimates and the lower triangular part the extremal coefficients estimates. The white signs "+" indicate if two nodes are flow connected. 
 
 ```{r, fig.width = 7, fig.height = 7}
 mec<- ecMM

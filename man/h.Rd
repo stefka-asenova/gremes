@@ -18,6 +18,6 @@ h(obj, ...)
 }
 \description{
 Computes the h_u, which is
-the number of the elements in the subset after substracting the root and the nodes for which data
+the number of the elements in the subset after subtracting the root and the nodes for which data
 are missing
 }

@@ -25,7 +25,7 @@
 corresponding variables are not observed the set of these nodes should be provided here. This will avoid taking
 a variable with unobserved variable to be taken as a root.}
 
-\item{vertices}{Vertex(vertices) for which the neighbouring set(s) are derived. Default is all vertices with observed variable.}
+\item{vertices}{Vertex(vertices) for which the neighboring set(s) are derived. Default is all vertices with observed variable.}
 
 \item{matrixForm}{a matrix of ones and zeros: one if the node is in the subset and zero otherwise.}
 

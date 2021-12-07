@@ -1,7 +1,7 @@
 
 #' Generic for \code{subset}
 #' @section  See \code{subset.FlowConnect} :
-#' For description and examples of the method applied on objectobjects of class \code{FlowConnect}.
+#' For description and examples of the method applied on objects of class \code{FlowConnect}.
 #' @section See \code{subset.Neighborhood} :
 #' For description and examples of the method applied on objectobjects of class \code{Neighborhood}.
 #' @param obj object of appropriate class
@@ -122,7 +122,7 @@ subset.FlowConnect<- function(obj, from,
 #' @param U_bar The set of nodes for which data are missing. Default is NULL. If there are nodes for which the
 #' corresponding variables are not observed the set of these nodes should be provided here. This will avoid taking
 #' a variable with unobserved variable to be taken as a root.
-#' @param vertices Vertex(vertices) for which the neighbouring set(s) are derived. Default is all vertices with observed variable.
+#' @param vertices Vertex(vertices) for which the neighboring set(s) are derived. Default is all vertices with observed variable.
 #' @param matrixForm a matrix of ones and zeros: one if the node is in the subset and zero otherwise.
 #' @param ... additional arguments
 #' @return An object of class \code{Neighborhood} containing two slots: slot \code{$value} can be a matrix or list. If it
@@ -165,7 +165,7 @@ subset.Neighborhood<- function(obj,
       set[u, neighborhood(g, order = eta, u, mode = "all")[[1]]]<- 1
 
       # #### IMPORTANT MODIFICATION ######
-      # # in case of missing nodes this ensures that all the neighbours of the nodes with missing
+      # # in case of missing nodes this ensures that all the neighbors of the nodes with missing
       # # data are included such that each subtree is an identifiable model.
       # neib<- get.vertex.attribute(g, "name", igraph::neighborhood(g, order = eta, u, mode = "all")[[1]])
       # neib_mis<- base::intersect(neib, U_bar)

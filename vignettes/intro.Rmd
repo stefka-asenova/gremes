@@ -42,7 +42,7 @@ Based mainly on @asenova2021, @segers2019versus, @engelke2020, @eks16 and refere
 
 <br>
 
-Consult section **Setting** hereunder to understand what is the model, what are the parameters that represent the scope of the estimation and how they characterise the tail dependence structure of the model.
+Consult section **Setting** hereunder to understand what is the model, what are the parameters that represent the scope of the estimation and how they characterize the tail dependence structure of the model.
 
 Consult Vignette **Detailed contents** for a detailed guide into the documentation of the package and a summary of the main functionalities of the package. We recommend to have a look at this document next.
 
@@ -54,7 +54,7 @@ The main scope of the package is **estimation**. These vignettes provide the the
 
 - Vignettes **Code - Note** 1-6 for use of the estimation tools (the methods, classes and functions) of the package.
 
-Consult Vignettes **Application Danube** and **Application Seine** for two case studies - one without unibserved variables and one with unobserved variables respectively.
+Consult Vignettes **Application Danube** and **Application Seine** for two case studies - one without unobserved variables and one with unobserved variables respectively.
 
 Vignette **Additional functionalities** provides explanation and illustrates the functions related to additional functionalities such as generating random sample from a model, computing extremal coefficients, tail dependence coefficients, confidence intervals for one of the estimators.
 
@@ -202,7 +202,7 @@ plot(g, edge.label=c("d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9"))
 
 ```
 
-We suppose that the subvector $(X_a, X_b, X_c)$ has a Huesler-Reiss distribution with parameter matrix $\Delta_1$ which is symmetric, with zero diagonal and non-zero parameters $(d2, d1, d3)$ which is alias for $(\delta_{ab}, \delta_{ac}, \delta_{bc})$. Similary for the other two block vectors $(X_c, X_e, X_d)$ and $(X_c, X_f, X_g)$. 
+We suppose that the subvector $(X_a, X_b, X_c)$ has a Huesler-Reiss distribution with parameter matrix $\Delta_1$ which is symmetric, with zero diagonal and non-zero parameters $(d2, d1, d3)$ which is alias for $(\delta_{ab}, \delta_{ac}, \delta_{bc})$. Similarly for the other two block vectors $(X_c, X_e, X_d)$ and $(X_c, X_f, X_g)$. 
 
 To estimate tail dependence in $X$ we need to estimate the edge weights (or edge parameters) $(d1, \ldots, d9)$ (aliases for $\delta_{ab}, (a,b)\in E$).
 
@@ -210,7 +210,7 @@ For estimation we need to choose method `estimate.HRMBG`.
 
 ## Object oriented style
 
-The package is developped in an object-oriented style. There are two main types of objects. 
+The package is developed in an object-oriented style. There are two main types of objects. 
 
 - An object containing **the graph and the dataset** is created using classes `Network`, `Tree` and possibly other subclasses of these. 
 
@@ -218,7 +218,7 @@ The package is developped in an object-oriented style. There are two main types 
 
 We can look at the first type of objects as one representing the non-parametric view on the problem - all we know is the graph and the data. 
 
-We can look at the second type of objects as representing the Huesler-Reiss parametric model: every clique is parametrized by a Huesler-Reiss distribution with parameters - the edge weigths within this clique. Hence all that characterizes the parametric model is the graph and the edge weigths.
+We can look at the second type of objects as representing the Huesler-Reiss parametric model: every clique is parameterized by a Huesler-Reiss distribution with parameters - the edge weights within this clique. Hence all that characterizes the parametric model is the graph and the edge weights.
 
 Consider for instance a method `extrCoeff` which is written both for classes `Tree` and `HRMtree`. If we pass an object of class `Tree` to the method `extrCoeff` the command will return non-parametric estimates of the extremal coefficients. If the object passed is of class `HRMtree` the command will return parametric extremal coefficients.
 
@@ -244,7 +244,7 @@ For models on **trees**:
 
 - `MME` provides method of moments estimates and it is based on the asymptotics in 1. See Vignettes "Estimation - Note 1" and "Code - Note 1".
 
-- `MLE`, `MLE1`, `MLE2` provide maximum Likelihood estimates and are based on the asypmtotics in 1. See Vignettes "Estimation - Note 2" and "Code - Note 2".
+- `MLE`, `MLE1`, `MLE2` provide maximum Likelihood estimates and are based on the asymptotics in 1. See Vignettes "Estimation - Note 2" and "Code - Note 2".
 
 - `EKS`, `EKS_part` provide estimates based on extremal coefficients and are based on the asymptotics in 2. See Vignettes "Estimation - Note 3" and "Code - Note 3".
 

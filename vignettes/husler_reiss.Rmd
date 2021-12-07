@@ -23,9 +23,7 @@ library(gremes)
 
 The parameterization used for models on **trees** is the following
 \begin{equation} 
-%\begin{split} 
     H_{\Lambda}(z)
-    %\\&
     =
     \exp\left\{-
     \sum_{u\in V}
@@ -34,7 +32,6 @@ The parameterization used for models on **trees** is the following
       \right)
       \right\},
     \qquad z \in (0, \infty)^{|V|}, 
-%\end{split}
 \end{equation}
 where $\Phi_p(\,\cdot\,; \Sigma)$ denotes the $p$-variate zero mean Gaussian cdf with covariance matrix $\Sigma$. This is a Huesler-Reiss copula with univariate Frechet margins. This expression is due to @nikoloulopoulos_2009, @genton2011 and @huser_dav2013. 
 The matrix $\lambda_{ij}$ depends on $(\theta_e, e\in E)$, namely 

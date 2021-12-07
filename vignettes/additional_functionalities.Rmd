@@ -57,7 +57,7 @@ For any $u\in V$ the joint density function of $X$ is
 f(x)=
 f_{u}(x_u)\prod_{(v,j)\in E_u}f_{j\mid v}(x_j\mid x_v),
 \end{equation}
-with $E_u \subseteq E$ the set of edges directed away from $u$, i.e., $(v,j) \in E_u$ if and only if $v = u$ or $v$ separates $u$ and $j$. The joint density $f$ is determined by $d-1$ bivariate densities $f_{vj}$. The univariate margins $f_u$ are unit Fréchet densities,  $f_j(x_j)=\exp(-1/x_j)/x_j^2$ for $x_j \in (0, \infty)$, and the bivariate margins for each pair of variables on adjacent vertices $j,v$ are Hüsler--Reiss distributions with parameter $\theta_{jv}$. 
+with $E_u \subseteq E$ the set of edges directed away from $u$, i.e., $(v,j) \in E_u$ if and only if $v = u$ or $v$ separates $u$ and $j$. The joint density $f$ is determined by $d-1$ bivariate densities $f_{vj}$. The univariate margins $f_u$ are unit Frechet densities,  $f_j(x_j)=\exp(-1/x_j)/x_j^2$ for $x_j \in (0, \infty)$, and the bivariate margins for each pair of variables on adjacent vertices $j,v$ are Huesler--Reiss distributions with parameter $\theta_{jv}$. 
 
 To generate an observation from the left hand-side of the equation above we use the right hand-side of that equation, proceeding iteratively, walking along paths starting from $u$ using the conditional densities.
 An observation of $X_j$ given $X_v = x_v$ is generated via the inverse function of the cdf $x_j \mapsto F_{j|v}(x_j \mid x_v)$, the conditional cdf of $x_j$ given $x_v$. To do so, the equation $F_{j|v}(x_j \mid x_v)-p=0$ is solved numerically as a function in $x_j$ for fixed $p\in(0,1)$. The choice of the Hüsler--Reiss bivariate distribution gives the following expression for $F_{j\mid v}(x_j\mid x_v)$:
@@ -78,7 +78,7 @@ An observation of $X_j$ given $X_v = x_v$ is generated via the inverse function 
 
 
 
-## Diagnostic for the random samlpe generated as above
+## Diagnostic for the random sample generated as above
 
 As a diagnostic tool we provide comparison between the bivariate true copula and the bivariate empirical copula. We fix a node, say $a$ and if $b$ and $c$ are adjacent to $a$ we compute the true bivariate copulas and the empirical copulas of pairs $(X_a, X_b)$ and $(X_a, X_c)$ and compare them. We also provide plot of the true and the empirical cumulative distribution function of the selected variable, e.g., of $a$ in the preceding example. 
 
@@ -247,7 +247,7 @@ extrCoeff(bgobjU, 0.3)
 
 ```
 
-Note that for the parameters to be all identifiable on the tree, only variables on nodes $a,b$ can be latent. On the block graph only variable $c$ can be latent. This respects the requirement that all latent variables should be connected to at leat three cliques @asenova2021.
+Note that for the parameters to be all identifiable on the tree, only variables on nodes $a,b$ can be latent. On the block graph only variable $c$ can be latent. This respects the requirement that all latent variables should be connected to at least three cliques @asenova2021.
 
 If we want an extremal coefficient of other dimension we need to pass a vector with non-zero coordinates only for observed variables. 
 
@@ -362,7 +362,7 @@ For every $k$ and every $e \in E$, an asymptotic 95\% confidence interval for th
 
 For more details on this interval we refer to section A.5 in @asenova2021. 
 
-In the example below we suppose that the estimates obtained from the pairwise estremal coefficient estimator are given by the sequence $(0.1, 0.2, \ldots, 0.8)$ and the matrix of evaluation points based on pairs is the one based on all pairs. We suppose also that the estimates are based on $k=150$.
+In the example below we suppose that the estimates obtained from the pairwise extremal coefficient estimator are given by the sequence $(0.1, 0.2, \ldots, 0.8)$ and the matrix of evaluation points based on pairs is the one based on all pairs. We suppose also that the estimates are based on $k=150$.
 
 ```{r}
 # create the matrix of evaluation points 

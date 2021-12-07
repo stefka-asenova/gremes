@@ -115,7 +115,7 @@ The exponent measure associated to $Y$ will be denoted as in their paper by $\La
 	\prod_{C\in \mathcal{C}}f_C(y_C; \theta_C).
 \end{align}
 	
-The factorization into the densities in the last expression is in the origin of the @engelke2020's idea to estimate each $\theta_C$ from the likelihood function only of the variables in that clique $C$. The term $Z$ depends on all the parameters and it does not factorize, but the autors say that the results based on full likelihood and clique-wise likelihood estimation show not much difference between the two. 
+The factorization into the densities in the last expression is in the origin of the @engelke2020's idea to estimate each $\theta_C$ from the likelihood function only of the variables in that clique $C$. The term $Z$ depends on all the parameters and it does not factorize, but the authors say that the results based on full likelihood and clique-wise likelihood estimation show not much difference between the two. 
 	
 The problem with the estimation approach outlined above is that when there are latent variables the likelihood function can not be formed for the cliques containing an unobservable variable. We propose however a modification of their method but in the same spirit. 
 	

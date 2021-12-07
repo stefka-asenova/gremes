@@ -5,7 +5,7 @@
 \alias{getGraph.default}
 \alias{getGraph.Network}
 \alias{getGraph.HRMnetwork}
-\title{It retrives the graph of an object of appropriate class}
+\title{It retrieves the graph of an object of appropriate class}
 \usage{
 getGraph(obj, ...)
 

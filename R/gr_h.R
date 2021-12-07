@@ -23,7 +23,7 @@ h.default<- function(obj,...)
 
 
 #' @description Computes the h_u, which is
-#' the number of the elements in the subset after substracting the root and the nodes for which data
+#' the number of the elements in the subset after subtracting the root and the nodes for which data
 #' are missing
 #' @rdname h
 #' @param obj Object of class \code{RootDepSet}
@@ -32,7 +32,7 @@ h.default<- function(obj,...)
 #' @export
 h.RootDepSet<- function(obj, U_bar=NULL, ...)
 {
-  # the purpose of this function is to facilitate the preallocation of
+  # the purpose of this function is to facilitate the pre-allocation of
   # the sigma matrix and the data matrix. So instead of growing matrices
   # in a loop I am using this function to obtain h_u for all u's
   roots<- getRoot(obj)

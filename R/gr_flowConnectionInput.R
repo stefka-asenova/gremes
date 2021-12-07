@@ -4,7 +4,7 @@
 #'
 #' It creates an object from class \code{FlowConnectionGraph}. The function verifies whether the graph is
 #' directed and the vertices are named. The object can be used further to create subsets based on the criterion of
-#' flow connectedness. See Vignette "Subsets and Coordiantes".
+#' flow connectedness. See Vignette "Subsets and Coordinates".
 #' @export
 #' @param g should be an object of class "igraph". It should have named vertices.
 #' @examples
@@ -29,7 +29,7 @@ FlowConnectionGraph<- function(g)
 #' Object of class \code{FlowConnectionMatrix}
 #'
 #' It creates an object of class \code{FlowConnectionMatrix}. Such an object is used as an input to
-#' create subsets based on the criterion of flow connectedness. See Vignette "Subsets and Coordiantes".
+#' create subsets based on the criterion of flow connectedness. See Vignette "Subsets and Coordinates".
 #' Within a subset all nodes will be flow connected.
 #' @param x should be a matrix of ones and zeros, 1 representing flow connectedness between node i and node j.
 #' The matrix should have named rows and columns.

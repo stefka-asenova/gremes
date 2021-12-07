@@ -7,9 +7,9 @@
 plotEC(matT, matE, flowConnect, ...)
 }
 \arguments{
-\item{matT}{Matrix of parametric estimates of biavariate extremal coefficients}
+\item{matT}{Matrix of parametric estimates of pairwise extremal coefficients}
 
-\item{matE}{Matrix of non-parametric estimates of bivariate extremal coefficients}
+\item{matE}{Matrix of non-parametric estimates of pairwise extremal coefficients}
 
 \item{flowConnect}{Matrix of ones and zeros: 1 at row i and column j means that node i and node j are
 flow connected}
@@ -17,7 +17,7 @@ flow connected}
 \item{...}{additional arguments}
 }
 \description{
-It generates a scatterplot of bivariate parametric versus non-parametric extremal coefficients.
+It generates a scatterplot of pairwise parametric versus non-parametric extremal coefficients.
 It marks which ones extremal coefficients are between flow connected nodes. Used for application on rivers.
 }
 \note{

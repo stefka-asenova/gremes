@@ -58,9 +58,9 @@ rdsobj
 
 ```
 
-For large graphs this will be not so handy. Below there are some tools to create subsets automaticaly that satisfy the first two recommendations above.
+For large graphs this will be not so handy. Below there are some tools to create subsets automatically that satisfy the first two recommendations above.
 
-## Creating subsets on the priciple of **neighborhood**.
+## Creating subsets on the principle of **neighborhood**.
 
 The sets here are based on the principle of **neighborhood**. It makes sense for every root to take a neighborhood of some order. This can also have a bias reduction effect on the estimator.
 

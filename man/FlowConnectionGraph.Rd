@@ -12,7 +12,7 @@ FlowConnectionGraph(g)
 \description{
 It creates an object from class \code{FlowConnectionGraph}. The function verifies whether the graph is
 directed and the vertices are named. The object can be used further to create subsets based on the criterion of
-flow connectedness. See Vignette "Subsets and Coordiantes".
+flow connectedness. See Vignette "Subsets and Coordinates".
 }
 \examples{
 seg_dir<- graph(c("2","paris", "meaux", "2", "melun", "2","5", "melun","nemours", "5", "sens", "5"),

@@ -74,7 +74,7 @@ estimate.HRMnetwork<- function(obj, ...)
  #' the value at default should be kept.
 # #' The vector should be of length at least the number of vertices for which there is data available.
 # #' It should be named with the names of the vertices. The values given can be arbitrary, but values of
-# #' 1 correspond to extremal coefficints.
+# #' 1 correspond to extremal coefficients.
 #' @import igraph
 #' @importFrom quadprog solve.QP
 #' @export
@@ -156,7 +156,7 @@ estimate.HRMBG<- estimate.HRMtree
 # #' The function is designed to be used as inherited method
 # #' @references Asenova, S and Segers, J. Husler-Reiss Markov tree
 # #' @param mle1obj Object of class \code{MLE1}
-# #' @param obj2 Object of class \code{Gtree}
+# #' @param obj2 Object of class \code{GTree}
 # #' @param Ubar The set of nodes for which there are no data available
 # #' @param par_names A character vector with the names of the parameters associated to the edges of the tree
 # #' @param gr The graph associated to the mle1obj

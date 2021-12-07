@@ -4,7 +4,7 @@
 \alias{getNoDataNodes}
 \alias{getNoDataNodes.default}
 \alias{getNoDataNodes.Network}
-\title{It retrives the nodes without data}
+\title{It retrieves the nodes without data}
 \usage{
 getNoDataNodes(obj, ...)
 

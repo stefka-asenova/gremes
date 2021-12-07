@@ -4,7 +4,7 @@
 #' @rdname evalPoints
 #' @export
 #' @param obj Object of class \code{Tuples, Triples, Quadruples, Adjacent} which are subclasses of class
-#' \code{Coordiantes} or an object of class \code{RootDepSet}.
+#' \code{Coordinates} or an object of class \code{RootDepSet}.
 #' @param obj2 Object of class \code{Tree}
 #' @param x A named vector of coordinates of length |U|, where U is the set of nodes with available data.
 #' @param ... additional arguments
@@ -70,12 +70,12 @@ evalPoints.Coordinates<- function(obj, obj2, x, ...)
   if (length(Vnames) != 0)
   {
     if(length(base::setdiff(U, names(x)))!=0)
-    stop("'x' should have the same names as the nodes with avalable data")
+    stop("'x' should have the same names as the nodes with available data")
   }
   if (length(Vnames) == 0)
   {
     if (length(base::setdiff(Vnames, names(x))) !=0 )
-    stop("'x' should have the same names as the nodes with avalable data")
+    stop("'x' should have the same names as the nodes with available data")
   }
   NextMethod(nodes = Vnames, U = U, gr = g, ...)
 

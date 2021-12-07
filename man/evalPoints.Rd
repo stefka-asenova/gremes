@@ -14,7 +14,7 @@ evalPoints(obj, ...)
 }
 \arguments{
 \item{obj}{Object of class \code{Tuples, Triples, Quadruples, Adjacent} which are subclasses of class
-\code{Coordiantes} or an object of class \code{RootDepSet}.}
+\code{Coordinates} or an object of class \code{RootDepSet}.}
 
 \item{...}{additional arguments}
 

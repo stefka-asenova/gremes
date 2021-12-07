@@ -42,13 +42,13 @@ For application of this estimator, see Vignette "Code - Note 3".
 
 ## Extremal coefficient estimator (ECE)
 
-The pairwise extremal coefficients estimator, named at the beginning EKS to the authors of the paper where it appeared @eks16, is based on the bivariate stable tail dependence function (stdf). It is decribed in Section 4.3 in  @asenova2021. More on the stdf can be found in @haan.
+The pairwise extremal coefficients estimator is introduced in @eks16, is based on the bivariate stable tail dependence function (stdf). It is described in Section 4.3 in  @asenova2021. More on the stdf can be found in @haan.
 
 For the Huesler--Reiss distribution with parameter matrix $\Lambda(\theta)$ and for a pair of nodes $J = \{u, v\}$, the bivariate extremal coefficient is just 
 \begin{equation}
 l_J(1, 1) = 2 \Phi(\lambda_{uv}(\theta)),
 \end{equation}
-with $\Phi$ the standard normal cdf and 
+with $\Phi$ the standard normal cumulative distribution function (cdf) and 
 \begin{equation} 
 	\big(\Lambda(\theta)\big)_{ij}
 	= \lambda^2_{ij}(\theta)
@@ -84,7 +84,7 @@ The $\mathcal{Q}$ must be the collection of all possible pairs of nodes in $U$. 
 
 ## ECE Version 2  
 
-The second version of the ECE which is imlemented with object of class `EKS_part` uses the subsets $W_u$ for every $u\in U$ where $U$ is the set of noted with observable variables. It is similar to the MLE Version 1 explained in Vignette "Estimation - Note 2".
+The second version of the ECE which is implemented with object of class `EKS_part` uses the subsets $W_u$ for every $u\in U$ where $U$ is the set of noted with observable variables. It is similar to the MLE Version 1 explained in Vignette "Estimation - Note 2".
 
 For fixed $u$ and $W_u$ such that $G(W_u)$ is a connected subgraph we apply the EC estimator of $\theta_{W_u}$ which is the collection of all edge weights within the subgraph $G(W_u)$. 
 
