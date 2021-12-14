@@ -3,7 +3,7 @@ Title: Estimation of Tail Dependence in Graphical Models
 Version: 0.1.0
 Author: Stefka Asenova [aut, cre]
 Maintainer: Stefka Asenova <stefkakirilova@yahoo.com>
-Description: Provides tools for estimation of edge weights on graphical models with respect to trees and block graphs and parameterized by a particular family of max-stable copulas. The edge weights are parameters of tail dependence between adjacent variables and these edge weights determine the joint tail dependence between all variables in the context of Huesler-Reiss distributions.
+Description: Provides tools for estimation of edge weights on graphical models with respect to trees and block graphs and parameterized by a particular family of max-stable copulas. The edge weights are parameters of tail dependence between adjacent variables and these edge weights determine the joint tail dependence between all variables in the context of a particular parametric model.
 License: GPL-2
 Encoding: UTF-8
 RoxygenNote: 7.0.2
@@ -14,7 +14,6 @@ Imports:
    copula (>= 0.999.19),
    quadprog (>= 1.5.5),
    mvtnorm (>= 1.0.8),
-   Rcpp (>= 0.11.1),
    methods,
    mev (>= 1.13.1)
 Depends:

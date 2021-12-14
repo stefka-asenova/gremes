@@ -32,10 +32,8 @@ library(gremes)
 We load the dataset, the graph and the matrix with the information on flow connection.
 
 ```{r, fig.height = 10, fig.width = 10}
-load("~/gremes/data/DanubeGraph.RData")
+data("DanubeGraph", "DanubeFlowConnectedNodes", "DanubeData", package = "gremes")
 plot(DanubeTree, layout = layout_as_tree(DanubeTree, root = c(1)))
-load("~/gremes/data/DanubeFlowConnectedNodes.RData")
-load("~/gremes/data/DanubeData.RData")
 
 ```
 

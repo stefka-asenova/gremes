@@ -52,7 +52,7 @@ plot(seg)
 We load the dataset. Note that there are five observed variables and the columns of the dataset are named with the same names as the nodes of the graph. This is a major principle of the package.
 
 ```{r}
-load("~/gremes/data/SeineData.RData")
+data("SeineData", package = "gremes")
 head(Seine)
 
 ```

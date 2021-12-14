@@ -33,7 +33,9 @@ library(gremes)
 
 Load the data.
 ```{r}
-load("~/gremes/data/SeineData.RData")
+#load("~/gremes/data/SeineData.RData")
+data("SeineData", package = "gremes")
+
 head(Seine)
 
 ```

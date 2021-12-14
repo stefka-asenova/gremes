@@ -143,9 +143,8 @@ Next we create the collection of subsets based on flow connection.
 We use real dataset on Danube. We thank Adrien Hitz for providing us with the data. They were first used in @asadi.
 
 ```{r fig.height=7, fig.width=7}
-load("~/gremes/data/DanubeGraph.RData")
+data("DanubeGraph", "DanubeFlowConnectedNodes", "DanubeData", package = "gremes")
 plot(DanubeTree, layout=layout_as_tree(DanubeTree, root=c(1)))
-load("~/gremes/data/DanubeFlowConnectedNodes.RData")
 
 ```
 

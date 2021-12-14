@@ -93,9 +93,9 @@ The density of the exponent measure $\psi$ is given by (see Section 2 in @engelk
 \psi_B(\theta_B;\hat{y}_{B,i})= \hat{y}_{u,i}^{-2}\prod_{v\neq u}\hat{y}_{v,i}^{-1}
 \phi_{|B|-1}\Big(\ln(\hat{y}_{u,i}/\hat{y}_{v,i})+\lambda^2_{uv}(\theta_B)/2; \Sigma_{B,u}(\theta_B)\Big), 
 \]
-for every $u\in B$. SAY WHAT SIGMA IS!!!
+for every $u\in B$. The parameter $\Sigma_{B,u}$ is the covariance matrix defined in Vignette "Huesler-Reiss distributions" section "Parameterization on trees".
 
-More background behind this estimator follows hereunder.
+More background behind this estimator follows.
 
 <br>
 For an extremal graphical model in the sense of @engelke2020 with respect to a special class of decomposable graphs, whose clique separator set consists of only singletons, also known as block graphs, the estimation method proposed in their section 5.2 is based on the idea to estimate the parameters in every clique separately. 
